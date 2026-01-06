@@ -101,8 +101,7 @@ public class TypeRacerGame {
             System.out.printf("Overall accuracy: %.2f%%%n", overallAccuracy);
             System.out.printf("Overall speed: %.2f WPM%n", overallWPM);
         }
-
-        // Close the scanner to release resources
+        
         scanner.close();
     }
 }
