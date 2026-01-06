@@ -1,30 +1,23 @@
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 
 /**
  * PrecisionTyper: A rigorous typing speed and accuracy trainer.
  * Requires 100% character-match accuracy for completion.
  */
-public class PrecisionTyper { 
+public class PrecisionTyper {
 
-    // --- Settings ---
     private static final String TARGET_TEXT = 
         "The quick brown fox jumps over the lazy dog. Programming is the art of telling another human what one wants the computer to do. Success is not final, failure is not fatal: it is the courage to continue that counts.";
     
-    // --- UI Components ---
     private JFrame frame;
-    private JPanel cardPanel;
-    private CardLayout cardLayout;
-    
-    // Game Screen Components
     private JTextPane textDisplay;
-    private JTextField inputField;
-    private JLabel timerLabel;
-    private JLabel instructionsLabel;
+    private JTextArea inputArea; 
+    private JLabel timerLabel, wpmLabel, accuracyLabel;
     
-    // Logic Variables
     private Timer gameTimer;
     private boolean isGameRunning = false;
     private int secondsElapsed = 0;
@@ -33,9 +26,7 @@ public class PrecisionTyper {
         SwingUtilities.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            } catch (Exception e) {}
             new PrecisionTyper(); 
         });
     }
@@ -45,193 +36,163 @@ public class PrecisionTyper {
     }
 
     private void initializeUI() {
-        frame = new JFrame("PrecisionTyper - Accuracy Challenge"); 
+        frame = new JFrame("PrecisionTyper - Focus Mode"); 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000, 800);
+        frame.setSize(1100, 850); 
         frame.setLocationRelativeTo(null);
 
-        cardLayout = new CardLayout();
-        cardPanel = new JPanel(cardLayout);
+        JPanel mainPanel = new JPanel(new BorderLayout(20, 20));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        JPanel gamePanel = createGamePanel();
-        cardPanel.add(gamePanel, "GAME");
-        cardPanel.add(new JPanel(), "RESULT"); 
-
-        frame.add(cardPanel);
-        frame.setVisible(true);
+        // --- STATS BAR ---
+        JPanel statsBar = new JPanel(new GridLayout(1, 3, 10, 0));
+        statsBar.setPreferredSize(new Dimension(1100, 60));
         
-        updateTextStyles(""); 
-    }
+        timerLabel = createStatLabel("Time: 0s");
+        wpmLabel = createStatLabel("WPM: 0");
+        accuracyLabel = createStatLabel("Accuracy: 100%");
 
-    private JPanel createGamePanel() {
-        JPanel panel = new JPanel(new BorderLayout(20, 20));
-        panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        statsBar.add(timerLabel);
+        statsBar.add(wpmLabel);
+        statsBar.add(accuracyLabel);
+        mainPanel.add(statsBar, BorderLayout.NORTH);
 
-        // --- TOP ---
-        JPanel topPanel = new JPanel(new BorderLayout());
-        instructionsLabel = new JLabel("Strict Mode: Match the text exactly to complete the challenge.");
-        instructionsLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
-        
-        timerLabel = new JLabel("Time: 0s");
-        timerLabel.setFont(new Font("Monospaced", Font.BOLD, 24));
-        timerLabel.setForeground(new Color(0, 102, 204));
+        // --- CENTER PANEL ---
+        JPanel centerPanel = new JPanel(new GridLayout(2, 1, 10, 20));
 
-        topPanel.add(instructionsLabel, BorderLayout.WEST);
-        topPanel.add(timerLabel, BorderLayout.EAST);
-        panel.add(topPanel, BorderLayout.NORTH);
-
-        // --- CENTER ---
         textDisplay = new JTextPane();
         textDisplay.setEditable(false);
-        textDisplay.setFont(new Font("SansSerif", Font.PLAIN, 28));
-        textDisplay.setText(TARGET_TEXT);
+        textDisplay.setFont(new Font("Monospaced", Font.BOLD, 24));
+        textDisplay.setMargin(new Insets(15, 15, 15, 15));
+        textDisplay.setBackground(new Color(250, 250, 250));
         
-        StyledDocument doc = textDisplay.getStyledDocument();
-        SimpleAttributeSet leftAlign = new SimpleAttributeSet();
-        StyleConstants.setAlignment(leftAlign, StyleConstants.ALIGN_LEFT);
-        doc.setParagraphAttributes(0, doc.getLength(), leftAlign, false);
+        JScrollPane scrollTarget = new JScrollPane(textDisplay);
+        scrollTarget.setBorder(BorderFactory.createTitledBorder("Target Text"));
+        centerPanel.add(scrollTarget);
+
+        inputArea = new JTextArea();
+        inputArea.setFont(new Font("Monospaced", Font.PLAIN, 24));
+        inputArea.setLineWrap(true);
+        inputArea.setWrapStyleWord(true);
+        inputArea.setMargin(new Insets(15, 15, 15, 15));
         
-        JScrollPane scrollPane = new JScrollPane(textDisplay);
-        scrollPane.setBorder(null);
-        panel.add(scrollPane, BorderLayout.CENTER);
+        // Tab key would normally move focus; this makes it type a space instead
+        inputArea.setFocusTraversalKeysEnabled(false); 
 
-        // --- BOTTOM ---
-        inputField = new JTextField();
-        inputField.setFont(new Font("SansSerif", Font.PLAIN, 24));
-        inputField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.GRAY, 1),
-            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        JScrollPane scrollInput = new JScrollPane(inputArea);
+        scrollInput.setBorder(BorderFactory.createTitledBorder("Your Typing Area"));
+        centerPanel.add(scrollInput);
 
-        inputField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() != KeyEvent.VK_ENTER) {
-                    checkProgress(false); 
-                }
+        mainPanel.add(centerPanel, BorderLayout.CENTER);
+
+        inputArea.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { handle(); }
+            public void removeUpdate(DocumentEvent e) { handle(); }
+            public void changedUpdate(DocumentEvent e) { handle(); }
+            private void handle() {
+                SwingUtilities.invokeLater(() -> checkProgress());
             }
         });
 
-        inputField.addActionListener(e -> checkProgress(true));
+        frame.add(mainPanel);
+        frame.setVisible(true);
+        updateTextStyles(""); 
+    }
 
-        panel.add(inputField, BorderLayout.SOUTH);
-
-        return panel;
+    private JLabel createStatLabel(String text) {
+        JLabel label = new JLabel(text, SwingConstants.CENTER);
+        label.setFont(new Font("SansSerif", Font.BOLD, 20));
+        label.setOpaque(true);
+        label.setBackground(Color.WHITE);
+        label.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        return label;
     }
 
     private void startTimer() {
         if (isGameRunning) return;
         isGameRunning = true;
-        
         gameTimer = new Timer(1000, e -> {
             secondsElapsed++;
             timerLabel.setText("Time: " + secondsElapsed + "s");
+            updateLiveStats();
         });
         gameTimer.start();
     }
 
-    private void checkProgress(boolean enterPressed) {
-        String typed = inputField.getText();
+    private void checkProgress() {
+        // FIX: Remove newlines and carriage returns so "Enter" doesn't break the match
+        String rawTyped = inputArea.getText();
+        String cleanedTyped = rawTyped.replace("\n", "").replace("\r", "");
 
-        if (!isGameRunning && typed.length() > 0) {
-            startTimer();
-        }
+        if (!isGameRunning && !cleanedTyped.isEmpty()) startTimer();
 
-        updateTextStyles(typed);
+        updateTextStyles(cleanedTyped);
+        updateLiveStats();
 
-        if (typed.equals(TARGET_TEXT)) {
+        // Check against target text exactly
+        if (cleanedTyped.equals(TARGET_TEXT)) {
             gameOver();
-        } 
-        else if (enterPressed) {
-            if (typed.trim().equals(TARGET_TEXT)) {
-                gameOver(); 
-            } else {
-                JOptionPane.showMessageDialog(frame, 
-                    "Validation Failed: Input does not match target text.\nCorrect all red characters and check punctuation.", 
-                    "Precision Required", 
-                    JOptionPane.ERROR_MESSAGE);
-            }
         }
+    }
+
+    private void updateLiveStats() {
+        String typed = inputArea.getText().replace("\n", "").replace("\r", "");
+        if (typed.isEmpty()) return;
+
+        double minutes = Math.max(secondsElapsed / 60.0, 0.01);
+        int wpm = (int) ((typed.length() / 5.0) / minutes);
+        wpmLabel.setText("WPM: " + wpm);
+
+        int correctChars = 0;
+        int minLen = Math.min(typed.length(), TARGET_TEXT.length());
+        for (int i = 0; i < minLen; i++) {
+            if (typed.charAt(i) == TARGET_TEXT.charAt(i)) correctChars++;
+        }
+        int accuracy = (int) ((double) correctChars / Math.max(typed.length(), 1) * 100);
+        accuracyLabel.setText("Accuracy: " + accuracy + "%");
     }
 
     private void updateTextStyles(String typed) {
         StyledDocument doc = textDisplay.getStyledDocument();
-        
-        SimpleAttributeSet greenStyle = new SimpleAttributeSet();
-        StyleConstants.setForeground(greenStyle, new Color(0, 153, 0));
-        StyleConstants.setBold(greenStyle, true);
+        SimpleAttributeSet green = new SimpleAttributeSet();
+        StyleConstants.setForeground(green, new Color(34, 139, 34));
 
-        SimpleAttributeSet redStyle = new SimpleAttributeSet();
-        StyleConstants.setForeground(redStyle, Color.RED);
-        StyleConstants.setStrikeThrough(redStyle, true);
+        SimpleAttributeSet red = new SimpleAttributeSet();
+        StyleConstants.setForeground(red, Color.RED);
+        StyleConstants.setUnderline(red, true);
 
-        SimpleAttributeSet grayStyle = new SimpleAttributeSet();
-        StyleConstants.setForeground(grayStyle, Color.GRAY);
+        SimpleAttributeSet gray = new SimpleAttributeSet();
+        StyleConstants.setForeground(gray, Color.LIGHT_GRAY);
+
+        SimpleAttributeSet cursorHighlight = new SimpleAttributeSet();
+        StyleConstants.setBackground(cursorHighlight, new Color(255, 255, 180));
 
         try {
             doc.remove(0, doc.getLength());
             for (int i = 0; i < TARGET_TEXT.length(); i++) {
                 String charStr = String.valueOf(TARGET_TEXT.charAt(i));
                 if (i < typed.length()) {
-                    if (typed.charAt(i) == TARGET_TEXT.charAt(i)) {
-                        doc.insertString(doc.getLength(), charStr, greenStyle);
-                    } else {
-                        doc.insertString(doc.getLength(), charStr, redStyle);
-                    }
+                    doc.insertString(doc.getLength(), charStr, 
+                        typed.charAt(i) == TARGET_TEXT.charAt(i) ? green : red);
+                } else if (i == typed.length()) {
+                    doc.insertString(doc.getLength(), charStr, cursorHighlight);
                 } else {
-                    doc.insertString(doc.getLength(), charStr, grayStyle);
+                    doc.insertString(doc.getLength(), charStr, gray);
                 }
             }
-        } catch (BadLocationException e) {
-            e.printStackTrace();
-        }
+        } catch (BadLocationException e) {}
     }
 
     private void gameOver() {
         if (gameTimer != null) gameTimer.stop();
         isGameRunning = false;
-        inputField.setEditable(false);
+        inputArea.setEditable(false);
 
-        double minutes = secondsElapsed / 60.0;
-        if (minutes == 0) minutes = 0.01;
-        int wordCount = TARGET_TEXT.split(" ").length;
-        int wpm = (int) (wordCount / minutes);
-
-        JPanel resultPanel = new JPanel(new GridBagLayout());
-        resultPanel.setBackground(new Color(240, 240, 240));
+        JOptionPane.showMessageDialog(frame, 
+            "Success! The strings matched perfectly.\n" + wpmLabel.getText() + "\nFinal Time: " + secondsElapsed + "s", 
+            "Finished", JOptionPane.INFORMATION_MESSAGE);
         
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(10, 10, 10, 10);
-
-        JLabel title = new JLabel("Accuracy Validated!");
-        title.setFont(new Font("SansSerif", Font.BOLD, 40));
-        title.setForeground(new Color(0, 153, 0));
-        resultPanel.add(title, gbc);
-
-        gbc.gridy++;
-        JLabel wpmLabel = new JLabel("Speed: " + wpm + " WPM");
-        wpmLabel.setFont(new Font("SansSerif", Font.PLAIN, 30));
-        resultPanel.add(wpmLabel, gbc);
-
-        gbc.gridy++;
-        JLabel timeLabel = new JLabel("Duration: " + secondsElapsed + "s");
-        timeLabel.setFont(new Font("SansSerif", Font.PLAIN, 24));
-        resultPanel.add(timeLabel, gbc);
-
-        gbc.gridy++;
-        JButton retryButton = new JButton("Reset Challenge");
-        retryButton.setFont(new Font("SansSerif", Font.BOLD, 20));
-        retryButton.setPreferredSize(new Dimension(200, 50));
-        retryButton.addActionListener(e -> restartGame());
-        resultPanel.add(retryButton, gbc);
-
-        cardPanel.add(resultPanel, "RESULT");
-        cardLayout.show(cardPanel, "RESULT");
-    }
-
-    private void restartGame() {
         frame.dispose();
-        new PrecisionTyper(); 
+        new PrecisionTyper();
     }
 }
