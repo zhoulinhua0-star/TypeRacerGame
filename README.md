@@ -24,4 +24,4 @@ PrecisionTyper.java is a more advanced and (more importantly) cooler version mar
 ---
 
 ### License 
-
+This project is open-source and available for free.
