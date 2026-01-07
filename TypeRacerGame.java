@@ -15,93 +15,113 @@ import java.util.Scanner;
  */
 public class TypeRacerGame {
 
-    // Predefined sentences for typing practice
     private static final String[] SENTENCES = {
             "Practice makes perfect and consistency is the key to success.",
             "Java is a powerful language for building reliable applications.",
             "Typing faster comes from accuracy not rushing your fingers.",
-            "Learning programming requires patience and logical thinking.",
+            "Learning programming reasoning requires patience and logical thinking.",
             "Small progress every day leads to big achievements."
     };
 
+    private final Scanner scanner = new Scanner(System.in);
+    
+    private double totalTime = 0;
+    private int totalCorrectChars = 0;
+    private int totalChars = 0;
+    private int totalWords = 0;
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        TypeRacerGame game = new TypeRacerGame();
+        game.run();
+    }
 
-        // Aggregate statistics across all rounds
-        double totalTime = 0;           // Total time in seconds for all sentences
-        int totalCorrectChars = 0;      // Total correctly typed characters
-        int totalChars = 0;             // Total characters across all sentences
-        int totalWords = 0;             // Total words across all sentences
+    /**
+     * Controls the main flow of the game.
+     */
+    public void run() {
+        showIntroduction();
+        for (int i = 0; i < SENTENCES.length; i++) {
+            playRound(i + 1, SENTENCES[i]);
+        }
+        showFinalSummary();
+        scanner.close();
+    }
 
-        // Game introduction
+    private void showIntroduction() {
         System.out.println("===== CONSOLE TYPE RACER =====");
         System.out.println("\nPress ENTER to start the game!");
-        scanner.nextLine();  // Wait for user input to start
+        scanner.nextLine();
+    }
 
-        // Iterate through each sentence in the predefined list
-        for (int round = 0; round < SENTENCES.length; round++) {
-            String sentence = SENTENCES[round];
-
-            // Display round header
-            if (round != 0) {
-                System.out.println("\n--- Round " + (round + 1) + " ---");
-            } else {
-                System.out.println("--- Round " + (round + 1) + " ---");
-            }
-
-            // Display sentence to type
-            System.out.println("Type the following sentence:");
-            System.out.println(sentence);
-
-            // Record start time for this round
-            long startTime = System.currentTimeMillis();
-
-            // Capture user input
-            String userInput = scanner.nextLine();
-
-            // Record end time for this round
-            long endTime = System.currentTimeMillis();
-
-            // Calculate time taken in seconds
-            double timeTaken = (endTime - startTime) / 1000.0;
-            totalTime += timeTaken;
-
-            // Calculate number of correct characters
-            int correctChars = 0;
-            int minLength = Math.min(userInput.length(), sentence.length());
-            for (int i = 0; i < minLength; i++) {
-                if (userInput.charAt(i) == sentence.charAt(i)) {
-                    correctChars++;
-                }
-            }
-
-            // Update aggregate statistics
-            totalCorrectChars += correctChars;
-            totalChars += sentence.length();
-            totalWords += sentence.split(" ").length;
-
-            // Calculate accuracy and words per minute (WPM) for this round
-            double accuracy = ((double) correctChars / sentence.length()) * 100;
-            double wpm = (sentence.split(" ").length / timeTaken) * 60;
-
-            // Display round results
-            System.out.println("\n--- Result ---");
-            System.out.printf("Time: %.2f seconds%n", timeTaken);
-            System.out.printf("Accuracy: %.2f%%%n", accuracy);
-            System.out.printf("Speed: %.2f WPM%n", wpm);
+    /**
+     * Handles the logic for a single round of typing.
+     */
+    private void playRound(int roundNumber, String targetSentence) {
+        if (roundNumber == 1) {
+            System.out.println("\n--- Round " + roundNumber + " ---");
+        } else {
+            System.out.println("\n\n--- Round " + roundNumber + " ---");
         }
+        System.out.println("Type the following sentence:");
+        System.out.println(">> " + targetSentence);
 
-        // Display final summary across all rounds if at least one round was completed
-        if (totalTime > 0) {
-            double overallAccuracy = ((double) totalCorrectChars / totalChars) * 100;
-            double overallWPM = (totalWords / totalTime) * 60;
+        long startTime = System.currentTimeMillis();
+        String userInput = scanner.nextLine();
+        long endTime = System.currentTimeMillis();
 
-            System.out.println("\n===== FINAL SUMMARY =====");
-            System.out.printf("Average time: %.2f seconds%n", totalTime / SENTENCES.length);
-            System.out.printf("Overall accuracy: %.2f%%%n", overallAccuracy);
-            System.out.printf("Overall speed: %.2f WPM%n", overallWPM);
-        }
+        processResults(targetSentence, userInput, startTime, endTime);
+    }
+
+    /**
+     * Calculates and displays statistics for the current round.
+     */
+    private void processResults(String target, String input, long start, long end) {
+        double timeTaken = (end - start) / 1000.0;
+        int correctChars = calculateCorrectChars(target, input);
+        int wordCount = target.split(" ").length;
+
+        // Update Global Stats
+        totalTime += timeTaken;
+        totalCorrectChars += correctChars;
+        totalChars += target.length();
+        totalWords += wordCount;
+
+        displayRoundStats(timeTaken, target.length(), correctChars, wordCount);
+    }
+
+    private int calculateCorrectChars(String target, String input) {
+        int correct = 0;
+        int lengthToCompare = Math.min(input.length(), target.length());
         
-        scanner.close();
+        for (int i = 0; i < lengthToCompare; i++) {
+            if (input.charAt(i) == target.charAt(i)) {
+                correct++;
+            }
+        }
+        return correct;
+    }
+
+    private void displayRoundStats(double time, int totalLen, int correctLen, int words) {
+        double accuracy = ((double) correctLen / totalLen) * 100;
+        double wpm = (words / time) * 60;
+
+        System.out.println("\n--- Round Result ---");
+        System.out.printf("Time: %.2f s | Accuracy: %.2f%% | Speed: %.2f WPM%n", 
+                          time, accuracy, wpm);
+    }
+
+    private void showFinalSummary() {
+        if (totalTime == 0) { return; }
+
+        double overallAccuracy = ((double) totalCorrectChars / totalChars) * 100;
+        double overallWPM = (totalWords / totalTime) * 60;
+
+        System.out.println("\n============================");
+        System.out.println("      FINAL SUMMARY");
+        System.out.println("============================");
+        System.out.printf("Avg Time per Round: %.2f s%n", totalTime / SENTENCES.length);
+        System.out.printf("Overall Accuracy:   %.2f%%%n", overallAccuracy);
+        System.out.printf("Overall Speed:      %.2f WPM%n", overallWPM);
+        System.out.println("============================");
     }
 }
