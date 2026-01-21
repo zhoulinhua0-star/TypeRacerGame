@@ -8,14 +8,23 @@
     <link rel="stylesheet" href="website.css">
     <style>
         .game-nav {
-            background-color: var(--bg-darker);
+            background-color: #141414;
             padding: 1rem;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #404040;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        body.light-mode .game-nav {
+            background-color: #f0f0f0;
+            border-bottom-color: #d0d0d0;
         }
         .game-nav a {
-            color: var(--primary-color);
+            color: #57c7ff;
             text-decoration: none;
             font-weight: 500;
+            transition: color 0.3s;
+        }
+        body.light-mode .game-nav a {
+            color: #1976d2;
         }
         .game-nav a:hover {
             text-decoration: underline;
