@@ -3,52 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrecisionTyper - Ultimate Edition</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="PrecisionTyper - A rigorous typing speed and accuracy trainer. Practice with three difficulty levels, real-time stats, and 100% accuracy requirement.">
+    <title>PrecisionTyper - Type Racer Game</title>
+    <link rel="stylesheet" href="website.css">
 </head>
 <body>
-    <div class="container">
-        <div class="top-panel">
-            <div class="config-panel">
-                <label for="difficulty-select">Difficulty: </label>
-                <select id="difficulty-select" class="difficulty-select">
-                    <option value="0">Easy</option>
-                    <option value="1" selected>Medium</option>
-                    <option value="2">Hard</option>
-                </select>
-                
-                <label class="checkbox-label">
-                    <input type="checkbox" id="sound-toggle" checked>
-                    <span>Sound</span>
-                </label>
-                
-                <label class="checkbox-label">
-                    <input type="checkbox" id="mode-toggle">
-                    <span>Light Mode</span>
-                </label>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <h1>⚡ PrecisionTyper</h1>
             </div>
-            
-            <div class="stats-bar">
-                <div class="stat-label" id="timer-label">Time: 0s</div>
-                <div class="stat-label" id="wpm-label">WPM: 0</div>
-                <div class="stat-label" id="accuracy-label">Accuracy: 100%</div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#projects">Projects</a>
+                <a href="#demo">Play Game</a>
+                <a href="https://github.com/zhoulinhua0-star/TypeRacerGame" target="_blank" rel="noopener noreferrer" class="github-link">GitHub ↗</a>
             </div>
         </div>
-        
-        <div class="center-panel">
-            <div class="text-display" id="text-display"></div>
-            <textarea 
-                id="input-area" 
-                class="input-area" 
-                placeholder="Start typing here..."
-                spellcheck="false"
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="off"
-            ></textarea>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Master Typing Speed & Accuracy</h1>
+            <p class="hero-subtitle">A rigorous typing trainer that requires 100% character-match accuracy. Challenge yourself with three difficulty levels and improve your typing skills.</p>
+            <div class="hero-buttons">
+                <a href="game.html" class="btn btn-primary">Play Now</a>
+                <a href="https://github.com/zhoulinhua0-star/TypeRacerGame" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">View on GitHub</a>
+            </div>
         </div>
-    </div>
-    
-    <script src="script.js"></script>
+    </header>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>100% Accuracy Required</h3>
+                    <p>Unlike casual typing games, PrecisionTyper requires perfect character matching. This strict approach helps you develop true typing mastery.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Real-Time Statistics</h3>
+                    <p>Track your progress with live WPM (Words Per Minute), accuracy percentage, and elapsed time as you type.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Visual Feedback</h3>
+                    <p>Instant color-coded feedback: green for correct, red for mistakes, grey for untyped, and yellow cursor for next position.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Three Difficulty Levels</h3>
+                    <p>Start with Easy sentences, progress to Medium challenges, or test yourself with Hard passages. Comprehensive text database included.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌓</div>
+                    <h3>Dark & Light Themes</h3>
+                    <p>Choose your preferred theme. Dark mode for reduced eye strain, light mode for daytime use. Preferences are saved automatically.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔊</div>
+                    <h3>Sound Effects</h3>
+                    <p>Optional mechanical click sounds using procedural white noise generation for satisfying auditory feedback as you type.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title">Available Versions</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-badge">Console</div>
+                    <h3>TypeRacerGame.java</h3>
+                    <p>Console-based typing game written in Java. Perfect for terminal lovers who want a simple, text-based typing practice tool.</p>
+                    <ul class="project-features">
+                        <li>Console-based interface</li>
+                        <li>Multiple sentence rounds</li>
+                        <li>Overall summary statistics</li>
+                        <li>Java 21+</li>
+                    </ul>
+                </div>
+                <div class="project-card">
+                    <div class="project-badge">GUI</div>
+                    <h3>PrecisionTyper.java</h3>
+                    <p>Advanced desktop application with Java Swing. Features real-time visualization, theme switching, and persistent settings.</p>
+                    <ul class="project-features">
+                        <li>Java Swing GUI</li>
+                        <li>Real-time visual feedback</li>
+                        <li>Light/Dark mode toggle</li>
+                        <li>Custom sound engine</li>
+                        <li>Config file persistence</li>
+                    </ul>
+                </div>
+                <div class="project-card featured">
+                    <div class="project-badge featured-badge">Web ⭐</div>
+                    <h3>Web Edition</h3>
+                    <p>Modern browser-based version. No installation needed - works instantly in any modern web browser. Responsive design for all devices.</p>
+                    <ul class="project-features">
+                        <li>Pure HTML/CSS/JavaScript</li>
+                        <li>No dependencies</li>
+                        <li>Responsive design</li>
+                        <li>Web Audio API</li>
+                        <li>LocalStorage for settings</li>
+                        <li>Works on mobile devices</li>
+                    </ul>
+                    <a href="game.html" class="project-link">Play Online →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="demo">
+        <div class="container">
+            <h2 class="section-title">Ready to Start?</h2>
+            <p class="demo-description">Click below to start improving your typing skills right now. No registration required - just open and play!</p>
+            <a href="game.html" class="btn btn-large btn-primary">Launch Typing Game</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>PrecisionTyper</h4>
+                    <p>A typing speed and accuracy trainer for serious practice.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/zhoulinhua0-star/TypeRacerGame" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
+                        <li><a href="README.md">Documentation</a></li>
+                        <li><a href="LICENSE">License</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Projects</h4>
+                    <ul>
+                        <li><a href="#projects">Console Version</a></li>
+                        <li><a href="#projects">GUI Version</a></li>
+                        <li><a href="game.html">Web Version</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 PrecisionTyper. Open source under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="website.js"></script>
 </body>
 </html>
