@@ -2,6 +2,10 @@
 
 A collection of typing speed and accuracy trainers with three implementations: console-based, desktop GUI, and modern web application.
 
+## 🌐 Live Website
+
+**👉 [Try PrecisionTyper Online](https://zhoulinhua0-star.github.io/TypeRacerGame/)** - No installation required!
+
 ## Projects
 
 ### Project 1: Console-Based Edition
@@ -21,6 +25,8 @@ A collection of typing speed and accuracy trainers with three implementations: c
 
 The Web Edition of PrecisionTyper is a modern, browser-based typing trainer designed to help you improve your typing speed and accuracy from anywhere, on any device. Simply open the website in your browser and start practicing immediately.
 
+**🌐 [Access the Web Application](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
+
 #### 🎯 Why Use PrecisionTyper Web Edition?
 
 Whether you're a student, professional, or casual typist, PrecisionTyper helps you build muscle memory and typing confidence through focused practice. The strict 100% accuracy requirement ensures you develop proper typing habits, not just speed.
@@ -28,7 +34,8 @@ Whether you're a student, professional, or casual typist, PrecisionTyper helps y
 #### 🚀 Quick Start
 
 1. **Open the Application**
-   - Visit the live website or open `index.html` in your browser
+   - Visit: **[https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
+   - Or open `index.html` locally in your browser
    - No downloads, installations, or account creation required
 
 2. **Choose Your Difficulty Level**
@@ -95,7 +102,7 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 * **Technologies:** HTML5, CSS3, Vanilla JavaScript (ES6+)
 * **Dependencies:** None - pure client-side application
 * **Browser Compatibility:** Modern browsers (Chrome, Firefox, Safari, Edge)
-* **Hosting:** GitHub Pages, Netlify, Vercel, or any static web server
+* **Live URL:** [https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)
 
 ## How to Run
 
@@ -105,8 +112,8 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 3. Run: `java PrecisionTyper` (or `java TypeRacerGame`)
 
 ### Web Edition
-**Option 1: Use the Live Website**
-- Visit the hosted version (if available)
+**Option 1: Use the Live Website** ⭐ Recommended
+- Visit: **[https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
 - No installation needed!
 
 **Option 2: Run Locally**
