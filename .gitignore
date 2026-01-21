@@ -1,0 +1,35 @@
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE Files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Java Compiled Files
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# Config files (if any)
+config.txt
+
+# Node modules (if you add any build tools later)
+node_modules/
+package-lock.json
+

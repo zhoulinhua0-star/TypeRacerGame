@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrecisionTyper - Ultimate Edition</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="top-panel">
+            <div class="config-panel">
+                <label for="difficulty-select">Difficulty: </label>
+                <select id="difficulty-select" class="difficulty-select">
+                    <option value="0">Easy</option>
+                    <option value="1" selected>Medium</option>
+                    <option value="2">Hard</option>
+                </select>
+                
+                <label class="checkbox-label">
+                    <input type="checkbox" id="sound-toggle" checked>
+                    <span>Sound</span>
+                </label>
+                
+                <label class="checkbox-label">
+                    <input type="checkbox" id="mode-toggle">
+                    <span>Light Mode</span>
+                </label>
+            </div>
+            
+            <div class="stats-bar">
+                <div class="stat-label" id="timer-label">Time: 0s</div>
+                <div class="stat-label" id="wpm-label">WPM: 0</div>
+                <div class="stat-label" id="accuracy-label">Accuracy: 100%</div>
+            </div>
+        </div>
+        
+        <div class="center-panel">
+            <div class="text-display" id="text-display"></div>
+            <textarea 
+                id="input-area" 
+                class="input-area" 
+                placeholder="Start typing here..."
+                spellcheck="false"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+            ></textarea>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
