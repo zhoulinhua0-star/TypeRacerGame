@@ -29,6 +29,9 @@ body.light-mode {
     --stat-text-color: #1976d2;
     --border-color: #e0e0e0;
     --shadow: rgba(0, 0, 0, 0.05);
+    /* Explicitly set background and text colors */
+    background-color: #fafafa !important;
+    color: #1a1a1a !important;
 }
 
 body {
@@ -38,6 +41,11 @@ body {
     padding: 20px;
     min-height: 100vh;
     transition: background-color 0.3s, color 0.3s;
+}
+
+/* Ensure all text elements inherit the correct color in light mode */
+body.light-mode * {
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
 .container {
@@ -89,6 +97,11 @@ body {
     gap: 5px;
     cursor: pointer;
     user-select: none;
+    color: var(--fg-color);
+}
+
+.checkbox-label span {
+    color: var(--fg-color);
 }
 
 .checkbox-label input[type="checkbox"] {
