@@ -57,6 +57,7 @@ Whether you're a student, professional, or casual typist, PrecisionTyper helps y
 5. **Complete the Challenge**
    - Finish typing the entire text with perfect accuracy
    - Review your final statistics
+   - Press 'return' or 'enter' key to continue the next typing journey
    - Select a new text to continue practicing
 
 #### 💡 Pro Tips for Best Results
