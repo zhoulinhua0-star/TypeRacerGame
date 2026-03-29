@@ -110,7 +110,8 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 * **Technologies:** HTML5, CSS3, Vanilla JavaScript (ES6+)
 * **Dependencies:** None - pure client-side application
 * **Browser Compatibility:** Modern browsers (Chrome, Firefox, Safari, Edge)
-* **Live URL:** [https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)
+* **Live URL:** [https://typeracer-game-exg4alf1z-linhua-zhous-projects.vercel.app/](https://typeracer-game-exg4alf1z-linhua-zhous-projects.vercel.app/)
+AND [https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)
 
 ## How to Run
 
@@ -121,7 +122,7 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 
 ### Web Edition
 **Option 1: Use the Live Website** ⭐ Recommended
-- Visit: **[https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
+- Visit: **[https://zhoulinhua0-star.github.io/TypeRacerGame/](https://typeracer-game-exg4alf1z-linhua-zhous-projects.vercel.app/)
 - No installation needed!
 
 **Option 2: Run Locally**
