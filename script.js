@@ -20,7 +20,16 @@ class PrecisionTyper {
                 "Practice makes perfect.",
                 "Keep it simple, stupid (KISS).",
                 "Debugging is like being the detective in a crime movie.",
-                "While there is life, there is hope."
+                "While there is life, there is hope.",
+                "Rome was not built in a day.",
+                "public static void main(String[] args)",
+                "Knowledge is power.",
+                "Better late than never.",
+                "A friend in need is a friend indeed.",
+                "Every cloud has a silver lining.",
+                "Time flies like an arrow.",
+                "Errors should never pass silently.",
+                "Love is the bridge between you and everything."
             ],
             [ // MEDIUM
                 "Success is not final, failure is not fatal: it is the courage to continue that counts.",
@@ -29,14 +38,35 @@ class PrecisionTyper {
                 "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
                 "Happiness can be found, even in the darkest of times, if one only remembers to turn on the light.",
                 "Logic will get you from A to B. Imagination will take you everywhere.",
-                "The only way to do great work is to love what you do. If you haven't found it yet, keep looking."
+                "The only way to do great work is to love what you do. If you haven't found it yet, keep looking.",
+                "Life is what happens when you are busy making other plans.",
+                "Your time is limited, so don't waste it living someone else's life.",
+                "Design is not just what it looks like and feels like. Design is how it works.",
+                "A person who never made a mistake never tried anything new.",
+                "The best way to predict the future is to create it. Learning never exhausts the mind.",
+                "Programs must be written for people to read, and only incidentally for machines to execute.",
+                "It does not matter how slowly you go as long as you do not stop.",
+                "Change is the only constant in life, so do not be afraid of it, embrace it instead.",
+                "Coding is not just about syntax; it is about solving complex problems.",
+                "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."
             ],
             [ // HARD
                 "To be, or not to be, that is the question: Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles.",
                 "A computer is like a violin. You can imagine it making music, but you have to learn how to play it. It takes thousands of hours of practice to become a virtuoso.",
                 "Complexity is the enemy of reliability. Therefore, we must strive for simplicity in our architectures. A well-designed system is one that is easy to reason about.",
                 "In software engineering, loose coupling is a design goal that seeks to reduce the interdependencies between components of a system with the goal of reducing the risk that changes in one component will require changes in any other component.",
-                "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity."
+                "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity.",
+                "Two roads diverged in a wood, and I took the one less traveled by, and that has made all the difference.",
+                "Abstraction is the process of removing physical, spatial, or temporal details or attributes in the study of objects or systems to focus attention on details of greater importance.",
+                "Refactoring is a disciplined technique for restructuring an existing body of code, altering its internal structure without changing its external behavior.",
+                "To understand recursion, one must first understand recursion; it is a fundamental concept that requires a shift in logical perspective.",
+                "In the face of ambiguity, refuse the temptation to guess; instead, seek a solution based on empirical evidence and rigorous testing.",
+                "The difference between a successful person and others is not a lack of strength, not a lack of knowledge, but rather a lack of will.",
+                "What's in a name? That which we call a rose by any other name would smell as sweet; so Romeo would, were he not Romeo call'd, retain that dear perfection which he owes without that title.",
+                "Our greatest glory is not in never falling, but in rising every time we fall, regardless of how daunting the challenge may appear.",
+                "Technical debt is a concept in software development that reflects the implied cost of additional rework caused by choosing an easy solution now instead of using a better approach that would take longer.",
+                "Strength does not come from winning; your struggles develop your strengths, and when you go through hardships and decide not to surrender, that is strength.",
+                "Tis but thy name that is my enemy; thou art thyself, though not a Montague. What's Montague? It is nor hand, nor foot, nor arm, nor face, nor any other part belonging to a man. O, be some other name!"
             ]
         ];
 
