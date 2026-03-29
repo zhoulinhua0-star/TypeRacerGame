@@ -30,7 +30,16 @@ public class PrecisionTyper {
             "Practice makes perfect.",
             "Keep it simple, stupid (KISS).",
             "Debugging is like being the detective in a crime movie.",
-            "While there is life, there is hope."
+            "While there is life, there is hope.",
+            "Rome was not built in a day.",
+            "public static void main(String[] args)",
+            "Knowledge is power.",
+            "Better late than never.",
+            "A friend in need is a friend indeed.",
+            "Every cloud has a silver lining.",
+            "Time flies like an arrow.",
+            "Errors should never pass silently.",
+            "Love is the bridge between you and everything."
         },
         { // MEDIUM
             "Success is not final, failure is not fatal: it is the courage to continue that counts.",
