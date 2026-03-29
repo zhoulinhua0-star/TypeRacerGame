@@ -25,7 +25,7 @@ A collection of typing speed and accuracy trainers with three implementations: c
 
 The Web Edition of PrecisionTyper is a modern, browser-based typing trainer designed to help you improve your typing speed and accuracy from anywhere, on any device. Simply open the website in your browser and start practicing immediately.
 
-**🌐 [Access the Web Application](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
+**🌐 [Access the Web Application]([https://zhoulinhua0-star.github.io/TypeRacerGame/](https://typeracer-game-exg4alf1z-linhua-zhous-projects.vercel.app/))**
 
 #### 🎯 Why Use PrecisionTyper Web Edition?
 
@@ -34,7 +34,7 @@ Whether you're a student, professional, or casual typist, PrecisionTyper helps y
 #### 🚀 Quick Start
 
 1. **Open the Application**
-   - Visit: **[https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
+   - Visit: **[https://typeracer-game-exg4alf1z-linhua-zhous-projects.vercel.app/](https://typeracer-game-exg4alf1z-linhua-zhous-projects.vercel.app/))**
    - Or open `index.html` locally in your browser
    - No downloads, installations, or account creation required
 
