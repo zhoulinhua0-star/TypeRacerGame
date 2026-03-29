@@ -60,6 +60,13 @@ Whether you're a student, professional, or casual typist, PrecisionTyper helps y
    - Press 'return' or 'enter' key to continue the next typing journey
    - Select a new text to continue practicing
 
+#### 🚀 Technical Highlights
+
+- **Resilient Sourcing**: Implements a Hybrid API + Local Fallback strategy. If the Quotable API fails, the system seamlessly transitions to a local database for zero-downtime training.
+- **Smart Randomization**: Employs a Non-Consecutive Algorithm using a do-while collision check. This ensures the current sentence never duplicates the previous one, maximizing variety.
+- **Precision Metrics**: Calculates WPM and Accuracy via the High Resolution Time API, using the 5-character standard for professional-grade tracking.
+- **Tactile Audio**: Features a Web Audio API Synthesis engine, generating real-time mechanical click sounds without external assets.
+
 #### 💡 Pro Tips for Best Results
 
 - **Start with Easy**: Build confidence with shorter texts before progressing
