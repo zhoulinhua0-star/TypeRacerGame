@@ -65,7 +65,19 @@ public class PrecisionTyper {
             "A computer is like a violin. You can imagine it making music, but you have to learn how to play it. It takes thousands of hours of practice to become a virtuoso.",
             "Complexity is the enemy of reliability. Therefore, we must strive for simplicity in our architectures. A well-designed system is one that is easy to reason about.",
             "In software engineering, loose coupling is a design goal that seeks to reduce the interdependencies between components of a system with the goal of reducing the risk that changes in one component will require changes in any other component.",
-            "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity."
+            "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity.",
+            "Two roads diverged in a wood, and I took the one less traveled by, and that has made all the difference.",
+            "Abstraction is the process of removing physical, spatial, or temporal details or attributes in the study of objects or systems to focus attention on details of greater importance.",
+            "Refactoring is a disciplined technique for restructuring an existing body of code, altering its internal structure without changing its external behavior.",
+            "To understand recursion, one must first understand recursion; it is a fundamental concept that requires a shift in logical perspective.",
+            "In the face of ambiguity, refuse the temptation to guess; instead, seek a solution based on empirical evidence and rigorous testing.",
+            "The difference between a successful person and others is not a lack of strength, not a lack of knowledge, but rather a lack of will.",
+            "What's in a name? That which we call a rose by any other name would smell as sweet; so Romeo would, were he not Romeo call'd, retain that dear perfection which he owes without that title.",
+            "Our greatest glory is not in never falling, but in rising every time we fall, regardless of how daunting the challenge may appear.",
+            "Technical debt is a concept in software development that reflects the implied cost of additional rework caused by choosing an easy solution now instead of using a better approach that would take longer.",
+            "Strength does not come from winning; your struggles develop your strengths, and when you go through hardships and decide not to surrender, that is strength.",
+            "Tis but thy name that is my enemy; thou art thyself, though not a Montague. What's Montague? It is nor hand, nor foot, nor arm, nor face, nor any other part belonging to a man. O, be some other name!"
+            ]
         }
     };
 
