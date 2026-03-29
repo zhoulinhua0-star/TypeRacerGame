@@ -4,8 +4,7 @@ A collection of typing speed and accuracy trainers with three implementations: c
 
 ## 🌐 Live Website
 
-**👉 [Try PrecisionTyper Online](https://zhoulinhua0-star.github.io/TypeRacerGame/)** - No installation required!
-**👉 [Try PrecisionTyper Also On](https://typeracer-game-exg4alf1z-linhua-zhous-projects.vercel.app/)**
+**👉 [Try PrecisionTyper Online](https://typeracer-game-exg4alf1z-linhua-zhous-projects.vercel.app/)** - No installation required!
 
 ## Projects
 
