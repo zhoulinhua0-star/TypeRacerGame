@@ -70,12 +70,11 @@ const TEXT_DATABASE = [
 class PrecisionTyper {
     constructor() {
         this.currentTargetText = '';
-        this.lastTargetText = ''; // 【新增】：记录上一局的句子，用于查重
+        this.lastTargetText = ''; 
         this.isGameRunning = false;
         this.startTime = 0;
         this.gameTimer = null;
 
-        // DOM 元素缓存
         this.DOM = {
             textDisplay: document.getElementById('text-display'),
             inputArea: document.getElementById('input-area'),
@@ -101,7 +100,7 @@ class PrecisionTyper {
         const apiUrl = `https://api.quotable.io/random?tags=${difficultyTags[difficultyIndex]}&maxLength=140`;
         let newText = "";
 
-        // 尝试从 API 获取
+        // Try to reach out to API
         try {
             const response = await fetch(apiUrl);
             if (response.ok) {
@@ -114,17 +113,16 @@ class PrecisionTyper {
             console.warn('API fetch failed, falling back to local database.');
         }
 
-        // 如果 API 失败或者获取到的句子刚好和上一句一样，回退到本地题库
         if (!newText) {
             const options = TEXT_DATABASE[difficultyIndex] || TEXT_DATABASE[0];
-            // 【核心防重复逻辑】：不断随机抽取，直到抽到的句子与上一局不同为止
+            // Prevent encountering two identical sentences
             do {
                 newText = options[Math.floor(Math.random() * options.length)];
             } while (newText === this.lastTargetText && options.length > 1);
         }
 
         this.currentTargetText = newText;
-        this.lastTargetText = newText; // 更新历史记录
+        this.lastTargetText = newText; 
     }
 
     setupEventListeners() {
@@ -132,7 +130,6 @@ class PrecisionTyper {
         this.DOM.difficultySelect.addEventListener('change', () => this.resetGame());
         this.DOM.soundToggle.addEventListener('change', () => this.saveSettings());
         
-        // 禁用 Tab 键，防止输入框失去焦点
         this.DOM.inputArea.addEventListener('keydown', (e) => { 
             if(e.key === 'Tab') e.preventDefault(); 
         });
