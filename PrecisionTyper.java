@@ -48,7 +48,17 @@ public class PrecisionTyper {
             "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
             "Happiness can be found, even in the darkest of times, if one only remembers to turn on the light.",
             "Logic will get you from A to B. Imagination will take you everywhere.",
-            "The only way to do great work is to love what you do. If you haven't found it yet, keep looking."
+            "The only way to do great work is to love what you do. If you haven't found it yet, keep looking.",
+            "Life is what happens when you are busy making other plans.",
+            "Your time is limited, so don't waste it living someone else's life.",
+            "Design is not just what it looks like and feels like. Design is how it works.",
+            "A person who never made a mistake never tried anything new.",
+            "The best way to predict the future is to create it. Learning never exhausts the mind.",
+            "Programs must be written for people to read, and only incidentally for machines to execute.",
+            "It does not matter how slowly you go as long as you do not stop.",
+            "Change is the only constant in life, so do not be afraid of it, embrace it instead.",
+            "Coding is not just about syntax; it is about solving complex problems.",
+            "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."
         },
         { // HARD
             "To be, or not to be, that is the question: Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles.",
