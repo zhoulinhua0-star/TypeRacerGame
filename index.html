@@ -3,34 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrecisionTyper</title>
-    <link rel="stylesheet" href="style.css">
+    <title>PrecisionTyper - Level Up Your Typing</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* 主页专属的增强样式 */
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px;
+            min-height: 80vh;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--stat-text-color);
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--grey-text);
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .play-button {
+            display: inline-block;
+            background-color: var(--stat-text-color);
+            color: #fff;
+            padding: 18px 48px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 20px var(--cursor-color);
+        }
+
+        .play-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px var(--cursor-color);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+            width: 100%;
+        }
+
+        .feature-item {
+            background: var(--accent-color);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-item h3 {
+            color: var(--stat-text-color);
+            margin-bottom: 10px;
+        }
+
+        /* 底部主题切换固定栏 */
+        .home-settings {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-color);
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 10px var(--card-shadow);
+        }
+    </style>
 </head>
-<body>
+<body class="dark-mode">
     <div class="container">
-        <h1>PrecisionTyper</h1>
-        <div class="settings">
-            <label for="difficulty-select">Difficulty:</label>
-            <select id="difficulty-select">
-                <option value="0">Easy</option>
-                <option value="1">Medium</option>
-                <option value="2">Hard</option>
-            </select>
+        <section class="hero-section">
+            <h1 class="hero-title">PrecisionTyper</h1>
+            <p class="hero-subtitle">
+                A rigorous typing speed and accuracy trainer. Master the art of typing with real-time feedback and mechanical sound effects.
+            </p>
+            
+            <a href="game.html" class="play-button">START TRAINING</a>
 
-            <label for="sound-toggle">Sound:</label>
-            <input type="checkbox" id="sound-toggle" checked>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h3>Mechanical Sound</h3>
+                    <p>Procedural click engine for that satisfying tactile feedback.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Deep Stats</h3>
+                    <p>Track your WPM and Accuracy in real-time with zero lag.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Smart Library</h3>
+                    <p>Dynamic text fetching from easy to virtuoso difficulty.</p>
+                </div>
+            </div>
+        </section>
+    </div>
 
-            <button id="theme-toggle">Toggle Light/Dark</button>
-        </div>
-
-        <div id="text-display" class="text-display"></div>
-        <textarea id="input-area" placeholder="Start typing here..."></textarea>
-
-        <div class="stats">
-            <span id="timer-label">Time: 0s</span>
-            <span id="wpm-label">WPM: 0</span>
-            <span id="accuracy-label">Accuracy: 100%</span>
-        </div>
+    <div class="home-settings">
+        <label class="checkbox-label">
+            <input type="checkbox" id="theme-toggle">
+            <span>Dark/Light Mode</span>
+        </label>
     </div>
 
     <script src="script.js"></script>
