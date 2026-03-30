@@ -7,38 +7,31 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav style="padding: 20px; border-bottom: 1px solid var(--border-color);">
-        <div class="container" style="padding: 0;">
-            <a href="index.html" style="color: var(--stat-text-color); text-decoration: none; font-weight: bold;">← EXIT TO HUB</a>
-        </div>
-    </nav>
-
     <div class="container">
+        <header style="margin-bottom: 20px;">
+            <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-weight: bold;">← ESCAPE</a>
+        </header>
+
         <div class="top-panel">
-            <div class="config-panel">
-                <div class="control-group">
-                    <label>Difficulty:</label>
-                    <select id="difficulty-select" class="difficulty-select">
-                        <option value="0">Easy</option>
-                        <option value="1" selected>Medium</option>
-                        <option value="2">Hard</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label class="checkbox-label"><input type="checkbox" id="sound-toggle" checked>Sound</label>
-                    <label class="checkbox-label"><input type="checkbox" id="theme-toggle">Light Mode</label>
-                </div>
+            <div style="display:flex; gap:20px;">
+                <select id="difficulty-select" class="difficulty-select" style="background:var(--bg-main); color:var(--text-main); border:1px solid var(--border); padding:5px; border-radius:5px;">
+                    <option value="0">EASY</option>
+                    <option value="1" selected>MEDIUM</option>
+                    <option value="2">HARD</option>
+                </select>
+                <label class="checkbox-label"><input type="checkbox" id="theme-toggle"> LIGHT MODE</label>
             </div>
-            <div class="stats-bar">
-                <div class="stat-card"><span style="font-size: 12px; opacity: 0.7;">TIME</span><div id="timer-label">0s</div></div>
-                <div class="stat-card"><span style="font-size: 12px; opacity: 0.7;">WPM</span><div id="wpm-label">0</div></div>
-                <div class="stat-card"><span style="font-size: 12px; opacity: 0.7;">ACC</span><div id="accuracy-label">100%</div></div>
+            
+            <div style="display:flex; gap:30px;">
+                <div class="stat-card"><div class="stat-value" id="timer-label">0s</div></div>
+                <div class="stat-card"><div class="stat-value" id="wpm-label">0</div></div>
+                <div class="stat-card"><div class="stat-value" id="accuracy-label">100%</div></div>
             </div>
         </div>
 
         <div class="center-panel">
             <div id="text-display" class="text-display"></div>
-            <textarea id="input-area" class="input-area" placeholder="Ready? Start typing..." spellcheck="false"></textarea>
+            <textarea id="input-area" class="input-area" placeholder="Type the text above..." spellcheck="false"></textarea>
         </div>
     </div>
     <script src="script.js"></script>
