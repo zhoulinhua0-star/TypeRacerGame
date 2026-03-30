@@ -1,39 +1,167 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrecisionTyper - Game</title>
+
+    <title>PrecisionTyper - Ultimate Edition</title>
+
     <link rel="stylesheet" href="styles.css">
+
+    <link rel="stylesheet" href="website.css">
+
+    <style>
+
+        .game-nav {
+
+            background-color: #141414;
+
+            padding: 1rem;
+
+            border-bottom: 1px solid #404040;
+
+            transition: background-color 0.3s, border-color 0.3s;
+
+        }
+
+        body.light-mode .game-nav {
+
+            background-color: #f0f0f0;
+
+            border-bottom-color: #d0d0d0;
+
+        }
+
+        .game-nav a {
+
+            color: #57c7ff;
+
+            text-decoration: none;
+
+            font-weight: 500;
+
+            transition: color 0.3s;
+
+        }
+
+        body.light-mode .game-nav a {
+
+            color: #1976d2;
+
+        }
+
+        .game-nav a:hover {
+
+            text-decoration: underline;
+
+        }
+
+    </style>
+
 </head>
+
 <body>
+
+    <nav class="game-nav">
+
+        <div class="container">
+
+            <a href="index.html">← Back to Home</a>
+
+        </div>
+
+    </nav>
+
     <div class="container">
-        <header style="margin-bottom: 20px;">
-            <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-weight: bold;">← ESCAPE</a>
-        </header>
 
         <div class="top-panel">
-            <div style="display:flex; gap:20px;">
-                <select id="difficulty-select" class="difficulty-select" style="background:var(--bg-main); color:var(--text-main); border:1px solid var(--border); padding:5px; border-radius:5px;">
-                    <option value="0">EASY</option>
-                    <option value="1" selected>MEDIUM</option>
-                    <option value="2">HARD</option>
+
+            <div class="config-panel">
+
+                <label for="difficulty-select">Difficulty: </label>
+
+                <select id="difficulty-select" class="difficulty-select">
+
+                    <option value="0">Easy</option>
+
+                    <option value="1" selected>Medium</option>
+
+                    <option value="2">Hard</option>
+
                 </select>
-                <label class="checkbox-label"><input type="checkbox" id="theme-toggle"> LIGHT MODE</label>
+
+                
+
+                <label class="checkbox-label">
+
+                    <input type="checkbox" id="sound-toggle" checked>
+
+                    <span>Sound</span>
+
+                </label>
+
+                
+
+                <label class="checkbox-label">
+
+                    <input type="checkbox" id="mode-toggle">
+
+                    <span>Light Mode</span>
+
+                </label>
+
             </div>
+
             
-            <div style="display:flex; gap:30px;">
-                <div class="stat-card"><div class="stat-value" id="timer-label">0s</div></div>
-                <div class="stat-card"><div class="stat-value" id="wpm-label">0</div></div>
-                <div class="stat-card"><div class="stat-value" id="accuracy-label">100%</div></div>
+
+            <div class="stats-bar">
+
+                <div class="stat-label" id="timer-label">Time: 0s</div>
+
+                <div class="stat-label" id="wpm-label">WPM: 0</div>
+
+                <div class="stat-label" id="accuracy-label">Accuracy: 100%</div>
+
             </div>
+
         </div>
 
+        
+
         <div class="center-panel">
-            <div id="text-display" class="text-display"></div>
-            <textarea id="input-area" class="input-area" placeholder="Type the text above..." spellcheck="false"></textarea>
+
+            <div class="text-display" id="text-display"></div>
+
+            <textarea 
+
+                id="input-area" 
+
+                class="input-area" 
+
+                placeholder="Start typing here..."
+
+                spellcheck="false"
+
+                autocomplete="off"
+
+                autocorrect="off"
+
+                autocapitalize="off"
+
+            ></textarea>
+
         </div>
+
     </div>
+
+    
+
     <script src="script.js"></script>
+
 </body>
+
 </html>
