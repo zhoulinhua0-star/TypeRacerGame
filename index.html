@@ -3,117 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrecisionTyper - Level Up Your Typing</title>
+    <title>PrecisionTyper | Master Your Craft</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* 主页专属的增强样式 */
         .hero-section {
+            height: 90vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 100px 20px;
-            min-height: 80vh;
         }
-
         .hero-title {
-            font-size: 4rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            color: var(--stat-text-color);
-            letter-spacing: -1px;
-        }
-
-        .hero-subtitle {
-            font-size: 1.25rem;
-            color: var(--grey-text);
-            max-width: 600px;
-            margin-bottom: 40px;
-        }
-
-        .play-button {
-            display: inline-block;
-            background-color: var(--stat-text-color);
-            color: #fff;
-            padding: 18px 48px;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-decoration: none;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 10px 20px var(--cursor-color);
-        }
-
-        .play-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px var(--cursor-color);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-            width: 100%;
-        }
-
-        .feature-item {
-            background: var(--accent-color);
-            padding: 30px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-        }
-
-        .feature-item h3 {
-            color: var(--stat-text-color);
+            font-size: 5rem; /* 更大 */
+            font-weight: 900; /* 更粗 */
+            color: var(--fg-color);
             margin-bottom: 10px;
+            background: linear-gradient(to bottom, var(--fg-color), var(--stat-text-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-
-        /* 底部主题切换固定栏 */
-        .home-settings {
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--fg-color); /* 字体颜色加深 */
+            opacity: 0.9;
+            margin-bottom: 50px;
+            letter-spacing: 0.5px;
+        }
+        .play-btn {
+            background: var(--stat-text-color);
+            color: #000; /* 亮色文字在深色背景按钮上对比度更高 */
+            padding: 22px 60px;
+            font-size: 1.8rem;
+            font-weight: 900;
+            border-radius: 100px;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(87, 199, 255, 0.3);
+        }
+        .play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 30px 60px rgba(87, 199, 255, 0.5);
+        }
+        .home-controls {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 30px;
+            display: flex;
+            gap: 20px;
             background: var(--accent-color);
-            padding: 10px 20px;
-            border-radius: 30px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 10px var(--card-shadow);
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 2px solid var(--border-color);
         }
     </style>
 </head>
-<body class="dark-mode">
+<body>
     <div class="container">
         <section class="hero-section">
-            <h1 class="hero-title">PrecisionTyper</h1>
-            <p class="hero-subtitle">
-                A rigorous typing speed and accuracy trainer. Master the art of typing with real-time feedback and mechanical sound effects.
-            </p>
-            
-            <a href="game.html" class="play-button">START TRAINING</a>
-
-            <div class="features-grid">
-                <div class="feature-item">
-                    <h3>Mechanical Sound</h3>
-                    <p>Procedural click engine for that satisfying tactile feedback.</p>
-                </div>
-                <div class="feature-item">
-                    <h3>Deep Stats</h3>
-                    <p>Track your WPM and Accuracy in real-time with zero lag.</p>
-                </div>
-                <div class="feature-item">
-                    <h3>Smart Library</h3>
-                    <p>Dynamic text fetching from easy to virtuoso difficulty.</p>
-                </div>
-            </div>
+            <h1 class="hero-title">PRECISION TYPER</h1>
+            <p class="hero-subtitle">Rigorous speed training. Zero-tolerance accuracy.</p>
+            <a href="game.html" class="play-btn">LAUNCH GAME</a>
         </section>
     </div>
 
-    <div class="home-settings">
+    <div class="home-controls">
         <label class="checkbox-label">
             <input type="checkbox" id="theme-toggle">
-            <span>Dark/Light Mode</span>
+            <span style="color: var(--fg-color);">Switch Light Mode</span>
         </label>
     </div>
 
