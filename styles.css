@@ -1,114 +1,119 @@
+/* 全局重置 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* 核心变量：默认就是深色模式 */
 :root {
-    /* 默认状态：Dark Theme */
-    --bg-color: #121212;
-    --fg-color: #ffffff; /* 加深文字 */
-    --accent-color: #1e1e1e;
-    --border-color: #333333;
-    --stat-text-color: #57c7ff;
-    --green-text: #4ade80;
-    --red-text: #f87171;
-    --grey-text: #888888;
-    --cursor-color: rgba(87, 199, 255, 0.4);
-    --card-shadow: rgba(0, 0, 0, 0.5);
+    --bg-main: #0a0a0a;
+    --bg-card: #161616;
+    --text-main: #ffffff;
+    --text-muted: #888888;
+    --accent: #57c7ff;
+    --border: #2a2a2a;
+    --error-bg: rgba(248, 113, 113, 0.2);
+    --correct: #4ade80;
+    --wrong: #f87171;
 }
 
-/* 修正：当勾选 Light Mode 时触发 */
+/* 浅色模式：严格覆盖 */
 [data-theme="light"], body.light-mode {
-    --bg-color: #ffffff;
-    --fg-color: #111111; /* 极深色文字，确保清晰 */
-    --accent-color: #f0f2f5;
-    --border-color: #d1d5db;
-    --stat-text-color: #0066cc;
-    --green-text: #059669;
-    --red-text: #dc2626;
-    --grey-text: #64748b;
-    --cursor-color: rgba(0, 102, 204, 0.2);
-    --card-shadow: rgba(0, 0, 0, 0.08);
+    --bg-main: #ffffff;
+    --bg-card: #f3f4f6;
+    --text-main: #000000;
+    --text-muted: #4b5563;
+    --accent: #0066cc;
+    --border: #d1d5db;
+    --error-bg: rgba(220, 38, 38, 0.1);
+    --correct: #059669;
+    --wrong: #dc2626;
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--fg-color);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    transition: background 0.2s, color 0.2s;
     min-height: 100vh;
 }
 
 .container {
-    max-width: 1200px; /* 增加宽度 */
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 30px;
+    padding: 20px;
 }
 
-/* 增加文本框尺寸 */
+/* 游戏核心区域：解决溢出关键 */
+.center-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 .text-display {
-    background: var(--accent-color);
-    padding: 35px;
+    background: var(--bg-card);
+    padding: 40px;
+    border: 2px solid var(--border);
     border-radius: 16px 16px 0 0;
-    border: 2px solid var(--border-color);
-    font-size: 28px; /* 字号加大 */
-    min-height: 300px; /* 增加最小高度 */
-    height: auto;      /* 允许随文字增多自动撑开 */
-    font-family: 'Fira Code', 'Consolas', monospace;
-    line-height: 1.5;
+    font-size: 32px; /* 增大字号 */
+    font-weight: 700;
+    min-height: 200px; 
+    height: auto; /* 自动撑开，绝对不溢出 */
     word-wrap: break-word;
     white-space: pre-wrap;
+    font-family: 'Fira Code', 'Consolas', monospace;
 }
 
 .input-area {
     width: 100%;
-    background: var(--bg-color);
-    color: var(--fg-color);
-    padding: 35px;
-    font-size: 28px;
-    border: 2px solid var(--border-color);
+    background: var(--bg-main);
+    color: var(--text-main);
+    padding: 30px 40px;
+    font-size: 32px;
+    font-weight: 700;
+    border: 2px solid var(--border);
     border-top: none;
     border-radius: 0 0 16px 16px;
-    font-family: 'Fira Code', 'Consolas', monospace;
-    min-height: 200px;
+    min-height: 150px;
     resize: none;
     outline: none;
+    font-family: 'Fira Code', 'Consolas', monospace;
 }
 
-.input-area:focus {
-    border-color: var(--stat-text-color);
-}
-
-/* 其他组件保持一致 */
+/* 状态栏增强 */
 .top-panel {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 25px;
-    background: var(--accent-color);
-    padding: 25px;
+    align-items: center;
+    margin-bottom: 20px;
+    background: var(--bg-card);
+    padding: 20px;
     border-radius: 16px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
 }
 
 .stat-card {
-    background: var(--bg-color);
-    padding: 15px 25px;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
     text-align: center;
-    min-width: 130px;
 }
 
-.stat-card div {
-    font-size: 1.8rem;
+.stat-value {
+    font-size: 2rem;
     font-weight: 800;
-    color: var(--stat-text-color);
+    color: var(--accent);
 }
 
-.char-correct { color: var(--green-text); }
-.char-wrong { color: var(--red-text); background: rgba(248, 113, 113, 0.15); text-decoration: underline; }
-.char-untyped { color: var(--grey-text); }
-.char-cursor { background-color: var(--cursor-color); border-radius: 2px; }
+/* 字符样式 */
+.char-correct { color: var(--correct); }
+.char-wrong { color: var(--wrong); background: var(--error-bg); text-decoration: underline; }
+.char-untyped { color: var(--text-muted); }
 
-.checkbox-label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600; }
+.checkbox-label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
