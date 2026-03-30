@@ -2,25 +2,88 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/((?!.*\\.).*)", "destination": "/index.html" }
+    {
+      "source": "/:all*",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
-      "source": "/(.*\\.(css|js|png|jpg|jpeg|gif|webp|svg|woff|woff2|ttf|eot))",
+      "source": "/:all*.css",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=86400, stale-while-revalidate=604800"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
       ]
     },
     {
-      "source": "/(.*\\.html)",
+      "source": "/:all*.js",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/:all*.png",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/:all*.jpg",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/:all*.jpeg",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/:all*.gif",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/:all*.webp",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/:all*.svg",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/:all*.woff",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/:all*.woff2",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/:all*.ttf",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/:all*.eot",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/:all*.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
     }
   ]
