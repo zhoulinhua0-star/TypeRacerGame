@@ -3,7 +3,7 @@
  * A rigorous typing speed and accuracy trainer.
  * Requires 100% character-match accuracy for completion.
  * - Procedural Mechanical Click Engine (Web Audio Version)
- * - Persistent Theme (Dark/Light)
+ * - Persistent Theme (Dark/Light) [FIXED & ENHANCED]
  * - Full Comprehensive Database
  */
 
@@ -75,6 +75,7 @@ class PrecisionTyper {
         this.startTime = 0;
         this.gameTimer = null;
 
+        // 安全获取 DOM 元素，防止 HTML 中缺少元素导致整个 JS 崩溃
         this.DOM = {
             textDisplay: document.getElementById('text-display'),
             inputArea: document.getElementById('input-area'),
@@ -82,7 +83,9 @@ class PrecisionTyper {
             wpmLabel: document.getElementById('wpm-label'),
             accuracyLabel: document.getElementById('accuracy-label'),
             difficultySelect: document.getElementById('difficulty-select'),
-            soundToggle: document.getElementById('sound-toggle')
+            soundToggle: document.getElementById('sound-toggle'),
+            themeToggle: document.getElementById('theme-toggle'), // 新增：主题切换按钮
+            capsWarning: document.getElementById('caps-warning')  // 新增：大写锁定警告（可选）
         };
 
         this.soundEngine = new ClickSoundEngine();
@@ -115,7 +118,6 @@ class PrecisionTyper {
 
         if (!newText) {
             const options = TEXT_DATABASE[difficultyIndex] || TEXT_DATABASE[0];
-            // Prevent encountering two identical sentences
             do {
                 newText = options[Math.floor(Math.random() * options.length)];
             } while (newText === this.lastTargetText && options.length > 1);
@@ -126,33 +128,102 @@ class PrecisionTyper {
     }
 
     setupEventListeners() {
-        this.DOM.inputArea.addEventListener('input', () => this.handleInput());
-        this.DOM.difficultySelect.addEventListener('change', () => this.resetGame());
-        this.DOM.soundToggle.addEventListener('change', () => this.saveSettings());
-        
-        this.DOM.inputArea.addEventListener('keydown', (e) => { 
-            if(e.key === 'Tab') e.preventDefault(); 
+        if (this.DOM.inputArea) {
+            this.DOM.inputArea.addEventListener('input', () => this.handleInput());
+            
+            // 阻止 Tab 键切换焦点，同时检测大写锁定 (新增小功能)
+            this.DOM.inputArea.addEventListener('keydown', (e) => { 
+                if(e.key === 'Tab') e.preventDefault(); 
+            });
+
+            this.DOM.inputArea.addEventListener('keyup', (e) => {
+                if (this.DOM.capsWarning) {
+                    const isCapsOn = e.getModifierState('CapsLock');
+                    this.DOM.capsWarning.style.display = isCapsOn ? 'block' : 'none';
+                }
+            });
+        }
+
+        if (this.DOM.difficultySelect) {
+            this.DOM.difficultySelect.addEventListener('change', () => this.resetGame());
+        }
+
+        if (this.DOM.soundToggle) {
+            this.DOM.soundToggle.addEventListener('change', () => this.saveSettings());
+        }
+
+        // 新增：监听主题切换
+        if (this.DOM.themeToggle) {
+            this.DOM.themeToggle.addEventListener('change', () => {
+                this.applyTheme(this.DOM.themeToggle.checked);
+                this.saveSettings();
+            });
+        }
+
+        // 新增小功能：按 ESC 键快速重置游戏
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.resetGame();
+            }
         });
     }
 
     handleInput() {
-        if (this.DOM.soundToggle.checked) this.soundEngine.playClick();
+        if (this.DOM.soundToggle && this.DOM.soundToggle.checked) {
+            this.soundEngine.playClick();
+        }
         this.checkProgress();
     }
 
-    saveSettings() {
-        localStorage.setItem('precisionTyperSettings', JSON.stringify({ 
-            soundEnabled: this.DOM.soundToggle.checked 
-        }));
+    // 修复：应用主题逻辑，支持双重验证以适配不同的 CSS 写法
+    applyTheme(isDark) {
+        const theme = isDark ? 'dark' : 'light';
+        // 做法1：给 html 标签加 data-theme 属性 (现代主流做法)
+        document.documentElement.setAttribute('data-theme', theme);
+        
+        // 做法2：给 body 标签加 class 作为备用方案
+        if (isDark) {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
+        }
     }
 
+    // 修复：同时保存声音和主题设置
+    saveSettings() {
+        const settings = { 
+            soundEnabled: this.DOM.soundToggle ? this.DOM.soundToggle.checked : true,
+            isDarkTheme: this.DOM.themeToggle ? this.DOM.themeToggle.checked : true
+        };
+        localStorage.setItem('precisionTyperSettings', JSON.stringify(settings));
+    }
+
+    // 修复：读取设置并初始化主题
     loadSettings() {
         try {
             const saved = localStorage.getItem('precisionTyperSettings');
             if (saved) {
-                this.DOM.soundToggle.checked = JSON.parse(saved).soundEnabled;
+                const parsedData = JSON.parse(saved);
+                
+                if (this.DOM.soundToggle && parsedData.soundEnabled !== undefined) {
+                    this.DOM.soundToggle.checked = parsedData.soundEnabled;
+                }
+                
+                if (this.DOM.themeToggle && parsedData.isDarkTheme !== undefined) {
+                    this.DOM.themeToggle.checked = parsedData.isDarkTheme;
+                    this.applyTheme(parsedData.isDarkTheme);
+                }
+            } else {
+                // 如果没有本地存档，触发默认主题
+                if (this.DOM.themeToggle) {
+                    this.applyTheme(this.DOM.themeToggle.checked);
+                }
             }
-        } catch (e) { console.error('Failed to load settings', e); }
+        } catch (e) { 
+            console.error('Failed to load settings', e); 
+        }
     }
 
     startTimer() {
@@ -162,12 +233,13 @@ class PrecisionTyper {
         
         this.gameTimer = setInterval(() => {
             const secondsElapsed = Math.floor((performance.now() - this.startTime) / 1000);
-            this.DOM.timerLabel.textContent = `Time: ${secondsElapsed}s`;
+            if (this.DOM.timerLabel) this.DOM.timerLabel.textContent = `Time: ${secondsElapsed}s`;
             this.updateLiveStats();
         }, 500);
     }
 
     checkProgress() {
+        if (!this.DOM.inputArea) return;
         const typed = this.DOM.inputArea.value.replace(/[\r\n]/g, '');
         
         if (!this.isGameRunning && typed.length > 0) this.startTimer();
@@ -178,12 +250,12 @@ class PrecisionTyper {
         if (typed === this.currentTargetText) this.gameOver();
     }
 
-    updateLiveStats(typed = this.DOM.inputArea.value.replace(/[\r\n]/g, '')) {
+    updateLiveStats(typed = this.DOM.inputArea ? this.DOM.inputArea.value.replace(/[\r\n]/g, '') : '') {
         if (!this.isGameRunning || typed.length === 0) return;
 
         const minsPassed = Math.max((performance.now() - this.startTime) / 60000, 0.01);
         const wpm = Math.floor((typed.length / 5.0) / minsPassed);
-        this.DOM.wpmLabel.textContent = `WPM: ${wpm}`;
+        if (this.DOM.wpmLabel) this.DOM.wpmLabel.textContent = `WPM: ${wpm}`;
 
         let correct = 0;
         const len = Math.min(typed.length, this.currentTargetText.length);
@@ -191,10 +263,11 @@ class PrecisionTyper {
             if (typed[i] === this.currentTargetText[i]) correct++;
         }
         const accuracy = Math.floor((correct / Math.max(typed.length, 1)) * 100);
-        this.DOM.accuracyLabel.textContent = `Accuracy: ${accuracy}%`;
+        if (this.DOM.accuracyLabel) this.DOM.accuracyLabel.textContent = `Accuracy: ${accuracy}%`;
     }
 
     updateTextStyles(typed) {
+        if (!this.DOM.textDisplay) return;
         const escapeMap = { '<': '&lt;', '>': '&gt;', '&': '&amp;', ' ': '&nbsp;' };
         
         const html = this.currentTargetText.split('').map((char, i) => {
@@ -217,8 +290,8 @@ class PrecisionTyper {
         clearInterval(this.gameTimer);
         this.isGameRunning = false;
 
-        const wpm = this.DOM.wpmLabel.textContent;
-        const accuracy = this.DOM.accuracyLabel.textContent;
+        const wpm = this.DOM.wpmLabel ? this.DOM.wpmLabel.textContent : 'WPM: -';
+        const accuracy = this.DOM.accuracyLabel ? this.DOM.accuracyLabel.textContent : 'Accuracy: -';
         
         setTimeout(() => {
             alert(`🎉 Test Complete!\n${wpm}\n${accuracy}`);
@@ -230,17 +303,24 @@ class PrecisionTyper {
         clearInterval(this.gameTimer);
         this.isGameRunning = false;
         
-        this.DOM.timerLabel.textContent = 'Time: 0s';
-        this.DOM.wpmLabel.textContent = 'WPM: 0';
-        this.DOM.accuracyLabel.textContent = 'Accuracy: 100%';
-        this.DOM.inputArea.value = '';
+        if (this.DOM.timerLabel) this.DOM.timerLabel.textContent = 'Time: 0s';
+        if (this.DOM.wpmLabel) this.DOM.wpmLabel.textContent = 'WPM: 0';
+        if (this.DOM.accuracyLabel) this.DOM.accuracyLabel.textContent = 'Accuracy: 100%';
+        if (this.DOM.capsWarning) this.DOM.capsWarning.style.display = 'none';
         
-        this.DOM.inputArea.disabled = true; 
-        await this.pickNewText(parseInt(this.DOM.difficultySelect.value));
-        this.DOM.inputArea.disabled = false;
+        if (this.DOM.inputArea) {
+            this.DOM.inputArea.value = '';
+            this.DOM.inputArea.disabled = true; 
+        }
         
-        this.updateTextStyles('');
-        this.DOM.inputArea.focus();
+        const difficulty = this.DOM.difficultySelect ? parseInt(this.DOM.difficultySelect.value) : 0;
+        await this.pickNewText(difficulty);
+        
+        if (this.DOM.inputArea) {
+            this.DOM.inputArea.disabled = false;
+            this.updateTextStyles('');
+            this.DOM.inputArea.focus();
+        }
     }
 }
 
