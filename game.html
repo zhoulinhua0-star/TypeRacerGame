@@ -5,66 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PrecisionTyper - Ultimate Edition</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="website.css">
     <style>
+        /* 这里的样式是为了确保导航栏在加载 CSS 前不崩掉 */
         .game-nav {
-            background-color: #141414;
+            background-color: var(--accent-color);
             padding: 1rem;
-            border-bottom: 1px solid #404040;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-        body.light-mode .game-nav {
-            background-color: #f0f0f0;
-            border-bottom-color: #d0d0d0;
+            border-bottom: 1px solid var(--border-color);
         }
         .game-nav a {
-            color: #57c7ff;
+            color: var(--stat-text-color);
             text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        body.light-mode .game-nav a {
-            color: #1976d2;
-        }
-        .game-nav a:hover {
-            text-decoration: underline;
+            font-weight: bold;
         }
     </style>
 </head>
-<body>
-    <nav class="game-nav">
+<body class="dark-mode"> <nav class="game-nav">
         <div class="container">
             <a href="index.html">← Back to Home</a>
         </div>
     </nav>
+
     <div class="container">
         <div class="top-panel">
             <div class="config-panel">
-                <label for="difficulty-select">Difficulty: </label>
-                <select id="difficulty-select" class="difficulty-select">
-                    <option value="0">Easy</option>
-                    <option value="1" selected>Medium</option>
-                    <option value="2">Hard</option>
-                </select>
+                <div class="control-group">
+                    <label for="difficulty-select">Difficulty: </label>
+                    <select id="difficulty-select" class="difficulty-select">
+                        <option value="0">Easy</option>
+                        <option value="1" selected>Medium</option>
+                        <option value="2">Hard</option>
+                    </select>
+                </div>
                 
-                <label class="checkbox-label">
-                    <input type="checkbox" id="sound-toggle" checked>
-                    <span>Sound</span>
-                </label>
-                
-                <label class="checkbox-label">
-                    <input type="checkbox" id="mode-toggle">
-                    <span>Light Mode</span>
-                </label>
+                <div class="control-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="sound-toggle" checked>
+                        <span>Sound</span>
+                    </label>
+                    
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="theme-toggle">
+                        <span>Light Mode</span>
+                    </label>
+                </div>
             </div>
             
             <div class="stats-bar">
-                <div class="stat-label" id="timer-label">Time: 0s</div>
-                <div class="stat-label" id="wpm-label">WPM: 0</div>
-                <div class="stat-label" id="accuracy-label">Accuracy: 100%</div>
+                <div class="stat-card">
+                    <span class="stat-desc">TIME</span>
+                    <div id="timer-label">0s</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-desc">WPM</span>
+                    <div id="wpm-label">0</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-desc">ACCURACY</span>
+                    <div id="accuracy-label">100%</div>
+                </div>
             </div>
         </div>
         
+        <div id="caps-warning" style="display: none; color: #ff6464; text-align: center; margin-bottom: 10px; font-weight: bold;">
+            ⚠️ Caps Lock is ON
+        </div>
+
         <div class="center-panel">
             <div class="text-display" id="text-display"></div>
             <textarea 
@@ -76,6 +81,10 @@
                 autocorrect="off"
                 autocapitalize="off"
             ></textarea>
+        </div>
+        
+        <div class="footer-hint">
+            Tip: Press <kbd>Esc</kbd> to quickly restart.
         </div>
     </div>
     
