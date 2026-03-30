@@ -7,15 +7,6 @@
  * - Full Comprehensive Database
  */
 
-/**
- * PrecisionTyper: 
- * A rigorous typing speed and accuracy trainer.
- * Requires 100% character-match accuracy for completion.
- * - Procedural Mechanical Click Engine (Web Audio Version)
- * - Persistent Theme (Dark/Light)
- * - Full Comprehensive Database
- */
-
 class PrecisionTyper {
     constructor() {
         // Text database
@@ -304,4 +295,3 @@ class ClickSoundEngine {
 document.addEventListener('DOMContentLoaded', () => {
     new PrecisionTyper();
 });
-
