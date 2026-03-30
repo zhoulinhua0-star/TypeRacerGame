@@ -70,11 +70,12 @@ const TEXT_DATABASE = [
 class PrecisionTyper {
     constructor() {
         this.currentTargetText = '';
-        this.lastTargetText = '';
+        this.lastTargetText = ''; 
         this.isGameRunning = false;
         this.startTime = 0;
         this.gameTimer = null;
 
+        // 安全获取 DOM 元素，防止 HTML 中缺少元素导致整个 JS 崩溃
         this.DOM = {
             textDisplay: document.getElementById('text-display'),
             inputArea: document.getElementById('input-area'),
@@ -83,7 +84,8 @@ class PrecisionTyper {
             accuracyLabel: document.getElementById('accuracy-label'),
             difficultySelect: document.getElementById('difficulty-select'),
             soundToggle: document.getElementById('sound-toggle'),
-            themeToggle: document.getElementById('theme-toggle')
+            themeToggle: document.getElementById('theme-toggle'), // 新增：主题切换按钮
+            capsWarning: document.getElementById('caps-warning')  // 新增：大写锁定警告（可选）
         };
 
         this.soundEngine = new ClickSoundEngine();
@@ -101,6 +103,7 @@ class PrecisionTyper {
         const apiUrl = `https://api.quotable.io/random?tags=${difficultyTags[difficultyIndex]}&maxLength=140`;
         let newText = "";
 
+        // Try to reach out to API
         try {
             const response = await fetch(apiUrl);
             if (response.ok) {
@@ -109,139 +112,254 @@ class PrecisionTyper {
                     newText = data.content;
                 }
             }
-        } catch (e) { console.warn('API fetch failed, using local database.'); }
+        } catch (e) {
+            console.warn('API fetch failed, falling back to local database.');
+        }
 
         if (!newText) {
             const options = TEXT_DATABASE[difficultyIndex] || TEXT_DATABASE[0];
-            do { newText = options[Math.floor(Math.random() * options.length)]; }
-            while (newText === this.lastTargetText && options.length > 1);
+            do {
+                newText = options[Math.floor(Math.random() * options.length)];
+            } while (newText === this.lastTargetText && options.length > 1);
         }
 
         this.currentTargetText = newText;
-        this.lastTargetText = newText;
+        this.lastTargetText = newText; 
     }
 
     setupEventListeners() {
-        this.DOM.inputArea.addEventListener('input', () => this.handleInput());
-        this.DOM.difficultySelect.addEventListener('change', () => this.resetGame());
-        this.DOM.soundToggle.addEventListener('change', () => this.saveSettings());
-        this.DOM.themeToggle.addEventListener('click', () => this.toggleTheme());
+        if (this.DOM.inputArea) {
+            this.DOM.inputArea.addEventListener('input', () => this.handleInput());
+            
+            // 阻止 Tab 键切换焦点，同时检测大写锁定 (新增小功能)
+            this.DOM.inputArea.addEventListener('keydown', (e) => { 
+                if(e.key === 'Tab') e.preventDefault(); 
+            });
 
-        this.DOM.inputArea.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') e.preventDefault();
+            this.DOM.inputArea.addEventListener('keyup', (e) => {
+                if (this.DOM.capsWarning) {
+                    const isCapsOn = e.getModifierState('CapsLock');
+                    this.DOM.capsWarning.style.display = isCapsOn ? 'block' : 'none';
+                }
+            });
+        }
+
+        if (this.DOM.difficultySelect) {
+            this.DOM.difficultySelect.addEventListener('change', () => this.resetGame());
+        }
+
+        if (this.DOM.soundToggle) {
+            this.DOM.soundToggle.addEventListener('change', () => this.saveSettings());
+        }
+
+        // 新增：监听主题切换
+        if (this.DOM.themeToggle) {
+            this.DOM.themeToggle.addEventListener('change', () => {
+                this.applyTheme(this.DOM.themeToggle.checked);
+                this.saveSettings();
+            });
+        }
+
+        // 新增小功能：按 ESC 键快速重置游戏
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.resetGame();
+            }
         });
     }
 
     handleInput() {
-        if (this.DOM.soundToggle.checked) this.soundEngine.playClick();
+        if (this.DOM.soundToggle && this.DOM.soundToggle.checked) {
+            this.soundEngine.playClick();
+        }
         this.checkProgress();
     }
 
-    saveSettings() {
-        localStorage.setItem('precisionTyperSettings', JSON.stringify({
-            soundEnabled: this.DOM.soundToggle.checked,
-            darkMode: document.body.classList.contains('dark')
-        }));
+    // 修复：应用主题逻辑，支持双重验证以适配不同的 CSS 写法
+    applyTheme(isDark) {
+        const theme = isDark ? 'dark' : 'light';
+        // 做法1：给 html 标签加 data-theme 属性 (现代主流做法)
+        document.documentElement.setAttribute('data-theme', theme);
+        
+        // 做法2：给 body 标签加 class 作为备用方案
+        if (isDark) {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
+        }
     }
 
+    // 修复：同时保存声音和主题设置
+    saveSettings() {
+        const settings = { 
+            soundEnabled: this.DOM.soundToggle ? this.DOM.soundToggle.checked : true,
+            isDarkTheme: this.DOM.themeToggle ? this.DOM.themeToggle.checked : true
+        };
+        localStorage.setItem('precisionTyperSettings', JSON.stringify(settings));
+    }
+
+    // 修复：读取设置并初始化主题
     loadSettings() {
         try {
-            const saved = JSON.parse(localStorage.getItem('precisionTyperSettings') || '{}');
-            if (saved.soundEnabled !== undefined) this.DOM.soundToggle.checked = saved.soundEnabled;
-            if (saved.darkMode) document.body.classList.add('dark');
-        } catch (e) { console.error('Failed to load settings', e); }
-    }
-
-    toggleTheme() {
-        document.body.classList.toggle('dark');
-        this.saveSettings();
+            const saved = localStorage.getItem('precisionTyperSettings');
+            if (saved) {
+                const parsedData = JSON.parse(saved);
+                
+                if (this.DOM.soundToggle && parsedData.soundEnabled !== undefined) {
+                    this.DOM.soundToggle.checked = parsedData.soundEnabled;
+                }
+                
+                if (this.DOM.themeToggle && parsedData.isDarkTheme !== undefined) {
+                    this.DOM.themeToggle.checked = parsedData.isDarkTheme;
+                    this.applyTheme(parsedData.isDarkTheme);
+                }
+            } else {
+                // 如果没有本地存档，触发默认主题
+                if (this.DOM.themeToggle) {
+                    this.applyTheme(this.DOM.themeToggle.checked);
+                }
+            }
+        } catch (e) { 
+            console.error('Failed to load settings', e); 
+        }
     }
 
     startTimer() {
         if (this.isGameRunning) return;
         this.isGameRunning = true;
         this.startTime = performance.now();
+        
         this.gameTimer = setInterval(() => {
-            const seconds = Math.floor((performance.now() - this.startTime) / 1000);
-            this.DOM.timerLabel.textContent = `Time: ${seconds}s`;
+            const secondsElapsed = Math.floor((performance.now() - this.startTime) / 1000);
+            if (this.DOM.timerLabel) this.DOM.timerLabel.textContent = `Time: ${secondsElapsed}s`;
             this.updateLiveStats();
         }, 500);
     }
 
     checkProgress() {
+        if (!this.DOM.inputArea) return;
         const typed = this.DOM.inputArea.value.replace(/[\r\n]/g, '');
+        
         if (!this.isGameRunning && typed.length > 0) this.startTimer();
+        
         this.updateTextStyles(typed);
         this.updateLiveStats(typed);
+
         if (typed === this.currentTargetText) this.gameOver();
     }
 
-    updateLiveStats(typed = this.DOM.inputArea.value.replace(/[\r\n]/g, '')) {
+    updateLiveStats(typed = this.DOM.inputArea ? this.DOM.inputArea.value.replace(/[\r\n]/g, '') : '') {
         if (!this.isGameRunning || typed.length === 0) return;
-        const mins = Math.max((performance.now() - this.startTime)/60000,0.01);
-        const wpm = Math.floor((typed.length / 5) / mins);
-        this.DOM.wpmLabel.textContent = `WPM: ${wpm}`;
+
+        const minsPassed = Math.max((performance.now() - this.startTime) / 60000, 0.01);
+        const wpm = Math.floor((typed.length / 5.0) / minsPassed);
+        if (this.DOM.wpmLabel) this.DOM.wpmLabel.textContent = `WPM: ${wpm}`;
 
         let correct = 0;
         const len = Math.min(typed.length, this.currentTargetText.length);
-        for (let i=0;i<len;i++) if (typed[i]===this.currentTargetText[i]) correct++;
-        const accuracy = Math.floor((correct / Math.max(typed.length,1)) * 100);
-        this.DOM.accuracyLabel.textContent = `Accuracy: ${accuracy}%`;
+        for (let i = 0; i < len; i++) {
+            if (typed[i] === this.currentTargetText[i]) correct++;
+        }
+        const accuracy = Math.floor((correct / Math.max(typed.length, 1)) * 100);
+        if (this.DOM.accuracyLabel) this.DOM.accuracyLabel.textContent = `Accuracy: ${accuracy}%`;
     }
 
     updateTextStyles(typed) {
-        const escapeMap = { '<':'&lt;','>':'&gt;','&':'&amp;',' ':'&nbsp;' };
-        const html = this.currentTargetText.split('').map((c,i)=>{
-            const display = escapeMap[c]||c;
-            if (i<typed.length) return `<span class="char-${typed[i]===c?'correct':'wrong'}">${display}</span>`;
-            else if (i===typed.length) return `<span class="char-cursor">${display}</span>`;
-            else return `<span class="char-untyped">${display}</span>`;
+        if (!this.DOM.textDisplay) return;
+        const escapeMap = { '<': '&lt;', '>': '&gt;', '&': '&amp;', ' ': '&nbsp;' };
+        
+        const html = this.currentTargetText.split('').map((char, i) => {
+            const displayChar = escapeMap[char] || char;
+
+            if (i < typed.length) {
+                const isCorrect = typed[i] === char;
+                return `<span class="char-${isCorrect ? 'correct' : 'wrong'}">${displayChar}</span>`;
+            } else if (i === typed.length) {
+                return `<span class="char-cursor">${displayChar}</span>`;
+            } else {
+                return `<span class="char-untyped">${displayChar}</span>`;
+            }
         }).join('');
+
         this.DOM.textDisplay.innerHTML = html;
     }
 
     gameOver() {
         clearInterval(this.gameTimer);
         this.isGameRunning = false;
-        const wpm = this.DOM.wpmLabel.textContent;
-        const acc = this.DOM.accuracyLabel.textContent;
-        setTimeout(()=>{ alert(`🎉 Test Complete!\n${wpm}\n${acc}`); this.resetGame(); },50);
+
+        const wpm = this.DOM.wpmLabel ? this.DOM.wpmLabel.textContent : 'WPM: -';
+        const accuracy = this.DOM.accuracyLabel ? this.DOM.accuracyLabel.textContent : 'Accuracy: -';
+        
+        setTimeout(() => {
+            alert(`🎉 Test Complete!\n${wpm}\n${accuracy}`);
+            this.resetGame();
+        }, 50);
     }
 
     async resetGame() {
         clearInterval(this.gameTimer);
         this.isGameRunning = false;
-        this.DOM.timerLabel.textContent = 'Time: 0s';
-        this.DOM.wpmLabel.textContent = 'WPM: 0';
-        this.DOM.accuracyLabel.textContent = 'Accuracy: 100%';
-        this.DOM.inputArea.value = '';
-        this.DOM.inputArea.disabled = true;
-        await this.pickNewText(parseInt(this.DOM.difficultySelect.value));
-        this.DOM.inputArea.disabled = false;
-        this.updateTextStyles('');
-        this.DOM.inputArea.focus();
+        
+        if (this.DOM.timerLabel) this.DOM.timerLabel.textContent = 'Time: 0s';
+        if (this.DOM.wpmLabel) this.DOM.wpmLabel.textContent = 'WPM: 0';
+        if (this.DOM.accuracyLabel) this.DOM.accuracyLabel.textContent = 'Accuracy: 100%';
+        if (this.DOM.capsWarning) this.DOM.capsWarning.style.display = 'none';
+        
+        if (this.DOM.inputArea) {
+            this.DOM.inputArea.value = '';
+            this.DOM.inputArea.disabled = true; 
+        }
+        
+        const difficulty = this.DOM.difficultySelect ? parseInt(this.DOM.difficultySelect.value) : 0;
+        await this.pickNewText(difficulty);
+        
+        if (this.DOM.inputArea) {
+            this.DOM.inputArea.disabled = false;
+            this.updateTextStyles('');
+            this.DOM.inputArea.focus();
+        }
     }
 }
 
 class ClickSoundEngine {
-    constructor() { this.audioContext=null; this.buffer=null; this.isInitialized=false; }
+    constructor() {
+        this.audioContext = null;
+        this.buffer = null;
+        this.isInitialized = false;
+    }
+
     initializeAudio() {
         if (this.isInitialized) return;
         try {
-            const AudioContext = window.AudioContext||window.webkitAudioContext;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
             this.audioContext = new AudioContext();
+            
             const sampleRate = this.audioContext.sampleRate;
-            const bufferSize = Math.floor(sampleRate*0.025);
+            const bufferSize = Math.floor(sampleRate * 0.025);
+
             this.buffer = this.audioContext.createBuffer(1, bufferSize, sampleRate);
             const data = this.buffer.getChannelData(0);
-            for (let i=0;i<bufferSize;i++){ const decay = 1-i/bufferSize; data[i]=(Math.random()*2-1)*decay*0.2; }
-            this.isInitialized=true;
-        } catch(e){ console.error('AudioContext error:',e);}
+
+            for (let i = 0; i < bufferSize; i++) {
+                const noise = (Math.random() * 2.0) - 1.0;
+                const decay = 1.0 - (i / bufferSize);
+                data[i] = noise * decay * 0.2;
+            }
+            this.isInitialized = true;
+        } catch (e) { console.error('AudioContext error:', e); }
     }
+
     playClick() {
         this.initializeAudio();
-        if(!this.audioContext||!this.buffer) return;
-        if(this.audioContext.state==='suspended') this.audioContext.resume();
+        if (!this.audioContext || !this.buffer) return;
+        
+        if (this.audioContext.state === 'suspended') {
+            this.audioContext.resume();
+        }
+        
         const source = this.audioContext.createBufferSource();
         source.buffer = this.buffer;
         source.connect(this.audioContext.destination);
@@ -249,4 +367,4 @@ class ClickSoundEngine {
     }
 }
 
-document.addEventListener('DOMContentLoaded',()=>{ new PrecisionTyper(); });
+document.addEventListener('DOMContentLoaded', () => { new PrecisionTyper(); });
