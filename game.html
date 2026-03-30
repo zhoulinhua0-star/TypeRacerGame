@@ -3,25 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrecisionTyper - Ultimate Edition</title>
+    <title>PrecisionTyper - Game</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        /* 这里的样式是为了确保导航栏在加载 CSS 前不崩掉 */
-        .game-nav {
-            background-color: var(--accent-color);
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .game-nav a {
-            color: var(--stat-text-color);
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
 </head>
-<body class="dark-mode"> <nav class="game-nav">
-        <div class="container">
-            <a href="index.html">← Back to Home</a>
+<body>
+    <nav style="padding: 20px; border-bottom: 1px solid var(--border-color);">
+        <div class="container" style="padding: 0;">
+            <a href="index.html" style="color: var(--stat-text-color); text-decoration: none; font-weight: bold;">← EXIT TO HUB</a>
         </div>
     </nav>
 
@@ -29,65 +17,30 @@
         <div class="top-panel">
             <div class="config-panel">
                 <div class="control-group">
-                    <label for="difficulty-select">Difficulty: </label>
+                    <label>Difficulty:</label>
                     <select id="difficulty-select" class="difficulty-select">
                         <option value="0">Easy</option>
                         <option value="1" selected>Medium</option>
                         <option value="2">Hard</option>
                     </select>
                 </div>
-                
                 <div class="control-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="sound-toggle" checked>
-                        <span>Sound</span>
-                    </label>
-                    
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="theme-toggle">
-                        <span>Light Mode</span>
-                    </label>
+                    <label class="checkbox-label"><input type="checkbox" id="sound-toggle" checked>Sound</label>
+                    <label class="checkbox-label"><input type="checkbox" id="theme-toggle">Light Mode</label>
                 </div>
             </div>
-            
             <div class="stats-bar">
-                <div class="stat-card">
-                    <span class="stat-desc">TIME</span>
-                    <div id="timer-label">0s</div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-desc">WPM</span>
-                    <div id="wpm-label">0</div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-desc">ACCURACY</span>
-                    <div id="accuracy-label">100%</div>
-                </div>
+                <div class="stat-card"><span style="font-size: 12px; opacity: 0.7;">TIME</span><div id="timer-label">0s</div></div>
+                <div class="stat-card"><span style="font-size: 12px; opacity: 0.7;">WPM</span><div id="wpm-label">0</div></div>
+                <div class="stat-card"><span style="font-size: 12px; opacity: 0.7;">ACC</span><div id="accuracy-label">100%</div></div>
             </div>
-        </div>
-        
-        <div id="caps-warning" style="display: none; color: #ff6464; text-align: center; margin-bottom: 10px; font-weight: bold;">
-            ⚠️ Caps Lock is ON
         </div>
 
         <div class="center-panel">
-            <div class="text-display" id="text-display"></div>
-            <textarea 
-                id="input-area" 
-                class="input-area" 
-                placeholder="Start typing here..."
-                spellcheck="false"
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="off"
-            ></textarea>
-        </div>
-        
-        <div class="footer-hint">
-            Tip: Press <kbd>Esc</kbd> to quickly restart.
+            <div id="text-display" class="text-display"></div>
+            <textarea id="input-area" class="input-area" placeholder="Ready? Start typing..." spellcheck="false"></textarea>
         </div>
     </div>
-    
     <script src="script.js"></script>
 </body>
 </html>
