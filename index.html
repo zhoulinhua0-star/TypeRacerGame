@@ -1,78 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrecisionTyper | Master Your Craft</title>
+    <title>PrecisionTyper | Hub</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .hero-section {
-            height: 90vh;
+        .hero {
+            height: 85vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
         }
-        .hero-title {
-            font-size: 5rem; /* 更大 */
-            font-weight: 900; /* 更粗 */
-            color: var(--fg-color);
-            margin-bottom: 10px;
-            background: linear-gradient(to bottom, var(--fg-color), var(--stat-text-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero-subtitle {
-            font-size: 1.5rem;
-            color: var(--fg-color); /* 字体颜色加深 */
-            opacity: 0.9;
-            margin-bottom: 50px;
-            letter-spacing: 0.5px;
-        }
-        .play-btn {
-            background: var(--stat-text-color);
-            color: #000; /* 亮色文字在深色背景按钮上对比度更高 */
-            padding: 22px 60px;
-            font-size: 1.8rem;
+        .hero h1 {
+            font-size: 6rem;
             font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: 20px;
+            letter-spacing: -3px;
+        }
+        .hero p {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+        .btn-launch {
+            background: var(--text-main);
+            color: var(--bg-main);
+            padding: 20px 60px;
+            font-size: 1.5rem;
+            font-weight: 800;
             border-radius: 100px;
             text-decoration: none;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 20px 40px rgba(87, 199, 255, 0.3);
+            transition: transform 0.2s;
         }
-        .play-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 30px 60px rgba(87, 199, 255, 0.5);
+        .btn-launch:hover {
+            transform: scale(1.05);
         }
-        .home-controls {
+        .theme-switch-container {
             position: fixed;
             bottom: 30px;
-            display: flex;
-            gap: 20px;
-            background: var(--accent-color);
-            padding: 15px 30px;
+            right: 30px;
+            background: var(--bg-card);
+            padding: 15px 25px;
             border-radius: 50px;
-            border: 2px solid var(--border-color);
+            border: 1px solid var(--border);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <section class="hero-section">
-            <h1 class="hero-title">PRECISION TYPER</h1>
-            <p class="hero-subtitle">Rigorous speed training. Zero-tolerance accuracy.</p>
-            <a href="game.html" class="play-btn">LAUNCH GAME</a>
-        </section>
+        <div class="hero">
+            <h1>TYPE<br><span style="color:var(--accent)">FAST.</span></h1>
+            <p>The elite trainer for speed and precision.</p>
+            <a href="game.html" class="btn-launch">ENTER ARENA</a>
+        </div>
     </div>
 
-    <div class="home-controls">
+    <div class="theme-switch-container">
         <label class="checkbox-label">
             <input type="checkbox" id="theme-toggle">
-            <span style="color: var(--fg-color);">Switch Light Mode</span>
+            <span>LIGHT MODE</span>
         </label>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
