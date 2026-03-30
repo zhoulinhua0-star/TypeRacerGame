@@ -4,7 +4,7 @@ A collection of typing speed and accuracy trainers with three implementations: c
 
 ## 🌐 Live Website
 
-**👉 [Try PrecisionTyper Online](https://typeracer-game.vercel.app)** - No installation required!
+**👉 [Try PrecisionTyper Online](https://zhoulinhua0-star.github.io/TypeRacerGame/)** - No installation required!
 
 ## Projects
 
@@ -25,7 +25,7 @@ A collection of typing speed and accuracy trainers with three implementations: c
 
 The Web Edition of PrecisionTyper is a modern, browser-based typing trainer designed to help you improve your typing speed and accuracy from anywhere, on any device. Simply open the website in your browser and start practicing immediately.
 
-**🌐 [Access the Web Application][https://typeracer-game.vercel.app](https://typeracer-game.vercel.app)**
+**🌐 [Access the Web Application](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
 
 #### 🎯 Why Use PrecisionTyper Web Edition?
 
@@ -34,7 +34,7 @@ Whether you're a student, professional, or casual typist, PrecisionTyper helps y
 #### 🚀 Quick Start
 
 1. **Open the Application**
-   - Visit: **[https://typeracer-game.vercel.app]**
+   - Visit: **[https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
    - Or open `index.html` locally in your browser
    - No downloads, installations, or account creation required
 
@@ -57,15 +57,7 @@ Whether you're a student, professional, or casual typist, PrecisionTyper helps y
 5. **Complete the Challenge**
    - Finish typing the entire text with perfect accuracy
    - Review your final statistics
-   - Press 'return' or 'enter' key to continue the next typing journey
    - Select a new text to continue practicing
-
-#### 🚀 Technical Highlights
-
-- **Resilient Sourcing**: Implements a Hybrid API + Local Fallback strategy. If the Quotable API fails, the system seamlessly transitions to a local database for zero-downtime training.
-- **Smart Randomization**: Employs a Non-Consecutive Algorithm using a do-while collision check. This ensures the current sentence never duplicates the previous one, maximizing variety.
-- **Precision Metrics**: Calculates WPM and Accuracy via the High Resolution Time API, using the 5-character standard for professional-grade tracking.
-- **Tactile Audio**: Features a Web Audio API Synthesis engine, generating real-time mechanical click sounds without external assets.
 
 #### 💡 Pro Tips for Best Results
 
@@ -110,8 +102,7 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 * **Technologies:** HTML5, CSS3, Vanilla JavaScript (ES6+)
 * **Dependencies:** None - pure client-side application
 * **Browser Compatibility:** Modern browsers (Chrome, Firefox, Safari, Edge)
-* **Live URL:** [https://typeracer-game-exg4alf1z-linhua-zhous-projects.vercel.app/](https://typeracer-game-exg4alf1z-linhua-zhous-projects.vercel.app/)
-AND [https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)
+* **Live URL:** [https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)
 
 ## How to Run
 
@@ -122,7 +113,7 @@ AND [https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star
 
 ### Web Edition
 **Option 1: Use the Live Website** ⭐ Recommended
-- Visit: **[https://zhoulinhua0-star.github.io/TypeRacerGame/](https://typeracer-game-exg4alf1z-linhua-zhous-projects.vercel.app/)
+- Visit: **[https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
 - No installation needed!
 
 **Option 2: Run Locally**
