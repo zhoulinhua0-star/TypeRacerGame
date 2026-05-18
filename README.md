@@ -127,6 +127,8 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 TypeRacerGame/
 ├── TypeRacerGame.java          # Console-based version
 ├── PrecisionTyper.java         # Java Swing GUI version
+├── index.html                  # GitHub Pages root — redirects to PrecisionTyper/
+├── game.html                   # Legacy root URL — redirects to PrecisionTyper/game.html
 ├── PrecisionTyper/             # Web edition — static HTML, CSS & JavaScript
 │   ├── index.html              # Landing page
 │   ├── game.html               # Typing game UI
@@ -140,7 +142,7 @@ TypeRacerGame/
 └── .gitignore
 ```
 
-**ui-ux-pro-max (Cursor skill):** Under `.cursor/skills/ui-ux-pro-max/` this repo includes an optional [Cursor](https://cursor.com) Agent skill used when designing or polishing UI: it runs a local Python search tool (`scripts/search.py`) over bundled design data to suggest design systems, color and typography pairings, layout patterns, and UX checklists. You do not need it to run the Java or web apps; it is tooling for contributors who use Cursor.
+**ui-ux-pro-max (Cursor skill):** Under `.cursor/skills/ui-ux-pro-max/` this repo includes an optional [Cursor](https://cursor.com) Agent skill used when designing or polishing UI: it runs a local Python search tool (`scripts/search.py`) over bundled design data to suggest design systems, color and typography pairings, layout patterns, and UX checklists. You do not need it to run the Java or web apps; it is tooling for contributors who use Cursor. Thanks to the resources from [ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill).
 
 ## License
 
