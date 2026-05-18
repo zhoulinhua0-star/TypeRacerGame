@@ -77,7 +77,7 @@ public class PrecisionTyper {
             "Technical debt is a concept in software development that reflects the implied cost of additional rework caused by choosing an easy solution now instead of using a better approach that would take longer.",
             "Strength does not come from winning; your struggles develop your strengths, and when you go through hardships and decide not to surrender, that is strength.",
             "Tis but thy name that is my enemy; thou art thyself, though not a Montague. What's Montague? It is nor hand, nor foot, nor arm, nor face, nor any other part belonging to a man. O, be some other name!"
-            ]
+            
         }
     };
 

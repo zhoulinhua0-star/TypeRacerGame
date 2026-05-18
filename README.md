@@ -35,7 +35,7 @@ Whether you're a student, professional, or casual typist, PrecisionTyper helps y
 
 1. **Open the Application**
    - Visit: **[https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
-   - Or open `index.html` locally in your browser
+   - Or open `PrecisionTyper/index.html` locally in your browser
    - No downloads, installations, or account creation required
 
 2. **Choose Your Difficulty Level**
@@ -118,24 +118,29 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 
 **Option 2: Run Locally**
 1. Download the repository
-2. Open `index.html` in your web browser
+2. Open `PrecisionTyper/index.html` in your web browser (landing page), then use **Play** to open `game.html`
 3. Start practicing immediately
 
 ## File Structure
 
 ```
 TypeRacerGame/
-├── TypeRacerGame.java      # Console-based version
-├── PrecisionTyper.java     # Java Swing GUI version
-├── index.html              # Web version - Landing page
-├── game.html               # Web version - Typing game
-├── website.css             # Web version - Landing page styles
-├── website.js              # Web version - Landing page scripts
-├── styles.css              # Web version - Game styles
-├── script.js               # Web version - Game logic
-├── README.md               # This file
-└── LICENSE                 # MIT License
+├── TypeRacerGame.java          # Console-based version
+├── PrecisionTyper.java         # Java Swing GUI version
+├── PrecisionTyper/             # Web edition — static HTML, CSS & JavaScript
+│   ├── index.html              # Landing page
+│   ├── game.html               # Typing game UI
+│   ├── website.css             # Landing page styles
+│   ├── website.js              # Landing page behavior (smooth scroll, nav, reveals)
+│   ├── styles.css              # Game styles
+│   └── script.js               # Game logic
+├── .nojekyll                   # GitHub Pages helper (static site hosting)
+├── README.md                   # This file
+├── LICENSE                     # MIT License
+└── .gitignore
 ```
+
+**ui-ux-pro-max (Cursor skill):** Under `.cursor/skills/ui-ux-pro-max/` this repo includes an optional [Cursor](https://cursor.com) Agent skill used when designing or polishing UI: it runs a local Python search tool (`scripts/search.py`) over bundled design data to suggest design systems, color and typography pairings, layout patterns, and UX checklists. You do not need it to run the Java or web apps; it is tooling for contributors who use Cursor.
 
 ## License
 
