@@ -3,83 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrecisionTyper - Ultimate Edition</title>
+    <meta name="description" content="PrecisionTyper — strict typing practice with live WPM and accuracy.">
+    <title>PrecisionTyper — Play</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="website.css">
-    <style>
-        .game-nav {
-            background-color: #141414;
-            padding: 1rem;
-            border-bottom: 1px solid #404040;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-        body.light-mode .game-nav {
-            background-color: #f0f0f0;
-            border-bottom-color: #d0d0d0;
-        }
-        .game-nav a {
-            color: #57c7ff;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        body.light-mode .game-nav a {
-            color: #1976d2;
-        }
-        .game-nav a:hover {
-            text-decoration: underline;
-        }
-    </style>
 </head>
 <body>
-    <nav class="game-nav">
-        <div class="container">
-            <a href="index.html">← Back to Home</a>
+    <a class="skip-link" href="#input-area">Skip to typing area</a>
+
+    <nav class="game-nav" aria-label="Game navigation">
+        <div class="game-nav-shell">
+            <div class="game-nav-inner container">
+                <a href="index.html" class="game-nav-link">
+                    <svg class="icon-20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back to home
+                </a>
+                <div class="game-nav-brand" aria-hidden="true">
+                    <span class="game-nav-logo">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <span class="game-nav-title">Practice</span>
+                </div>
+            </div>
         </div>
     </nav>
-    <div class="container">
-        <div class="top-panel">
-            <div class="config-panel">
-                <label for="difficulty-select">Difficulty: </label>
-                <select id="difficulty-select" class="difficulty-select">
-                    <option value="0">Easy</option>
-                    <option value="1" selected>Medium</option>
-                    <option value="2">Hard</option>
-                </select>
-                
-                <label class="checkbox-label">
-                    <input type="checkbox" id="sound-toggle" checked>
-                    <span>Sound</span>
-                </label>
-                
-                <label class="checkbox-label">
-                    <input type="checkbox" id="mode-toggle">
-                    <span>Light Mode</span>
-                </label>
+
+    <main class="game-main container">
+        <header class="game-toolbar" aria-label="Settings &amp; statistics">
+            <div class="game-toolbar-card controls-card">
+                <h2 class="visually-hidden">Session options</h2>
+                <div class="controls-row">
+                    <div class="field-group">
+                        <label for="difficulty-select">Difficulty</label>
+                        <div class="select-wrap">
+                            <select id="difficulty-select" class="difficulty-select" aria-describedby="difficulty-hint">
+                                <option value="0">Easy</option>
+                                <option value="1" selected>Medium</option>
+                                <option value="2">Hard</option>
+                            </select>
+                        </div>
+                        <p id="difficulty-hint" class="field-hint">Changing difficulty resets the passage.</p>
+                    </div>
+                    <div class="toggles">
+                        <label class="toggle">
+                            <input type="checkbox" id="sound-toggle" checked aria-describedby="sound-desc">
+                            <span class="toggle-ui" aria-hidden="true"></span>
+                            <span class="toggle-text">
+                                Sound
+                                <span id="sound-desc" class="visually-hidden">Mechanical keystroke preview on input</span>
+                            </span>
+                        </label>
+                        <label class="toggle">
+                            <input type="checkbox" id="mode-toggle" aria-describedby="theme-desc">
+                            <span class="toggle-ui" aria-hidden="true"></span>
+                            <span class="toggle-text">
+                                Light Mode
+                                <span id="theme-desc" class="visually-hidden">Uses a light background for the whole page</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
             </div>
-            
-            <div class="stats-bar">
-                <div class="stat-label" id="timer-label">Time: 0s</div>
-                <div class="stat-label" id="wpm-label">WPM: 0</div>
-                <div class="stat-label" id="accuracy-label">Accuracy: 100%</div>
+
+            <div class="stats-wrap">
+                <div class="stat-tile stat-label" id="timer-label">Time: 0s</div>
+                <div class="stat-tile stat-label" id="wpm-label">WPM: 0</div>
+                <div class="stat-tile stat-label" id="accuracy-label">Accuracy: 100%</div>
             </div>
-        </div>
-        
-        <div class="center-panel">
-            <div class="text-display" id="text-display"></div>
-            <textarea 
-                id="input-area" 
-                class="input-area" 
-                placeholder="Start typing here..."
-                spellcheck="false"
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="off"
-            ></textarea>
-        </div>
-    </div>
-    
+        </header>
+
+        <section class="play-zone" aria-label="Typing area">
+            <div class="panel panel-readonly">
+                <div class="panel-head">
+                    <span class="panel-label">Passage</span>
+                    <span class="panel-badge">Strict match</span>
+                </div>
+                <div class="panel-body text-display" id="text-display"></div>
+            </div>
+
+            <div class="panel panel-input-shell">
+                <label class="panel-head panel-head-input" for="input-area">
+                    <span class="panel-label">Your typing</span>
+                    <kbd class="panel-kbdHint" aria-hidden="true">Tab stays here</kbd>
+                </label>
+                <div class="panel-body panel-body-input">
+                    <textarea
+                        id="input-area"
+                        class="input-area"
+                        placeholder="Focus here and start typing to begin…"
+                        spellcheck="false"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        rows="6"
+                        aria-label="Typed text matches the passage above exactly"
+                    ></textarea>
+                </div>
+            </div>
+        </section>
+    </main>
+
     <script src="script.js"></script>
 </body>
 </html>
-
