@@ -510,6 +510,12 @@ body.light-mode .panel-badge {
     word-break: break-word;
 }
 
+.text-display.is-loading {
+    color: var(--text-faint);
+    font-style: italic;
+    font-weight: 500;
+}
+
 .input-area {
     display: block;
     width: 100%;
@@ -576,5 +582,175 @@ body.light-mode .char-cursor {
 
     .difficulty-select {
         max-width: none;
+    }
+}
+
+/* Completion overlay — replaces native browser alert */
+.completion-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 4vw, 2rem);
+    pointer-events: none;
+}
+
+.completion-overlay[hidden] {
+    display: none;
+}
+
+.completion-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 8, 7, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity 320ms ease;
+}
+
+body.light-mode .completion-backdrop {
+    background: rgba(15, 23, 42, 0.45);
+}
+
+.completion-card {
+    position: relative;
+    width: min(100%, 420px);
+    padding: clamp(1.5rem, 4vw, 2rem);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-strong);
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-soft), 0 0 0 1px rgba(94, 234, 212, 0.08);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+    transition: opacity 320ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.completion-overlay.is-visible {
+    pointer-events: auto;
+}
+
+.completion-overlay.is-visible .completion-backdrop {
+    opacity: 1;
+}
+
+.completion-overlay.is-visible .completion-card {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.completion-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: var(--green-text);
+}
+
+.completion-icon svg {
+    width: 56px;
+    height: 56px;
+}
+
+.completion-icon-ring {
+    stroke-dasharray: 63;
+    stroke-dashoffset: 63;
+    transition: stroke-dashoffset 600ms ease 120ms;
+}
+
+.completion-icon-check {
+    stroke-dasharray: 18;
+    stroke-dashoffset: 18;
+    transition: stroke-dashoffset 450ms ease 420ms;
+}
+
+.completion-overlay.is-visible .completion-icon-ring {
+    stroke-dashoffset: 0;
+}
+
+.completion-overlay.is-visible .completion-icon-check {
+    stroke-dashoffset: 0;
+}
+
+.completion-title {
+    font-size: clamp(1.35rem, 4vw, 1.65rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
+    margin-bottom: 0.35rem;
+}
+
+.completion-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 1.35rem;
+}
+
+.completion-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.65rem;
+    margin-bottom: 1.35rem;
+}
+
+.completion-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 0.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: var(--accent-surface);
+}
+
+.completion-stat-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+}
+
+.completion-stat-value {
+    font-family: var(--font-mono);
+    font-size: clamp(1rem, 3vw, 1.15rem);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--stat-text-color);
+}
+
+.completion-btn {
+    width: 100%;
+    padding: 0.85rem 1.25rem;
+    border: none;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--cta), #ea580c);
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+    box-shadow: 0 10px 28px rgba(249, 115, 22, 0.28);
+}
+
+.completion-btn:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+}
+
+.completion-btn:focus-visible {
+    outline: 2px solid var(--teal-400);
+    outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+    .completion-stats {
+        grid-template-columns: 1fr;
     }
 }

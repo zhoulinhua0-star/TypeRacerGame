@@ -127,16 +127,16 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 TypeRacerGame/
 ├── TypeRacerGame.java          # Console-based version
 ├── PrecisionTyper.java         # Java Swing GUI version
-├── index.html                  # GitHub Pages root — redirects to PrecisionTyper/
-├── game.html                   # Legacy root URL — redirects to PrecisionTyper/game.html
-├── PrecisionTyper/             # Web edition — static HTML, CSS & JavaScript
+├── PrecisionTyper/             # Web edition — static HTML, CSS & JavaScript (GitHub Pages source)
 │   ├── index.html              # Landing page
 │   ├── game.html               # Typing game UI
 │   ├── website.css             # Landing page styles
 │   ├── website.js              # Landing page behavior (smooth scroll, nav, reveals)
 │   ├── styles.css              # Game styles
-│   └── script.js               # Game logic
-├── .nojekyll                   # GitHub Pages helper (static site hosting)
+│   ├── script.js               # Game logic
+│   └── texts.json              # Typing passages (easy / medium / hard)
+├── .github/workflows/          # GitHub Pages deployment (publishes PrecisionTyper/)
+├── .nojekyll                   # GitHub Pages helper at repo root (legacy branch deploy)
 ├── README.md                   # This file
 ├── LICENSE                     # MIT License
 └── .gitignore
