@@ -106,11 +106,20 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 
 #### GitHub Pages deployment
 
-The site is published from the **`main`** branch (repo root). Root `index.html` redirects to `PrecisionTyper/`, where the app lives.
+The live site is published via **GitHub Actions** (`.github/workflows/deploy-pages.yml`), which deploys the `PrecisionTyper/` folder to the site root:
 
-If you add or change files under `PrecisionTyper/`, push to **`main`** and wait 1–2 minutes for the **pages build and deployment** workflow to finish. Hard-refresh the browser (`Cmd+Shift+R`) if you still see an old version.
+- **Landing:** [https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)
+- **Game:** [https://zhoulinhua0-star.github.io/TypeRacerGame/game.html](https://zhoulinhua0-star.github.io/TypeRacerGame/game.html)
 
-Optional: `.github/workflows/deploy-pages.yml` can publish only the `PrecisionTyper/` folder at the site root if you switch **Settings → Pages → Build and deployment → Source** to **GitHub Actions** (then `/PrecisionTyper/` in the URL is no longer needed).
+After pushing to **`main`**, wait 1–2 minutes for **Deploy GitHub Pages** to finish, then hard-refresh (`Cmd+Shift+R`). Old `/PrecisionTyper/` URLs redirect automatically.
+
+To run locally, use a local server in the `PrecisionTyper` folder (required so `texts.json` loads):
+
+```bash
+cd PrecisionTyper && python3 -m http.server 8080
+```
+
+Then open `http://localhost:8080/game.html`.
 
 ## How to Run
 

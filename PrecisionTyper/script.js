@@ -7,6 +7,8 @@
  * - Passage database loaded from texts.json
  */
 
+const APP_ASSET_VERSION = '3';
+
 const FALLBACK_TEXT_DATABASE = [
     [
         "Practice makes perfect.",
@@ -45,7 +47,7 @@ const FALLBACK_TEXT_DATABASE = [
 ];
 
 async function loadTextDatabase() {
-    const response = await fetch('texts.json');
+    const response = await fetch(`texts.json?v=${APP_ASSET_VERSION}`, { cache: 'no-store' });
     if (!response.ok) {
         throw new Error(`Failed to load texts.json (${response.status})`);
     }

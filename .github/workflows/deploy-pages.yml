@@ -22,8 +22,42 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Build site artifact
+        run: |
+          mkdir -p _site/PrecisionTyper
+          cp -r PrecisionTyper/* _site/
+
+          # Legacy URLs (/TypeRacerGame/PrecisionTyper/...) redirect to site root
+          cat > _site/PrecisionTyper/index.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta http-equiv="refresh" content="0; url=../">
+              <link rel="canonical" href="../">
+              <script>location.replace('../');</script>
+          </head>
+          <body><p><a href="../">Open PrecisionTyper</a></p></body>
+          </html>
+          EOF
+
+          cat > _site/PrecisionTyper/game.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta http-equiv="refresh" content="0; url=../game.html">
+              <link rel="canonical" href="../game.html">
+              <script>location.replace('../game.html');</script>
+          </head>
+          <body><p><a href="../game.html">Open typing game</a></p></body>
+          </html>
+          EOF
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: PrecisionTyper
+          path: _site
+
       - uses: actions/deploy-pages@v4
         id: deployment
