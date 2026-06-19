@@ -7,7 +7,7 @@
  * - Passage database loaded from texts.json
  */
 
-const APP_ASSET_VERSION = '4';
+const APP_ASSET_VERSION = '5';
 
 const FALLBACK_TEXT_DATABASE = [
     [
@@ -93,10 +93,12 @@ class PrecisionTyper {
         this.secondsElapsed = 0;
         this.gameTimer = null;
         this.completionOverlay = null;
+        this.isShakeActive = false;
         
         // DOM elements
         this.textDisplay = document.getElementById('text-display');
         this.inputArea = document.getElementById('input-area');
+        this.playZone = document.querySelector('.play-zone');
         this.timerLabel = document.getElementById('timer-label');
         this.wpmLabel = document.getElementById('wpm-label');
         this.accuracyLabel = document.getElementById('accuracy-label');
@@ -145,12 +147,52 @@ class PrecisionTyper {
             this.saveSettings();
         });
 
-        // Prevent tab from leaving input area
+        // Prevent tab from leaving input area; Enter submits or shakes on mismatch
         this.inputArea.addEventListener('keydown', (e) => {
             if (e.key === 'Tab') {
                 e.preventDefault();
+                return;
+            }
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.handleEnterSubmit();
             }
         });
+    }
+
+    getTypedText() {
+        return this.inputArea.value.replace(/\n/g, '').replace(/\r/g, '');
+    }
+
+    handleEnterSubmit() {
+        if (this.isShowingCompletion) return;
+
+        const typed = this.getTypedText();
+        if (typed === this.currentTargetText) {
+            this.gameOver();
+        } else {
+            this.triggerMismatchShake();
+        }
+    }
+
+    triggerMismatchShake() {
+        if (!this.playZone || this.isShakeActive) return;
+
+        this.isShakeActive = true;
+        this.playZone.classList.add('is-shake');
+
+        let finished = false;
+        const onShakeEnd = () => {
+            if (finished) return;
+            finished = true;
+            this.playZone.classList.remove('is-shake');
+            this.isShakeActive = false;
+            this.playZone.removeEventListener('animationend', onShakeEnd);
+            window.clearTimeout(fallbackId);
+        };
+
+        this.playZone.addEventListener('animationend', onShakeEnd);
+        const fallbackId = window.setTimeout(onShakeEnd, 500);
     }
 
     handleInput(playSound) {
@@ -201,7 +243,7 @@ class PrecisionTyper {
     }
 
     checkProgress() {
-        const typed = this.inputArea.value.replace(/\n/g, '').replace(/\r/g, '');
+        const typed = this.getTypedText();
         if (!this.isGameRunning && typed.length > 0) {
             this.startTimer();
         }
@@ -213,7 +255,7 @@ class PrecisionTyper {
     }
 
     updateLiveStats() {
-        const typed = this.inputArea.value.replace(/\n/g, '').replace(/\r/g, '');
+        const typed = this.getTypedText();
         if (typed.length === 0) return;
         
         const mins = Math.max(this.secondsElapsed / 60.0, 0.01);

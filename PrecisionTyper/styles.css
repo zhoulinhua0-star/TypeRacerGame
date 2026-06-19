@@ -426,6 +426,29 @@ body.light-mode .stat-tile.stat-label {
     gap: 1.1rem;
 }
 
+.play-zone.is-shake {
+    animation: mismatch-shake 0.45s ease;
+}
+
+.play-zone.is-shake .panel-readonly {
+    border-color: rgba(248, 113, 113, 0.55);
+}
+
+@keyframes mismatch-shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .play-zone.is-shake {
+        animation: none;
+        outline: 2px solid var(--red-text);
+        outline-offset: 4px;
+        border-radius: var(--radius-lg);
+    }
+}
+
 .panel {
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-subtle);
