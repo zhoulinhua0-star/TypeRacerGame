@@ -106,20 +106,14 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 
 #### GitHub Pages deployment
 
-The site is published from the **`main`** branch on GitHub Pages. The landing page is served at the repo root; game assets live in `PrecisionTyper/`.
+All web files live in **`PrecisionTyper/`** only. GitHub Actions (`.github/workflows/deploy-pages.yml`) publishes that folder to the site root:
 
-- **Landing:** [https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)
-- **Game:** [https://zhoulinhua0-star.github.io/TypeRacerGame/PrecisionTyper/game.html](https://zhoulinhua0-star.github.io/TypeRacerGame/PrecisionTyper/game.html)
+- **Landing:** [https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/) → `PrecisionTyper/index.html`
+- **Game:** [https://zhoulinhua0-star.github.io/TypeRacerGame/game.html](https://zhoulinhua0-star.github.io/TypeRacerGame/game.html) → `PrecisionTyper/game.html`
 
-After pushing to **`main`**, wait 1–2 minutes for **pages build and deployment** to finish, then hard-refresh (`Cmd+Shift+R`).
+**One-time setup (required):** In the repo on GitHub, open **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**. Without this, the site will not update from `PrecisionTyper/`.
 
-To run locally, use a local server in the `PrecisionTyper` folder:
-
-```bash
-cd PrecisionTyper && python3 -m http.server 8080
-```
-
-Then open `http://localhost:8080/game.html`.
+After pushing to **`main`**, wait for **Deploy GitHub Pages** to finish, then hard-refresh (`Cmd+Shift+R`).
 
 ## How to Run
 
@@ -144,16 +138,15 @@ Then open `http://localhost:8080/game.html`.
 TypeRacerGame/
 ├── TypeRacerGame.java          # Console-based version
 ├── PrecisionTyper.java         # Java Swing GUI version
-├── index.html                  # GitHub Pages landing (links into PrecisionTyper/)
-├── game.html                   # Redirect to PrecisionTyper/game.html
-├── PrecisionTyper/             # Web edition — game UI, styles, script, texts.json
-│   ├── index.html              # Landing page
-│   ├── game.html               # Typing game UI
+├── PrecisionTyper/             # Web edition (GitHub Pages publishes this folder)
+│   ├── index.html              # Landing page → live at /TypeRacerGame/
+│   ├── game.html               # Typing game → live at /TypeRacerGame/game.html
 │   ├── website.css             # Landing page styles
 │   ├── website.js              # Landing page behavior (smooth scroll, nav, reveals)
 │   ├── styles.css              # Game styles
 │   ├── script.js               # Game logic
 │   └── texts.json              # Typing passages (easy / medium / hard)
+├── .github/workflows/          # Deploy GitHub Pages (publishes PrecisionTyper/)
 ├── .nojekyll                   # GitHub Pages helper (static site hosting)
 ├── README.md                   # This file
 ├── LICENSE                     # MIT License
