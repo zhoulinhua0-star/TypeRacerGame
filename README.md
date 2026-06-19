@@ -104,6 +104,14 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 * **Browser Compatibility:** Modern browsers (Chrome, Firefox, Safari, Edge)
 * **Live URL:** [https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)
 
+#### GitHub Pages deployment
+
+The site is published from the **`main`** branch (repo root). Root `index.html` redirects to `PrecisionTyper/`, where the app lives.
+
+If you add or change files under `PrecisionTyper/`, push to **`main`** and wait 1–2 minutes for the **pages build and deployment** workflow to finish. Hard-refresh the browser (`Cmd+Shift+R`) if you still see an old version.
+
+Optional: `.github/workflows/deploy-pages.yml` can publish only the `PrecisionTyper/` folder at the site root if you switch **Settings → Pages → Build and deployment → Source** to **GitHub Actions** (then `/PrecisionTyper/` in the URL is no longer needed).
+
 ## How to Run
 
 ### Java Projects
@@ -127,6 +135,7 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 TypeRacerGame/
 ├── TypeRacerGame.java          # Console-based version
 ├── PrecisionTyper.java         # Java Swing GUI version
+├── index.html                  # GitHub Pages entry — redirects to PrecisionTyper/
 ├── PrecisionTyper/             # Web edition — static HTML, CSS & JavaScript (GitHub Pages source)
 │   ├── index.html              # Landing page
 │   ├── game.html               # Typing game UI
