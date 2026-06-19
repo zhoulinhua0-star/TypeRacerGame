@@ -34,19 +34,21 @@ Whether you're a student, professional, or casual typist, PrecisionTyper helps y
 #### 🚀 Quick Start
 
 1. **Open the Application**
-   - Visit: **[https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
-   - Or open `PrecisionTyper/index.html` locally in your browser
-   - No downloads, installations, or account creation required
+   - Landing: **[https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
+   - Game (direct): **[https://zhoulinhua0-star.github.io/TypeRacerGame/game.html](https://zhoulinhua0-star.github.io/TypeRacerGame/game.html)**
+   - Or open `PrecisionTyper/index.html` locally, then click **Play now**
+   - If the game looks outdated after a deploy, hard-refresh: **Cmd+Shift+R** (Mac) or **Ctrl+Shift+R** (Windows)
 
 2. **Choose Your Difficulty Level**
    - **Easy**: Short, simple sentences perfect for beginners
-   - **Medium**: Moderate-length passages for intermediate typists
-   - **Hard**: Complex, longer texts to challenge advanced users
+   - **Medium**: Longer passages with advanced technical vocabulary
+   - **Hard**: Very long, dense passages for expert typists
 
 3. **Start Typing**
+   - Click **Play now** on the landing page, or open the game link above
    - Type the text shown in the display area
    - The timer starts automatically when you begin
-   - Match every character exactly - 100% accuracy is required
+   - Match every character exactly — 100% accuracy is required
 
 4. **Track Your Progress**
    - Watch real-time statistics:
@@ -55,9 +57,9 @@ Whether you're a student, professional, or casual typist, PrecisionTyper helps y
      - **Time**: Elapsed time since you started
 
 5. **Complete the Challenge**
-   - Finish typing the entire text with perfect accuracy
-   - Review your final statistics
-   - Select a new text to continue practicing
+   - When you believe the passage is perfect, press **Cmd+Enter** (Mac) or **Ctrl+Enter** (Windows) to check
+   - Perfect match → success overlay with your stats; imperfect match → the panel shakes (fix errors and check again)
+   - Plain **Enter** adds a line break in the typing box only — it does not submit
 
 #### 💡 Pro Tips for Best Results
 
@@ -69,7 +71,8 @@ Whether you're a student, professional, or casual typist, PrecisionTyper helps y
   - 🔴 **Red** = Mistake (fix it!)
   - ⚪ **Grey** = Not yet typed
   - 🟡 **Yellow** = Current position
-- **Customize Your Experience**: Toggle sound effects and switch between dark/light themes in the settings
+- **Strict submit**: Press **Cmd+Enter** / **Ctrl+Enter** to finish — typing the last character alone does not auto-complete
+- **Mismatch feedback**: Wrong submit attempt shakes the typing panel
 
 #### 🎨 Features
 
