@@ -7,7 +7,7 @@
  * - Passage database loaded from texts.json
  */
 
-const APP_ASSET_VERSION = '3';
+const APP_ASSET_VERSION = '4';
 
 const FALLBACK_TEXT_DATABASE = [
     [
@@ -23,26 +23,26 @@ const FALLBACK_TEXT_DATABASE = [
         "Focus on the next key."
     ],
     [
-        "The quick brown fox jumps over the lazy dog.",
-        "Logic will get you from A to B. Imagination will take you everywhere.",
-        "First, solve the problem. Then, write the code.",
-        "Make it work, make it right, make it fast.",
-        "Talk is cheap. Show me the code.",
-        "Good code is its own best documentation.",
-        "The secret of getting ahead is getting started.",
-        "Quality is not an act, it is a habit.",
-        "There are only two hard things in computer science: cache invalidation and naming things.",
-        "Do not count the days; make the days count."
+        "Object-oriented design emphasizes encapsulation, inheritance, and polymorphism, yet experienced architects frequently prefer composition over inheritance when modeling systems that must evolve under changing requirements.",
+        "Relational databases enforce integrity through normalization, foreign keys, and transactional isolation levels; understanding ACID properties remains essential when reasoning about consistency under failure.",
+        "Microservices decompose monoliths into independently deployable services, trading operational complexity for scalability, though distributed tracing becomes mandatory when diagnosing latency across network boundaries.",
+        "CAP theorem states that distributed systems cannot simultaneously guarantee consistency, availability, and partition tolerance, forcing architects to choose trade-offs aligned with business requirements.",
+        "Continuous integration pipelines automate compilation, testing, and deployment, converting integration from a periodic crisis into a routine feedback loop after every commit.",
+        "Cryptographic hash functions map inputs to fixed-length digests with collision resistance; they underpin blockchains, password storage, and integrity verification of downloaded artifacts.",
+        "Functional programming treats computation as evaluation of mathematical functions, minimizing mutable state and side effects to simplify reasoning about correctness in concurrent environments.",
+        "Observability combines metrics, structured logging, and distributed tracing so engineers can infer internal system states from external outputs during production incidents.",
+        "Semantic versioning communicates compatibility through major, minor, and patch increments, signaling whether dependent projects can upgrade safely without breaking API contracts.",
+        "Test-driven development writes failing tests before implementation, forcing explicit requirements and enabling refactoring confidence when suites remain comprehensive."
     ],
     [
-        "To be, or not to be, that is the question.",
-        "Complexity is the enemy of reliability.",
-        "Two roads diverged in a wood, and I took the one less traveled by, and that has made all the difference.",
-        "Premature optimization is the root of all evil in programming.",
-        "The purpose of software engineering is to control complexity, not to create it.",
-        "A user interface is like a joke; if you have to explain it, it is not that good.",
-        "The cost of adding a feature is not just the time it takes to code it.",
-        "When you have eliminated the impossible, whatever remains must be the truth."
+        "To be, or not to be, that is the question: whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles, and by opposing end them; to die, to sleep—no more—and by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.",
+        "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.",
+        "The Byzantine Generals Problem illustrates how distributed processes must reach consensus despite unreliable communication channels and potentially malicious participants, forming the theoretical foundation for fault-tolerant replication protocols that underpin modern blockchain consensus mechanisms.",
+        "In software engineering, loose coupling is a design goal that seeks to reduce the interdependencies between components of a system with the goal of reducing the risk that changes in one component will require changes in any other component, thereby improving modularity and testability.",
+        "Technical debt, a metaphor introduced by Cunningham, describes the implied cost of additional rework caused by choosing an expedient solution now instead of a better approach that would take longer; compound interest applies until refactoring becomes archaeological excavation.",
+        "Concurrency is not parallelism: the former structures programs as interacting events while the latter executes simultaneous computation on multiple processors; conflating them produces race conditions that manifest only under production load.",
+        "When you have eliminated the impossible, whatever remains, however improbable, must be the truth; yet in production postmortems, teams discover that the impossible persisted because logging sampled away critical spans and metrics aggregated away outliers.",
+        "Shakespeare, Dickens, Austen, Tolstoy, and Knuth collectively remind us that precision in language demands patience: every character matters, every punctuation mark alters meaning, and every careless substitution propagates errors downstream with equal severity."
     ]
 ];
 
