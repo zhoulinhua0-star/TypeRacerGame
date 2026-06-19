@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=5">
+    <link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
     <a class="skip-link" href="#input-area">Skip to typing area</a>
@@ -90,7 +90,10 @@
             <div class="panel panel-input-shell">
                 <label class="panel-head panel-head-input" for="input-area">
                     <span class="panel-label">Your typing</span>
-                    <kbd class="panel-kbdHint" aria-hidden="true">Tab stays here</kbd>
+                    <span class="panel-kbdHints" aria-hidden="true">
+                        <kbd class="panel-kbdHint">Tab stays here</kbd>
+                        <kbd class="panel-kbdHint">Ctrl+Enter to check</kbd>
+                    </span>
                 </label>
                 <div class="panel-body panel-body-input">
                     <textarea
@@ -109,6 +112,6 @@
         </section>
     </main>
 
-    <script src="script.js?v=5"></script>
+    <script src="script.js?v=7"></script>
 </body>
 </html>

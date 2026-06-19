@@ -506,6 +506,13 @@ body.light-mode .panel-badge {
     cursor: pointer;
 }
 
+.panel-kbdHints {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.35rem;
+}
+
 .panel-kbdHint {
     font-family: var(--font-mono);
     font-size: 0.65rem;

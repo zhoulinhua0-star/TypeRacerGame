@@ -7,7 +7,7 @@
  * - Passage database loaded from texts.json
  */
 
-const APP_ASSET_VERSION = '5';
+const APP_ASSET_VERSION = '7';
 
 const FALLBACK_TEXT_DATABASE = [
     [
@@ -147,13 +147,13 @@ class PrecisionTyper {
             this.saveSettings();
         });
 
-        // Prevent tab from leaving input area; Enter submits or shakes on mismatch
+        // Prevent tab from leaving input area; Ctrl/Cmd+Enter checks passage
         this.inputArea.addEventListener('keydown', (e) => {
             if (e.key === 'Tab') {
                 e.preventDefault();
                 return;
             }
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
                 this.handleEnterSubmit();
             }
@@ -249,9 +249,6 @@ class PrecisionTyper {
         }
         this.updateTextStyles(typed);
         this.updateLiveStats();
-        if (typed === this.currentTargetText) {
-            this.gameOver();
-        }
     }
 
     updateLiveStats() {
