@@ -22,6 +22,15 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate passage database
+        run: node scripts/validate-texts.mjs
+      - name: Test web passage logic
+        run: node scripts/test-web-logic.mjs
+      - name: Test landing-page keyboard guide
+        run: node scripts/test-keyboard-guide.mjs
       - uses: actions/upload-pages-artifact@v3
         with:
           path: PrecisionTyper

@@ -1,148 +1,1623 @@
 {
+  "schemaVersion": 2,
   "easy": [
-    "The sun rises in the east and sets in the west.",
-    "System.out.println(\"Hello, World!\");",
-    "A rolling stone gathers no moss.",
-    "Clean code is happy code.",
-    "Java is a high-level, class-based, object-oriented language.",
-    "Practice makes perfect.",
-    "Keep it simple, stupid (KISS).",
-    "Debugging is like being the detective in a crime movie.",
-    "While there is life, there is hope.",
-    "Rome was not built in a day.",
-    "public static void main(String[] args)",
-    "Knowledge is power.",
-    "Better late than never.",
-    "A friend in need is a friend indeed.",
-    "Every cloud has a silver lining.",
-    "Time flies like an arrow.",
-    "Errors should never pass silently.",
-    "Love is the bridge between you and everything.",
-    "Actions speak louder than words.",
-    "Honesty is the best policy.",
-    "No pain, no gain.",
-    "Let there be light.",
-    "Think before you type.",
-    "Slow is smooth, smooth is fast.",
-    "One step at a time.",
-    "const greeting = \"Hello, world!\";",
-    "Read the docs first.",
-    "Save your work often.",
-    "A watched pot never boils.",
-    "Fortune favors the bold.",
-    "Less is more.",
-    "Stay curious, stay humble.",
-    "Good habits beat raw talent.",
-    "Start where you are.",
-    "Measure twice, cut once.",
-    "Walk before you run.",
-    "Small steps lead far.",
-    "Focus on the next key.",
-    "Type with intention.",
-    "Breath in, breath out, keep going."
+    {
+      "id": "easy-001",
+      "text": "The sun rises in the east and sets in the west.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-002",
+      "text": "System.out.println(\"Hello, World!\");",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-003",
+      "text": "A rolling stone gathers no moss.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-004",
+      "text": "Clean code is happy code.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-005",
+      "text": "Java is a high-level, class-based, object-oriented language.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-006",
+      "text": "Practice makes perfect.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-007",
+      "text": "Keep it simple, stupid (KISS).",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-008",
+      "text": "Debugging is like being the detective in a crime movie.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-009",
+      "text": "While there is life, there is hope.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-010",
+      "text": "Rome was not built in a day.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-011",
+      "text": "A precise typist reads punctuation before pressing the next key.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-012",
+      "text": "Knowledge is power.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-013",
+      "text": "Better late than never.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-014",
+      "text": "A friend in need is a friend indeed.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-015",
+      "text": "Every cloud has a silver lining.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-016",
+      "text": "Time flies like an arrow.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-017",
+      "text": "Errors should never pass silently.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-018",
+      "text": "Love is the bridge between you and everything.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-019",
+      "text": "Actions speak louder than words.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-020",
+      "text": "Honesty is the best policy.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-021",
+      "text": "No pain, no gain.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-022",
+      "text": "Let there be light.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-023",
+      "text": "Think before you type.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-024",
+      "text": "Slow is smooth, smooth is fast.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-025",
+      "text": "One step at a time.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-026",
+      "text": "const greeting = \"Hello, world!\";",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-027",
+      "text": "Read the docs first.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-028",
+      "text": "Save your work often.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-029",
+      "text": "A watched pot never boils.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-030",
+      "text": "Fortune favors the bold.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-031",
+      "text": "Less is more.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-032",
+      "text": "Stay curious, stay humble.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-033",
+      "text": "Good habits beat raw talent.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-034",
+      "text": "Start where you are.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-035",
+      "text": "Measure twice, cut once.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-036",
+      "text": "Walk before you run.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-037",
+      "text": "Small steps lead far.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-038",
+      "text": "Focus on the next key.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-039",
+      "text": "Type with intention.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "easy-040",
+      "text": "Breath in, breath out, keep going.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    }
   ],
   "medium": [
-    "Object-oriented design emphasizes encapsulation, inheritance, and polymorphism, yet experienced architects frequently prefer composition over inheritance when modeling systems that must evolve under changing requirements.",
-    "Asynchronous programming reconciles non-blocking I/O with concurrency, but deeply nested callbacks obscure control flow until promises, futures, and async/await restore readability for maintainers.",
-    "Relational databases enforce integrity through normalization, foreign keys, and transactional isolation levels; understanding ACID properties remains essential when reasoning about consistency under failure.",
-    "Microservices decompose monoliths into independently deployable services, trading operational complexity for scalability, though distributed tracing becomes mandatory when diagnosing latency across network boundaries.",
-    "The halting problem proves that no general algorithm can determine whether arbitrary programs terminate, establishing fundamental limits on static analysis and automated verification.",
-    "Type systems classify expressions before runtime execution, catching category errors early; parametric polymorphism and algebraic data types express invariants that documentation alone cannot guarantee.",
-    "Version control with distributed workflows enables parallel development through branching and merging, but rebasing history rewrites commits and demands coordination among collaborators.",
-    "Continuous integration pipelines automate compilation, testing, and deployment, converting integration from a periodic crisis into a routine feedback loop after every commit.",
-    "Cryptographic hash functions map inputs to fixed-length digests with collision resistance; they underpin blockchains, password storage, and integrity verification of downloaded artifacts.",
-    "Load balancers distribute traffic across redundant servers using round-robin, least-connections, or consistent hashing strategies, each with distinct implications for session affinity and failover behavior.",
-    "Garbage collection reclaims unreachable memory automatically, yet generational collectors, reference counting, and mark-sweep algorithms impose latency spikes that performance-sensitive systems must profile.",
-    "Design patterns document recurring solutions to structural and behavioral problems, though indiscriminate application produces over-engineered code that obscures simpler domain-specific approaches.",
-    "RESTful APIs expose resources through stateless HTTP verbs and hypermedia links, whereas GraphQL consolidates queries into a single endpoint at the cost of caching complexity and authorization granularity.",
-    "Container orchestration platforms schedule replicas, manage secrets, and perform rolling updates across clusters, abstracting infrastructure while introducing new failure modes around networking and persistent storage.",
-    "Functional programming treats computation as evaluation of mathematical functions, minimizing mutable state and side effects to simplify reasoning about correctness in concurrent environments.",
-    "Semantic versioning communicates compatibility through major, minor, and patch increments, signaling whether dependent projects can upgrade safely without breaking API contracts.",
-    "Observability combines metrics, structured logging, and distributed tracing so engineers can infer internal system states from external outputs when production incidents resist reproduction locally.",
-    "Test-driven development writes failing tests before implementation, forcing explicit requirements and enabling refactoring confidence, though brittle tests can ossify design prematurely if maintained carelessly.",
-    "Memory safety vulnerabilities arise from buffer overflows, use-after-free errors, and data races; languages with ownership systems and borrow checkers mitigate these at compile time rather than runtime.",
-    "Event sourcing persists state as an append-only log of domain events, enabling auditability and temporal queries while complicating schema evolution and projection rebuild strategies.",
-    "CAP theorem states that distributed systems cannot simultaneously guarantee consistency, availability, and partition tolerance, forcing architects to choose trade-offs aligned with business requirements.",
-    "Lexical analysis tokenizes source code into identifiers, literals, and operators before parsing constructs abstract syntax trees that semantic analyzers traverse for type checking and optimization.",
-    "Infrastructure as code declares environments in version-controlled templates, eliminating manual configuration drift and enabling reproducible provisioning across development, staging, and production.",
-    "Denormalization duplicates data to accelerate read-heavy workloads, accepting storage redundancy and update anomalies that normalized schemas deliberately prevent through strict decomposition.",
-    "Probabilistic data structures such as Bloom filters and HyperLogLog approximate membership and cardinality with bounded error, sacrificing exactness for memory efficiency at massive scale.",
-    "Dependency injection decouples object construction from business logic, facilitating unit testing through mock implementations while requiring disciplined container configuration to avoid runtime surprises.",
-    "Formal verification proves program properties against mathematical specifications, offering stronger guarantees than testing alone, though specification writing and state-space explosion limit practical adoption.",
-    "Edge computing processes data near sources rather than centralized data centers, reducing latency for real-time applications while fragmenting deployment and security management across geographic regions.",
-    "Immutable infrastructure replaces servers instead of patching them in place, ensuring reproducibility and simplifying rollback, though stateful services require external persistence layers designed for portability.",
-    "Quantum computing manipulates qubits through superposition and entanglement, promising speedups for specific algorithms while remaining incompatible with classical debugging intuition and error correction overhead."
+    {
+      "id": "medium-001",
+      "text": "Object-oriented design emphasizes encapsulation, inheritance, and polymorphism, yet experienced architects frequently prefer composition over inheritance when modeling systems that must evolve under changing requirements.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-002",
+      "text": "Asynchronous programming reconciles non-blocking I/O with concurrency, but deeply nested callbacks obscure control flow until promises, futures, and async/await restore readability for maintainers.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-003",
+      "text": "Relational databases enforce integrity through normalization, foreign keys, and transactional isolation levels; understanding ACID properties remains essential when reasoning about consistency under failure.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-004",
+      "text": "Microservices decompose monoliths into independently deployable services, trading operational complexity for scalability, though distributed tracing becomes mandatory when diagnosing latency across network boundaries.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-005",
+      "text": "The halting problem proves that no general algorithm can determine whether arbitrary programs terminate, establishing fundamental limits on static analysis and automated verification.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-006",
+      "text": "Type systems classify expressions before runtime execution, catching category errors early; parametric polymorphism and algebraic data types express invariants that documentation alone cannot guarantee.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-007",
+      "text": "Version control with distributed workflows enables parallel development through branching and merging, but rebasing history rewrites commits and demands coordination among collaborators.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-008",
+      "text": "Continuous integration pipelines automate compilation, testing, and deployment, converting integration from a periodic crisis into a routine feedback loop after every commit.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-009",
+      "text": "Cryptographic hash functions map inputs to fixed-length digests with collision resistance; they underpin blockchains, password storage, and integrity verification of downloaded artifacts.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-010",
+      "text": "Load balancers distribute traffic across redundant servers using round-robin, least-connections, or consistent hashing strategies, each with distinct implications for session affinity and failover behavior.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-011",
+      "text": "Garbage collection reclaims unreachable memory automatically, yet generational collectors, reference counting, and mark-sweep algorithms impose latency spikes that performance-sensitive systems must profile.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-012",
+      "text": "Design patterns document recurring solutions to structural and behavioral problems, though indiscriminate application produces over-engineered code that obscures simpler domain-specific approaches.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-013",
+      "text": "RESTful APIs expose resources through stateless HTTP verbs and hypermedia links, whereas GraphQL consolidates queries into a single endpoint at the cost of caching complexity and authorization granularity.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-014",
+      "text": "Container orchestration platforms schedule replicas, manage secrets, and perform rolling updates across clusters, abstracting infrastructure while introducing new failure modes around networking and persistent storage.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-015",
+      "text": "Functional programming treats computation as evaluation of mathematical functions, minimizing mutable state and side effects to simplify reasoning about correctness in concurrent environments.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-016",
+      "text": "Semantic versioning communicates compatibility through major, minor, and patch increments, signaling whether dependent projects can upgrade safely without breaking API contracts.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-017",
+      "text": "Observability combines metrics, structured logging, and distributed tracing so engineers can infer internal system states from external outputs when production incidents resist reproduction locally.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-018",
+      "text": "Test-driven development writes failing tests before implementation, forcing explicit requirements and enabling refactoring confidence, though brittle tests can ossify design prematurely if maintained carelessly.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-019",
+      "text": "Memory safety vulnerabilities arise from buffer overflows, use-after-free errors, and data races; languages with ownership systems and borrow checkers mitigate these at compile time rather than runtime.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-020",
+      "text": "Event sourcing persists state as an append-only log of domain events, enabling auditability and temporal queries while complicating schema evolution and projection rebuild strategies.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-021",
+      "text": "CAP theorem states that distributed systems cannot simultaneously guarantee consistency, availability, and partition tolerance, forcing architects to choose trade-offs aligned with business requirements.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-022",
+      "text": "Lexical analysis tokenizes source code into identifiers, literals, and operators before parsing constructs abstract syntax trees that semantic analyzers traverse for type checking and optimization.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-023",
+      "text": "Infrastructure as code declares environments in version-controlled templates, eliminating manual configuration drift and enabling reproducible provisioning across development, staging, and production.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-024",
+      "text": "Denormalization duplicates data to accelerate read-heavy workloads, accepting storage redundancy and update anomalies that normalized schemas deliberately prevent through strict decomposition.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-025",
+      "text": "Probabilistic data structures such as Bloom filters and HyperLogLog approximate membership and cardinality with bounded error, sacrificing exactness for memory efficiency at massive scale.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-026",
+      "text": "Dependency injection decouples object construction from business logic, facilitating unit testing through mock implementations while requiring disciplined container configuration to avoid runtime surprises.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-027",
+      "text": "Formal verification proves program properties against mathematical specifications, offering stronger guarantees than testing alone, though specification writing and state-space explosion limit practical adoption.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-028",
+      "text": "Edge computing processes data near sources rather than centralized data centers, reducing latency for real-time applications while fragmenting deployment and security management across geographic regions.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-029",
+      "text": "Immutable infrastructure replaces servers instead of patching them in place, ensuring reproducibility and simplifying rollback, though stateful services require external persistence layers designed for portability.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "medium-030",
+      "text": "Quantum computing manipulates qubits through superposition and entanglement, promising speedups for specific algorithms while remaining incompatible with classical debugging intuition and error correction overhead.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    }
   ],
   "hard": [
-    "To be, or not to be, that is the question: whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles, and by opposing end them; to die, to sleep—no more—and by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.",
-    "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us.",
-    "In software engineering, loose coupling is a design goal that seeks to reduce the interdependencies between components of a system with the goal of reducing the risk that changes in one component will require changes in any other component, thereby improving modularity, testability, and the capacity for independent deployment across organizational boundaries.",
-    "The Byzantine Generals Problem illustrates how distributed processes must reach consensus despite unreliable communication channels and potentially malicious participants, forming the theoretical foundation for fault-tolerant replication protocols that underpin modern blockchain consensus mechanisms and highly available database clusters operating across geographically dispersed data centers.",
-    "What's in a name? That which we call a rose by any other name would smell as sweet; so Romeo would, were he not Romeo call'd, retain that dear perfection which he owes without that title. Romeo, doff thy name, and for that name which is no part of thee take all myself.",
-    "Abstraction layers conceal implementation details behind stable interfaces, enabling substitution and evolution; however, excessive stratification produces leaky abstractions whose hidden assumptions surface catastrophically under edge cases, forcing developers to comprehend multiple levels simultaneously despite the ostensible simplification each layer promised.",
-    "MapReduce processes massive datasets by distributing map and reduce phases across commodity hardware, tolerating node failures through re-execution of tasks; subsequent frameworks evolved toward iterative graph processing and stream processing because batch-oriented pipelines proved insufficient for low-latency analytics and machine learning workloads requiring fine-grained state management.",
-    "Tis but thy name that is my enemy; thou art thyself, though not a Montague. What's Montague? It is nor hand, nor foot, nor arm, nor face, nor any other part belonging to a man. O, be some other name! What's in a name? That which we call a rose by any other word would smell as sweet.",
-    "The CAP theorem, articulated by Brewer and later formalized by Gilbert and Lynch, demonstrates that any networked shared-data system can provide at most two of the following three guarantees: consistency, availability, and partition tolerance; consequently, architects designing globally distributed databases must explicitly document which invariant they sacrifice during network partitions.",
-    "Homo faber fortunae suae: man is the architect of his own fortune, yet in probabilistic systems fortune emerges from countless micro-decisions whose aggregate behavior resists deterministic prediction; ergo, engineers instrument observability pipelines, conduct chaos experiments, and rehearse incident response because confidence without measurement is indistinguishable from superstition.",
-    "Refactoring, as defined by Fowler, is a disciplined technique for restructuring an existing body of code, altering its internal structure without changing its external behavior, thereby improving readability, reducing duplication, and facilitating subsequent feature development; nevertheless, refactoring without comprehensive automated tests resembles surgery performed without imaging—technically possible, professionally reckless.",
-    "Epistemological humility distinguishes senior engineers from confident juniors: the former enumerate failure modes, quantify uncertainty, and design graceful degradation paths, while the latter optimize prematurely for throughput metrics that collapse when traffic patterns diverge from benchmarks constructed under laboratory conditions unrepresentative of adversarial production environments.",
-    "Two roads diverged in a yellow wood, and sorry I could not travel both and be one traveler, long I stood and looked down one as far as I could to where it bent in the undergrowth; then took the other, as just as fair, and having perhaps the better claim, because it was grassy and wanted wear.",
-    "Serializability provides the strongest isolation guarantee in transactional systems, equivalent to some sequential execution of transactions; weaker levels—including read committed, repeatable read, and snapshot isolation—permit anomalies such as phantom reads and write skew that application developers must detect through explicit constraints or accept as tolerated inconsistencies documented in service-level objectives.",
-    "Phenomenology of debugging: the bug manifests intermittently, reproduces never under observation, correlates mysteriously with lunar phases and legacy cron jobs, resists bisection because main branch always builds green, and ultimately reveals itself as an off-by-one error in timezone conversion logic written eleven years ago by an intern who now sells artisanal bread in Portland.",
-    "Technical debt, a metaphor introduced by Cunningham, describes the implied cost of additional rework caused by choosing an expedient solution now instead of a better approach that would take longer; compound interest applies—unpaid debt accrues interest through slowed velocity, increased defect rates, and engineer attrition—until refactoring becomes indistinguishable from archaeological excavation.",
-    "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife. However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, that he is considered the rightful property of some one or other of their daughters.",
-    "Zero-knowledge proofs enable one party to demonstrate knowledge of a secret without revealing the secret itself, underpinning privacy-preserving authentication and cryptographic protocols; constructing such proofs requires mastery of elliptic curve pairings, polynomial commitments, and soundness arguments that remain inaccessible to practitioners who treat cryptography as a library import rather than a discipline.",
-    "Concurrency is not parallelism: the former structures programs as interacting events—locks, channels, callbacks—while the latter executes simultaneous computation on multiple processors; conflating them produces race conditions, deadlocks, and livelocks that manifest only under production load, eluding reproduction on developer laptops whose four cores never contend for the same mutex during unit tests.",
-    "All happy families are alike; each unhappy family is unhappy in its own way. Everything was in confusion in the Oblonskys' house. The wife had discovered that the husband was carrying on an intrigue with a French girl, who had been a governess in their family, and she had announced to her husband that she could not go on living in the same house with him.",
-    "The Church-Turing thesis asserts that any function naturally regarded as computable is computable by a Turing machine; quantum computers and hypercomputation proposals challenge intuitive boundaries yet have not yielded practical algorithms superseding classical complexity classes for mainstream software engineering problems outside specialized domains such as factorization and unstructured search.",
-    "Orthogonality, as Hunt and Thomas advocate in The Pragmatic Programmer, means that unrelated concepts should not affect one another; violations appear when presentation logic entangles with persistence layers, when configuration scatters across environment variables and hard-coded constants, and when a single class accumulates responsibilities until renaming it requires a company-wide meeting.",
-    "Beware of bugs in the above code; I have only proved it correct, not tried it. Knuth's warning persists because formal proof covers modeled behavior, not deployed behavior: compilers optimize unexpectedly, hardware exhibits errata, networks drop packets, and users input Unicode homoglyphs that bypass validation regexes crafted exclusively for ASCII demonstrations in technical blog posts.",
-    "Our greatest glory is not in never falling, but in rising every time we fall. In distributed systems, falling is inevitable—nodes crash, cables sever, certificates expire—so resilience engineering prioritizes recovery time objectives, idempotent retries, circuit breakers, bulkheads, and chaos drills that validate assumptions before customers validate them catastrophically during quarterly earnings calls.",
-    "Lambda calculus, invented by Alonzo Church, formalizes computation through function abstraction and application, predating electronic computers yet influencing functional languages, type theory, and compiler intermediate representations; mastering beta reduction and fixed-point combinators clarifies recursion more profoundly than memorizing syntax of any particular imperative dialect.",
-    "When you have eliminated the impossible, whatever remains, however improbable, must be the truth; yet in production postmortems, teams discover that the impossible persisted because logging sampled away critical spans, metrics aggregated away outliers, and on-call runbooks assumed dependencies that silently changed behavior during a migration announced only in a Slack thread archived after thirty days.",
-    "The Byzantine fault tolerance threshold requires at least three f plus one replicas to survive f faulty nodes; practical implementations such as Raft and Paxos sacrifice theoretical generality for understandability, enabling engineers to implement consensus without first obtaining doctoral degrees in distributed algorithms, though split-brain scenarios still punish operators who underestimate clock skew and network partition duration.",
-    "Shakespeare, Dickens, Austen, Tolstoy, Doyle, and Knuth collectively remind us that precision in language—whether literary or programmatic—demands patience: every character matters, every punctuation mark alters meaning, and every careless substitution propagates errors downstream; therefore, typists who rush sacrifice accuracy, and engineers who rush sacrifice systems, and both professions punish hubris with equal severity."
+    {
+      "id": "hard-001",
+      "text": "To be, or not to be, that is the question: whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles, and by opposing end them; to die, to sleep—no more—and by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-002",
+      "text": "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-003",
+      "text": "In software engineering, loose coupling is a design goal that seeks to reduce the interdependencies between components of a system with the goal of reducing the risk that changes in one component will require changes in any other component, thereby improving modularity, testability, and the capacity for independent deployment across organizational boundaries.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-004",
+      "text": "The Byzantine Generals Problem illustrates how distributed processes must reach consensus despite unreliable communication channels and potentially malicious participants, forming the theoretical foundation for fault-tolerant replication protocols that underpin modern blockchain consensus mechanisms and highly available database clusters operating across geographically dispersed data centers.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-005",
+      "text": "What's in a name? That which we call a rose by any other name would smell as sweet; so Romeo would, were he not Romeo call'd, retain that dear perfection which he owes without that title. Romeo, doff thy name, and for that name which is no part of thee take all myself.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-006",
+      "text": "Abstraction layers conceal implementation details behind stable interfaces, enabling substitution and evolution; however, excessive stratification produces leaky abstractions whose hidden assumptions surface catastrophically under edge cases, forcing developers to comprehend multiple levels simultaneously despite the ostensible simplification each layer promised.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-007",
+      "text": "MapReduce processes massive datasets by distributing map and reduce phases across commodity hardware, tolerating node failures through re-execution of tasks; subsequent frameworks evolved toward iterative graph processing and stream processing because batch-oriented pipelines proved insufficient for low-latency analytics and machine learning workloads requiring fine-grained state management.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-008",
+      "text": "Backpressure protects streaming systems when producers emit data faster than consumers can process it; without bounded queues, demand signaling, or load shedding, apparently healthy services accumulate latency and memory until a traffic spike becomes an outage whose root cause began minutes before the first alert fired.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-009",
+      "text": "The CAP theorem, articulated by Brewer and later formalized by Gilbert and Lynch, demonstrates that any networked shared-data system can provide at most two of the following three guarantees: consistency, availability, and partition tolerance; consequently, architects designing globally distributed databases must explicitly document which invariant they sacrifice during network partitions.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-010",
+      "text": "Homo faber fortunae suae: man is the architect of his own fortune, yet in probabilistic systems fortune emerges from countless micro-decisions whose aggregate behavior resists deterministic prediction; ergo, engineers instrument observability pipelines, conduct chaos experiments, and rehearse incident response because confidence without measurement is indistinguishable from superstition.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-011",
+      "text": "Refactoring, as defined by Fowler, is a disciplined technique for restructuring an existing body of code, altering its internal structure without changing its external behavior, thereby improving readability, reducing duplication, and facilitating subsequent feature development; nevertheless, refactoring without comprehensive automated tests resembles surgery performed without imaging—technically possible, professionally reckless.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-012",
+      "text": "Epistemological humility distinguishes senior engineers from confident juniors: the former enumerate failure modes, quantify uncertainty, and design graceful degradation paths, while the latter optimize prematurely for throughput metrics that collapse when traffic patterns diverge from benchmarks constructed under laboratory conditions unrepresentative of adversarial production environments.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-013",
+      "text": "Two roads diverged in a yellow wood, and sorry I could not travel both and be one traveler, long I stood and looked down one as far as I could to where it bent in the undergrowth; then took the other, as just as fair, and having perhaps the better claim, because it was grassy and wanted wear.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-014",
+      "text": "Serializability provides the strongest isolation guarantee in transactional systems, equivalent to some sequential execution of transactions; weaker levels—including read committed, repeatable read, and snapshot isolation—permit anomalies such as phantom reads and write skew that application developers must detect through explicit constraints or accept as tolerated inconsistencies documented in service-level objectives.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-015",
+      "text": "Phenomenology of debugging: the bug manifests intermittently, reproduces never under observation, correlates mysteriously with lunar phases and legacy cron jobs, resists bisection because main branch always builds green, and ultimately reveals itself as an off-by-one error in timezone conversion logic written eleven years ago by an intern who now sells artisanal bread in Portland.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-016",
+      "text": "Technical debt, a metaphor introduced by Cunningham, describes the implied cost of additional rework caused by choosing an expedient solution now instead of a better approach that would take longer; compound interest applies—unpaid debt accrues interest through slowed velocity, increased defect rates, and engineer attrition—until refactoring becomes indistinguishable from archaeological excavation.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-017",
+      "text": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife. However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, that he is considered the rightful property of some one or other of their daughters.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-018",
+      "text": "Zero-knowledge proofs enable one party to demonstrate knowledge of a secret without revealing the secret itself, underpinning privacy-preserving authentication and cryptographic protocols; constructing such proofs requires mastery of elliptic curve pairings, polynomial commitments, and soundness arguments that remain inaccessible to practitioners who treat cryptography as a library import rather than a discipline.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-019",
+      "text": "Concurrency is not parallelism: the former structures programs as interacting events—locks, channels, callbacks—while the latter executes simultaneous computation on multiple processors; conflating them produces race conditions, deadlocks, and livelocks that manifest only under production load, eluding reproduction on developer laptops whose four cores never contend for the same mutex during unit tests.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-020",
+      "text": "All happy families are alike; each unhappy family is unhappy in its own way. Everything was in confusion in the Oblonskys' house. The wife had discovered that the husband was carrying on an intrigue with a French girl, who had been a governess in their family, and she had announced to her husband that she could not go on living in the same house with him.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-021",
+      "text": "The Church-Turing thesis asserts that any function naturally regarded as computable is computable by a Turing machine; quantum computers and hypercomputation proposals challenge intuitive boundaries yet have not yielded practical algorithms superseding classical complexity classes for mainstream software engineering problems outside specialized domains such as factorization and unstructured search.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-022",
+      "text": "Orthogonality, as Hunt and Thomas advocate in The Pragmatic Programmer, means that unrelated concepts should not affect one another; violations appear when presentation logic entangles with persistence layers, when configuration scatters across environment variables and hard-coded constants, and when a single class accumulates responsibilities until renaming it requires a company-wide meeting.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-023",
+      "text": "Beware of bugs in the above code; I have only proved it correct, not tried it. Knuth's warning persists because formal proof covers modeled behavior, not deployed behavior: compilers optimize unexpectedly, hardware exhibits errata, networks drop packets, and users input Unicode homoglyphs that bypass validation regexes crafted exclusively for ASCII demonstrations in technical blog posts.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-024",
+      "text": "Our greatest glory is not in never falling, but in rising every time we fall. In distributed systems, falling is inevitable—nodes crash, cables sever, certificates expire—so resilience engineering prioritizes recovery time objectives, idempotent retries, circuit breakers, bulkheads, and chaos drills that validate assumptions before customers validate them catastrophically during quarterly earnings calls.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-025",
+      "text": "Lambda calculus, invented by Alonzo Church, formalizes computation through function abstraction and application, predating electronic computers yet influencing functional languages, type theory, and compiler intermediate representations; mastering beta reduction and fixed-point combinators clarifies recursion more profoundly than memorizing syntax of any particular imperative dialect.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-026",
+      "text": "When you have eliminated the impossible, whatever remains, however improbable, must be the truth; yet in production postmortems, teams discover that the impossible persisted because logging sampled away critical spans, metrics aggregated away outliers, and on-call runbooks assumed dependencies that silently changed behavior during a migration announced only in a Slack thread archived after thirty days.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-027",
+      "text": "The Byzantine fault tolerance threshold requires at least three f plus one replicas to survive f faulty nodes; practical implementations such as Raft and Paxos sacrifice theoretical generality for understandability, enabling engineers to implement consensus without first obtaining doctoral degrees in distributed algorithms, though split-brain scenarios still punish operators who underestimate clock skew and network partition duration.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "hard-028",
+      "text": "Shakespeare, Dickens, Austen, Tolstoy, Doyle, and Knuth collectively remind us that precision in language—whether literary or programmatic—demands patience: every character matters, every punctuation mark alters meaning, and every careless substitution propagates errors downstream; therefore, typists who rush sacrifice accuracy, and engineers who rush sacrifice systems, and both professions punish hubris with equal severity.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    }
   ],
   "calm": [
-    "Breathe in slowly, breathe out gently, and return to the next key.",
-    "There is nowhere else to be and nothing else to finish right now.",
-    "Let each quiet keystroke make a little more room in your mind.",
-    "The rain moves softly across the window while the room remains warm and still.",
-    "A calm pace is still progress, and every small movement is enough.",
-    "Rest your shoulders, loosen your hands, and type only the word in front of you.",
-    "Morning light gathers slowly on the floor, asking nothing from the day.",
-    "The path does not hurry through the forest, yet it always reaches the clearing.",
-    "You can begin again with this breath, this word, and this quiet moment.",
-    "Clouds pass without effort, and thoughts can be allowed to do the same.",
-    "Slow is smooth, smooth is steady, and steady is more than enough.",
-    "For now, let the sound of the keys be the only thing that needs your attention."
+    {
+      "id": "calm-001",
+      "text": "Breathe in slowly, breathe out gently, and return to the next key.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "calm-002",
+      "text": "There is nowhere else to be and nothing else to finish right now.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "calm-003",
+      "text": "Let each quiet keystroke make a little more room in your mind.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "calm-004",
+      "text": "The rain moves softly across the window while the room remains warm and still.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "calm-005",
+      "text": "A calm pace is still progress, and every small movement is enough.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "calm-006",
+      "text": "Rest your shoulders, loosen your hands, and type only the word in front of you.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "calm-007",
+      "text": "Morning light gathers slowly on the floor, asking nothing from the day.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "calm-008",
+      "text": "The path does not hurry through the forest, yet it always reaches the clearing.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "calm-009",
+      "text": "You can begin again with this breath, this word, and this quiet moment.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "calm-010",
+      "text": "Clouds pass without effort, and thoughts can be allowed to do the same.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "calm-011",
+      "text": "Slow is smooth, smooth is steady, and steady is more than enough.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "calm-012",
+      "text": "For now, let the sound of the keys be the only thing that needs your attention.",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    }
   ],
   "quotes": [
-    "The journey of a thousand miles begins with a single step.",
-    "Well begun is half done.",
-    "Simplicity is the ultimate sophistication.",
-    "Nothing is worth more than this day.",
-    "The quieter you become, the more you are able to hear.",
-    "It always seems impossible until it is done.",
-    "Adopt the pace of nature: her secret is patience.",
-    "No act of kindness, no matter how small, is ever wasted.",
-    "A smooth sea never made a skilled sailor.",
-    "What we think, we become.",
-    "Do what you can, with what you have, where you are.",
-    "The sun is new each day."
+    {
+      "id": "quotes-001",
+      "text": "Call me Ishmael.",
+      "source": {
+        "type": "public-domain-literature",
+        "title": "Moby-Dick; or, The Whale",
+        "author": "Herman Melville",
+        "url": "https://www.gutenberg.org/ebooks/2701",
+        "license": "Public domain in the United States; verify local jurisdiction",
+        "verified": true
+      }
+    },
+    {
+      "id": "quotes-002",
+      "text": "All children, except one, grow up.",
+      "source": {
+        "type": "public-domain-literature",
+        "title": "Peter Pan",
+        "author": "J. M. Barrie",
+        "url": "https://www.gutenberg.org/ebooks/16",
+        "license": "Public domain in the United States; verify local jurisdiction",
+        "verified": true
+      }
+    },
+    {
+      "id": "quotes-003",
+      "text": "There was no possibility of taking a walk that day.",
+      "source": {
+        "type": "public-domain-literature",
+        "title": "Jane Eyre",
+        "author": "Charlotte Brontë",
+        "url": "https://www.gutenberg.org/ebooks/1260",
+        "license": "Public domain in the United States; verify local jurisdiction",
+        "verified": true
+      }
+    },
+    {
+      "id": "quotes-004",
+      "text": "Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do.",
+      "source": {
+        "type": "public-domain-literature",
+        "title": "Alice's Adventures in Wonderland",
+        "author": "Lewis Carroll",
+        "url": "https://www.gutenberg.org/ebooks/11",
+        "license": "Public domain in the United States; verify local jurisdiction",
+        "verified": true
+      }
+    },
+    {
+      "id": "quotes-005",
+      "text": "The studio was filled with the rich odour of roses.",
+      "source": {
+        "type": "public-domain-literature",
+        "title": "The Picture of Dorian Gray",
+        "author": "Oscar Wilde",
+        "url": "https://www.gutenberg.org/ebooks/174",
+        "license": "Public domain in the United States; verify local jurisdiction",
+        "verified": true
+      }
+    },
+    {
+      "id": "quotes-006",
+      "text": "I declare after all there is no enjoyment like reading!",
+      "source": {
+        "type": "public-domain-literature",
+        "title": "Pride and Prejudice",
+        "author": "Jane Austen",
+        "url": "https://www.gutenberg.org/ebooks/1342",
+        "license": "Public domain in the United States; verify local jurisdiction",
+        "verified": true
+      }
+    },
+    {
+      "id": "quotes-007",
+      "text": "There is no charm equal to tenderness of heart.",
+      "source": {
+        "type": "public-domain-literature",
+        "title": "Emma",
+        "author": "Jane Austen",
+        "url": "https://www.gutenberg.org/ebooks/158",
+        "license": "Public domain in the United States; verify local jurisdiction",
+        "verified": true
+      }
+    },
+    {
+      "id": "quotes-008",
+      "text": "To Sherlock Holmes she is always the woman.",
+      "source": {
+        "type": "public-domain-literature",
+        "title": "The Adventures of Sherlock Holmes",
+        "author": "Arthur Conan Doyle",
+        "url": "https://www.gutenberg.org/ebooks/1661",
+        "license": "Public domain in the United States; verify local jurisdiction",
+        "verified": true
+      }
+    },
+    {
+      "id": "quotes-009",
+      "text": "\"Christmas won't be Christmas without any presents,\" grumbled Jo, lying on the rug.",
+      "source": {
+        "type": "public-domain-literature",
+        "title": "Little Women",
+        "author": "Louisa May Alcott",
+        "url": "https://www.gutenberg.org/ebooks/514",
+        "license": "Public domain in the United States; verify local jurisdiction",
+        "verified": true
+      }
+    },
+    {
+      "id": "quotes-010",
+      "text": "The mass of men lead lives of quiet desperation.",
+      "source": {
+        "type": "public-domain-literature",
+        "title": "Walden",
+        "author": "Henry David Thoreau",
+        "url": "https://www.gutenberg.org/ebooks/205",
+        "license": "Public domain in the United States; verify local jurisdiction",
+        "verified": true
+      }
+    },
+    {
+      "id": "quotes-011",
+      "text": "I celebrate myself, and sing myself.",
+      "source": {
+        "type": "public-domain-literature",
+        "title": "Leaves of Grass",
+        "author": "Walt Whitman",
+        "url": "https://www.gutenberg.org/ebooks/1322",
+        "license": "Public domain in the United States; verify local jurisdiction",
+        "verified": true
+      }
+    },
+    {
+      "id": "quotes-012",
+      "text": "Brevity is the soul of wit.",
+      "source": {
+        "type": "public-domain-literature",
+        "title": "Hamlet",
+        "author": "William Shakespeare",
+        "url": "https://www.gutenberg.org/ebooks/100",
+        "license": "Public domain in the United States; verify local jurisdiction",
+        "verified": true
+      }
+    }
   ],
   "code": [
-    "const pause = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));",
-    "function breathe() { return 'slow and steady'; }",
-    "git commit -m \"Keep the change small and clear\"",
-    "for (const thought of thoughts) { observe(thought); release(thought); }",
-    "if (tired) { rest(); } else { continueGently(); }",
-    "const focus = currentTask ?? 'the next key';",
-    "document.querySelector('#input-area').focus();",
-    "type Session = { wpm: number; accuracy: number; elapsed: number };",
-    "SELECT passage FROM practice_texts ORDER BY RANDOM() LIMIT 1;",
-    "public static void main(String[] args) { System.out.println(\"Begin.\"); }",
-    "while (mind.isBusy()) { breatheIn(); breatheOut(); }",
-    "export function nextStep() { return steps.shift() ?? null; }"
+    {
+      "id": "code-001",
+      "text": "const pause = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "code-002",
+      "text": "function breathe() { return 'slow and steady'; }",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "code-003",
+      "text": "git commit -m \"Keep the change small and clear\"",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "code-004",
+      "text": "for (const thought of thoughts) { observe(thought); release(thought); }",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "code-005",
+      "text": "if (tired) { rest(); } else { continueGently(); }",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "code-006",
+      "text": "const focus = currentTask ?? 'the next key';",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "code-007",
+      "text": "document.querySelector('#input-area').focus();",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "code-008",
+      "text": "type Session = { wpm: number; accuracy: number; elapsed: number };",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "code-009",
+      "text": "SELECT passage FROM practice_texts ORDER BY RANDOM() LIMIT 1;",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "code-010",
+      "text": "public static void main(String[] args) { System.out.println(\"Begin.\"); }",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "code-011",
+      "text": "while (mind.isBusy()) { breatheIn(); breatheOut(); }",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    },
+    {
+      "id": "code-012",
+      "text": "export function nextStep() { return steps.shift() ?? null; }",
+      "source": {
+        "type": "project-curated",
+        "title": "PrecisionTyper passage collection",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "Provenance pending review",
+        "verified": false
+      }
+    }
   ]
 }

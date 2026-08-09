@@ -37,6 +37,7 @@ Use General passages and visible statistics when you want structured practice, o
    - Landing: **[https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)**
    - Game (direct): **[https://zhoulinhua0-star.github.io/TypeRacerGame/game.html](https://zhoulinhua0-star.github.io/TypeRacerGame/game.html)**
    - Or open `PrecisionTyper/index.html` locally, then click **Play now**
+   - On the landing page, click the small **?** button or press **?** to open the complete keyboard workflow guide
    - If the game looks outdated after a deploy, hard-refresh: **Cmd+Shift+R** (Mac) or **Ctrl+Shift+R** (Windows)
 
 2. **Choose a Collection**
@@ -44,15 +45,16 @@ Use General passages and visible statistics when you want structured practice, o
    - **Calm**: Low-pressure, reflective passages for unwinding
    - **Quotes**: Short memorable quotations
    - **Code**: Programming-focused syntax practice
-   - **Custom**: Add one passage per line; your text stays in this browser
+   - **Custom**: Add one passage per line; your text stays in this browser when local storage is available
    - Difficulty applies to **General** only: **Easy** uses short sentences, **Medium** uses longer technical passages, and **Hard** uses dense expert-level text
 
 3. **Start Typing**
    - Click **Play now** on the landing page, or open the game link above
-   - Click anywhere in the single typing canvas and type the passage shown there
+   - Press **/** from anywhere in the game to jump directly to the typing canvas, or click the canvas
    - The timer starts automatically when you begin
    - Match every character exactly — 100% accuracy is required
    - The hidden native text input preserves normal keyboard, selection, paste, and mobile keyboard behavior while the canvas renders your progress
+   - Normal words stay together when the passage wraps. A teal **↳** marks an unusually long code token that may wrap visually; do not type the arrow or press Enter for that wrap
 
 4. **Choose Your Experience**
    - **Zen is enabled by default**: once typing begins, settings and live statistics disappear, correct text becomes visually quiet, and mistakes use soft amber feedback
@@ -73,6 +75,7 @@ Use General passages and visible statistics when you want structured practice, o
 
 | Action | Keyboard | On-screen control |
 | --- | --- | --- |
+| Jump to typing canvas | **/** | Click the canvas |
 | Check exact match | **Cmd/Ctrl + Enter** | — |
 | Restart current passage | **Esc** | **Restart** |
 | Skip to another passage | **Cmd/Ctrl + →** | **Skip** |
@@ -101,19 +104,42 @@ When Focus view is active, the first **Esc** leaves Focus; pressing **Esc** agai
 - **Real-Time Feedback**: Instant visual and statistical feedback as you type
 - **Zen Mode**: Hides live performance pressure and keeps passages flowing automatically
 - **Single Typing Canvas**: Target, feedback, and caret share one central surface instead of separate reading and input panels
+- **Keyboard Workflow Guide**: Open the compact homepage guide with the **?** button or the **?** key
 - **Focus View**: Removes navigation and settings without requiring browser fullscreen permission
 - **Text Collections**: General, calm, quotes, code, and browser-saved custom passages
 - **Strict Text Matching**: Preserves newlines, highlights extra characters, and requires an explicit exact-match check
 - **Passage Controls**: Restart and skip actions are available through both buttons and keyboard shortcuts
-- **No Immediate Repeats**: Random selection avoids choosing the same passage twice in a row when alternatives exist
+- **Full-Pool Shuffle**: Each collection/difficulty is exhausted before reshuffling, with progress preserved when browser storage is available
+- **Verified Quote Sources**: The Quotes collection includes author, work, source link, and public-domain review metadata
 - **Three Difficulty Levels**: Progress from beginner to advanced at your own pace
-- **Persistent Preferences**: Theme, Sound, Zen, collection, difficulty, and custom passages are stored locally
+- **Resilient Local Preferences**: Theme, Sound, Zen, collection, difficulty, shuffle progress, and custom passages are stored locally when allowed; blocked or full storage never prevents a session from starting
+- **Offline/File Fallback**: If `texts.json` cannot load, normalized built-in passages keep General, Calm, Quotes, and Code usable
 - **Theme Support**: Dark and light modes
 - **Soft Tap Sound**: Original Web Audio synthesis with three variants per key type and slight pitch variation; no Apple audio assets are copied or bundled
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
 - **Accessible Native Input**: Keeps native text editing and provides screen-reader target text and live status messages
 - **No Setup Required**: Open and start practicing immediately
 - **Accurate Timing**: Uses the browser's monotonic clock instead of counting timer callbacks
+
+#### Passage quality and provenance
+
+`PrecisionTyper/texts.json` uses schema version 2 and currently contains 134 passages across six pools. Every passage has a stable ID and source record. The 12 Quotes entries contain verified public-domain literature metadata; 122 older project-curated General, Calm, and Code passages are explicitly marked as awaiting a full provenance review rather than receiving guessed attribution.
+
+Before deployment, GitHub Actions runs:
+
+```bash
+node scripts/validate-texts.mjs
+node scripts/test-web-logic.mjs
+node scripts/test-keyboard-guide.mjs
+```
+
+The validator rejects invalid IDs, exact normalized duplicates, malformed text, missing source fields, and unverified Quote entries. It also reports possible near-overlaps and remaining legacy provenance work. The web-logic suite covers database normalization, fallback passage selection, full-pool shuffling, word-safe wrapping, and denied/quota-limited browser storage. The keyboard-guide suite checks the homepage dialog structure and keyboard behavior contract.
+
+#### Storage and fallback behavior
+
+PrecisionTyper is fully client-side and does not upload preferences or custom passages. When `localStorage` is available, it preserves settings, custom passages, and shuffle progress across visits. If storage access is denied or its quota is full, the game continues normally with in-memory session state. Custom passages remain usable for that session and the UI explains that they could not be persisted.
+
+If `texts.json` is unavailable—for example, when the project is opened directly through a restrictive `file://` browser context—the game automatically uses a normalized built-in fallback for General, Calm, Quotes, and Code. Only an empty Custom collection displays the prompt to add a custom passage.
 
 #### 📊 Understanding Your Statistics
 
@@ -136,7 +162,7 @@ Aim for balanced improvement - higher accuracy and consistent speed over time.
 ### Web Edition (Project 3)
 * **Technologies:** HTML5, CSS3, Vanilla JavaScript (ES6+)
 * **Dependencies:** None - pure client-side application
-* **Browser APIs:** Web Audio API, `localStorage`, and `performance.now()`
+* **Browser APIs:** Web Audio API, resilient `localStorage` access with session-only degradation, `fetch`, and `performance.now()`
 * **Browser Compatibility:** Modern browsers (Chrome, Firefox, Safari, Edge)
 * **Live URL:** [https://zhoulinhua0-star.github.io/TypeRacerGame/](https://zhoulinhua0-star.github.io/TypeRacerGame/)
 
@@ -172,7 +198,7 @@ After pushing to **`main`**, wait for **Deploy GitHub Pages** to finish, then ha
 3. Open **[http://localhost:8000/PrecisionTyper/](http://localhost:8000/PrecisionTyper/)**
 4. Use **Play now** to enter the typing canvas
 
-Opening `PrecisionTyper/index.html` directly also works, but a local server is recommended so the browser can load the full `texts.json` passage collection consistently.
+Opening `PrecisionTyper/index.html` directly also works. If the browser blocks `texts.json` under `file://`, the app uses its smaller built-in fallback database; a local server is recommended for the complete 134-passage collection.
 
 ## File Structure
 
@@ -184,7 +210,7 @@ TypeRacerGame/
 │   ├── index.html              # Landing page → live at /TypeRacerGame/
 │   ├── game.html               # Typing game → live at /TypeRacerGame/game.html
 │   ├── website.css             # Landing page styles
-│   ├── website.js              # Landing page behavior (smooth scroll, nav, reveals)
+│   ├── website.js              # Landing navigation, reveals, and keyboard-guide dialog
 │   ├── styles.css              # Canvas, Zen, Focus, theme, and responsive styles
 │   ├── script.js               # Typing, timing, persistence, and procedural audio
 │   └── texts.json              # General, Calm, Quotes, and Code passages

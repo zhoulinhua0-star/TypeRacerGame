@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="website.css">
+    <link rel="stylesheet" href="website.css?v=2">
 </head>
 <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -27,6 +27,19 @@
                     <a href="#features">Features</a>
                     <a href="#projects">Projects</a>
                     <a href="#demo">Play Game</a>
+                    <button
+                        type="button"
+                        class="guide-trigger"
+                        id="keyboard-guide-trigger"
+                        aria-label="Open keyboard guide"
+                        aria-haspopup="dialog"
+                        aria-controls="keyboard-guide"
+                        aria-expanded="false"
+                        aria-keyshortcuts="?"
+                        data-label="Keyboard guide"
+                    >
+                        <span class="guide-trigger-dot" aria-hidden="true">?</span>
+                    </button>
                     <a href="https://github.com/zhoulinhua0-star/TypeRacerGame" target="_blank" rel="noopener noreferrer" class="github-link nav-cta-outline">
                         <span>GitHub</span>
                         <svg class="icon-inline" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -37,6 +50,72 @@
             </div>
         </div>
     </nav>
+
+    <div class="guide-dialog" id="keyboard-guide" hidden>
+        <div class="guide-backdrop" data-guide-close aria-hidden="true"></div>
+        <section class="guide-card" role="dialog" aria-modal="true" aria-labelledby="guide-title" aria-describedby="guide-description">
+            <header class="guide-header">
+                <div>
+                    <p class="guide-eyebrow">Keyboard-first by design</p>
+                    <h2 class="guide-title" id="guide-title">Keyboard guide</h2>
+                    <p class="guide-description" id="guide-description">Everything you need from the first keystroke to the next passage. Press <kbd>?</kbd> anytime on this page to reopen this guide.</p>
+                </div>
+                <button type="button" class="guide-close" data-guide-close aria-label="Close keyboard guide">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </header>
+
+            <div class="guide-body">
+                <section aria-labelledby="guide-flow-title">
+                    <h3 class="guide-section-title" id="guide-flow-title">Your four-step flow</h3>
+                    <ol class="guide-flow">
+                        <li><span class="guide-step-number">1</span><kbd>/</kbd><span>Jump to typing</span></li>
+                        <li><span class="guide-step-number">2</span><span class="guide-key-word">Type</span><span>Match every character</span></li>
+                        <li><span class="guide-step-number">3</span><kbd>Ctrl/Cmd + Enter</kbd><span>Check the passage</span></li>
+                        <li><span class="guide-step-number">4</span><kbd>Enter</kbd><span>Continue after success</span></li>
+                    </ol>
+                </section>
+
+                <div class="guide-grid">
+                    <section class="guide-panel" aria-labelledby="guide-shortcuts-title">
+                        <h3 class="guide-section-title" id="guide-shortcuts-title">Session shortcuts</h3>
+                        <dl class="guide-shortcuts">
+                            <div><dt><kbd>/</kbd></dt><dd>Focus the typing canvas</dd></div>
+                            <div><dt><kbd>Esc</kbd></dt><dd>Restart the passage</dd></div>
+                            <div><dt><kbd>Ctrl/Cmd + →</kbd></dt><dd>Skip to another passage</dd></div>
+                            <div><dt><kbd>Ctrl/Cmd + Shift + F</kbd></dt><dd>Toggle Focus view</dd></div>
+                        </dl>
+                    </section>
+
+                    <section class="guide-panel" aria-labelledby="guide-display-title">
+                        <h3 class="guide-section-title" id="guide-display-title">Read the canvas</h3>
+                        <ul class="guide-notes">
+                            <li>Normal visual line wraps never require <kbd>Enter</kbd>.</li>
+                            <li>A teal <strong>↳</strong> marks a visual-only long-token wrap. Do not type the arrow.</li>
+                            <li>Green is correct, red is a mismatch, and grey is still untyped.</li>
+                        </ul>
+                    </section>
+
+                    <section class="guide-panel guide-panel-wide" aria-labelledby="guide-settings-title">
+                        <h3 class="guide-section-title" id="guide-settings-title">Change settings without a mouse</h3>
+                        <ul class="guide-settings">
+                            <li><kbd>Tab</kbd><span>Move forward through controls</span></li>
+                            <li><kbd>Shift + Tab</kbd><span>Move backward</span></li>
+                            <li><kbd>Space</kbd><span>Toggle Sound, Zen, or Light Mode</span></li>
+                            <li><kbd>↑ ↓</kbd><span>Choose Collection or Difficulty</span></li>
+                        </ul>
+                    </section>
+                </div>
+            </div>
+
+            <footer class="guide-footer">
+                <span><kbd>Esc</kbd> closes this guide</span>
+                <a href="game.html" class="btn btn-primary btn-cta guide-start">Start typing</a>
+            </footer>
+        </section>
+    </div>
 
     <main id="main-content">
         <header class="hero">
@@ -224,6 +303,6 @@
         </div>
     </footer>
 
-    <script src="website.js"></script>
+    <script src="website.js?v=2"></script>
 </body>
 </html>

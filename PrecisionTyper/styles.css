@@ -675,9 +675,10 @@ body.light-mode .typing-surface {
     line-height: 1.9;
     letter-spacing: 0.02em;
     color: var(--text-main);
-    overflow-wrap: break-word;
+    overflow-wrap: normal;
     white-space: pre-wrap;
-    word-break: break-word;
+    word-break: normal;
+    hyphens: none;
 }
 
 .text-display.is-loading {
@@ -759,6 +760,57 @@ body.light-mode .canvas-footer {
     display: inline-block;
     width: 0.6ch;
     margin-inline-start: 0.08em;
+}
+
+.text-token {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.text-token-long {
+    display: inline;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.soft-wrap-marker,
+.text-newline {
+    color: var(--teal-400);
+    font-size: 0.72em;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.soft-wrap-marker {
+    margin-inline-end: 0.25em;
+}
+
+.canvas-meta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.canvas-source {
+    color: var(--text-faint);
+    overflow: hidden;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.canvas-source:hover {
+    color: var(--teal-400);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.canvas-source:focus-visible {
+    border-radius: 4px;
+    outline: 2px solid var(--cta);
+    outline-offset: 3px;
 }
 
 .typing-help {
@@ -865,6 +917,11 @@ body.light-mode .char-cursor {
         align-items: flex-start;
         flex-direction: column;
         gap: 0.25rem;
+    }
+
+    .canvas-meta {
+        justify-content: space-between;
+        width: 100%;
     }
 
     body.focus-mode .game-main {

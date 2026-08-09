@@ -7,7 +7,17 @@
  * - Passage database loaded from texts.json
  */
 
-const APP_ASSET_VERSION = '9';
+const APP_ASSET_VERSION = '13';
+const SHUFFLE_BAGS_STORAGE_KEY = 'precisionTyperShuffleBagsV2';
+const STORAGE_WARNING_KEYS = new Set();
+const DEFAULT_SOURCE = {
+    type: 'bundled-fallback',
+    title: 'PrecisionTyper fallback passage collection',
+    author: 'PrecisionTyper contributors',
+    url: 'https://github.com/zhoulinhua0-star/TypeRacerGame',
+    license: 'Repository MIT; legacy provenance pending review',
+    verified: false
+};
 
 const FALLBACK_TEXT_DATABASE = {
     difficulty: [
@@ -65,6 +75,34 @@ const FALLBACK_TEXT_DATABASE = {
     }
 };
 
+function warnStorageOnce(action, key, error) {
+    const warningKey = `${action}:${key}`;
+    if (STORAGE_WARNING_KEYS.has(warningKey)) return;
+
+    STORAGE_WARNING_KEYS.add(warningKey);
+    console.warn(`Browser storage ${action} failed for ${key}:`, error);
+}
+
+function readStoredValue(key, fallback = null) {
+    try {
+        const value = localStorage.getItem(key);
+        return value === null ? fallback : value;
+    } catch (error) {
+        warnStorageOnce('read', key, error);
+        return fallback;
+    }
+}
+
+function writeStoredValue(key, value) {
+    try {
+        localStorage.setItem(key, value);
+        return true;
+    } catch (error) {
+        warnStorageOnce('write', key, error);
+        return false;
+    }
+}
+
 async function loadTextDatabase() {
     const response = await fetch(`texts.json?v=${APP_ASSET_VERSION}`, { cache: 'no-store' });
     if (!response.ok) {
@@ -78,22 +116,26 @@ async function loadTextDatabase() {
 function normalizeTextDatabase(data) {
     if (Array.isArray(data) && data.length >= 3) {
         return {
-            difficulty: data.map(sanitizePassageList),
-            collections: FALLBACK_TEXT_DATABASE.collections
+            difficulty: data.map((passages, index) => sanitizePassageList(passages, `general-${index}`)),
+            collections: {
+                calm: sanitizePassageList(FALLBACK_TEXT_DATABASE.collections.calm, 'calm'),
+                quotes: sanitizePassageList(FALLBACK_TEXT_DATABASE.collections.quotes, 'quotes'),
+                code: sanitizePassageList(FALLBACK_TEXT_DATABASE.collections.code, 'code')
+            }
         };
     }
 
     if (data && data.easy && data.medium && data.hard) {
         return {
             difficulty: [
-                sanitizePassageList(data.easy),
-                sanitizePassageList(data.medium),
-                sanitizePassageList(data.hard)
+                sanitizePassageList(data.easy, 'easy'),
+                sanitizePassageList(data.medium, 'medium'),
+                sanitizePassageList(data.hard, 'hard')
             ],
             collections: {
-                calm: sanitizePassageList(data.calm),
-                quotes: sanitizePassageList(data.quotes),
-                code: sanitizePassageList(data.code)
+                calm: sanitizePassageList(data.calm, 'calm'),
+                quotes: sanitizePassageList(data.quotes, 'quotes'),
+                code: sanitizePassageList(data.code, 'code')
             }
         };
     }
@@ -101,14 +143,35 @@ function normalizeTextDatabase(data) {
     throw new Error('texts.json must contain easy, medium, and hard arrays');
 }
 
-function sanitizePassageList(passages) {
+function hashPassage(text) {
+    let hash = 2166136261;
+    for (let index = 0; index < text.length; index++) {
+        hash ^= text.charCodeAt(index);
+        hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(36);
+}
+
+function sanitizePassageList(passages, group = 'passage') {
     if (!Array.isArray(passages)) {
         return [];
     }
 
     return passages
-        .filter((passage) => typeof passage === 'string')
-        .map((passage) => passage.trim())
+        .map((passage, index) => {
+            const text = typeof passage === 'string' ? passage.trim() : passage?.text?.trim();
+            if (!text) return null;
+
+            return {
+                id: typeof passage?.id === 'string'
+                    ? passage.id
+                    : `${group}-${String(index + 1).padStart(3, '0')}-${hashPassage(text)}`,
+                text,
+                source: passage?.source && typeof passage.source === 'object'
+                    ? { ...DEFAULT_SOURCE, ...passage.source }
+                    : { ...DEFAULT_SOURCE }
+            };
+        })
         .filter(Boolean);
 }
 
@@ -116,7 +179,9 @@ class PrecisionTyper {
     constructor(textDatabase) {
         this.TEXT_DATABASE = textDatabase;
 
+        this.currentPassage = null;
         this.currentTargetText = '';
+        this.shuffleBags = this.loadShuffleBags();
         this.isGameRunning = false;
         this.isShowingCompletion = false;
         this.isDismissingCompletion = false;
@@ -131,6 +196,7 @@ class PrecisionTyper {
         // DOM elements
         this.textDisplay = document.getElementById('text-display');
         this.inputArea = document.getElementById('input-area');
+        this.skipLink = document.querySelector('.skip-link');
         this.playZone = document.querySelector('.play-zone');
         this.typingCanvas = document.getElementById('typing-canvas');
         this.typingSurface = document.getElementById('typing-surface');
@@ -152,6 +218,7 @@ class PrecisionTyper {
         this.focusButton = document.getElementById('focus-button');
         this.focusButtonLabel = document.getElementById('focus-button-label');
         this.canvasPrompt = document.getElementById('canvas-prompt');
+        this.canvasSource = document.getElementById('canvas-source');
         this.canvasProgress = document.getElementById('canvas-progress');
         this.targetTextA11y = document.getElementById('target-text-a11y');
         this.gameStatus = document.getElementById('game-status');
@@ -172,7 +239,7 @@ class PrecisionTyper {
     }
 
     getCustomPassageList() {
-        return sanitizePassageList(this.customPassages.value.split(/\r?\n/));
+        return sanitizePassageList(this.customPassages.value.split(/\r?\n/), 'custom');
     }
 
     getAvailablePassages() {
@@ -189,18 +256,72 @@ class PrecisionTyper {
     pickNewText() {
         const options = this.getAvailablePassages();
         if (!options || options.length === 0) {
+            this.currentPassage = null;
             this.currentTargetText = '';
+            this.updatePassageSource();
             return false;
         }
 
-        const candidates = options.length > 1
-            ? options.filter((passage) => passage !== this.currentTargetText)
-            : options;
-        this.currentTargetText = candidates[Math.floor(Math.random() * candidates.length)];
+        const key = this.getPassagePoolKey();
+        const signature = options.map((passage) => passage.id).sort().join('|');
+        let bag = this.shuffleBags[key];
+
+        if (!bag || bag.signature !== signature || !Array.isArray(bag.remaining)) {
+            bag = { signature, remaining: this.shuffle(options.map((passage) => passage.id)), lastId: null };
+        }
+
+        if (bag.remaining.length === 0) {
+            bag.remaining = this.shuffle(options.map((passage) => passage.id));
+            if (bag.remaining.length > 1 && bag.remaining[0] === bag.lastId) {
+                [bag.remaining[0], bag.remaining[1]] = [bag.remaining[1], bag.remaining[0]];
+            }
+        }
+
+        const nextId = bag.remaining.shift();
+        this.currentPassage = options.find((passage) => passage.id === nextId) || options[0];
+        this.currentTargetText = this.currentPassage.text;
+        bag.lastId = this.currentPassage.id;
+        this.shuffleBags[key] = bag;
+        this.saveShuffleBags();
+        this.updatePassageSource();
         return true;
     }
 
+    getPassagePoolKey() {
+        const collection = this.collectionSelect.value;
+        return collection === 'general'
+            ? `${collection}:${this.difficultySelect.value}`
+            : collection;
+    }
+
+    shuffle(values) {
+        const shuffled = [...values];
+        for (let index = shuffled.length - 1; index > 0; index--) {
+            const swapIndex = Math.floor(Math.random() * (index + 1));
+            [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+        }
+        return shuffled;
+    }
+
+    loadShuffleBags() {
+        try {
+            return JSON.parse(readStoredValue(SHUFFLE_BAGS_STORAGE_KEY, '{}')) || {};
+        } catch (error) {
+            console.warn('Unable to load passage order:', error);
+            return {};
+        }
+    }
+
+    saveShuffleBags() {
+        writeStoredValue(SHUFFLE_BAGS_STORAGE_KEY, JSON.stringify(this.shuffleBags));
+    }
+
     setupEventListeners() {
+        this.skipLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.focusInput();
+        });
+
         // Input area listener
         this.inputArea.addEventListener('input', (e) => {
             this.handleInput(this.getInputSoundType(e));
@@ -273,6 +394,26 @@ class PrecisionTyper {
             if (e.key.toLowerCase() === 'f' && e.shiftKey && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
                 this.setFocusMode(!this.isFocusMode);
+                return;
+            }
+
+            const isTypingInput = e.target === this.inputArea;
+            const isEditingCustomPassages = e.target === this.customPassages;
+            const isEditableElement = e.target?.isContentEditable;
+            if (
+                e.key === '/' &&
+                !e.ctrlKey &&
+                !e.metaKey &&
+                !e.altKey &&
+                !e.isComposing &&
+                !isTypingInput &&
+                !isEditingCustomPassages &&
+                !isEditableElement &&
+                !this.isShowingCompletion
+            ) {
+                e.preventDefault();
+                this.focusInput();
+                this.announce('Typing canvas focused.');
             }
         });
 
@@ -406,17 +547,41 @@ class PrecisionTyper {
     }
 
     updateCanvasPrompt() {
+        const hasLongToken = this.currentTargetText
+            .split(/\s/u)
+            .some((token) => token.length > 32);
+
         if (!this.currentTargetText) {
-            this.canvasPrompt.textContent = 'Add a custom passage above to begin.';
+            this.canvasPrompt.textContent = this.collectionSelect.value === 'custom'
+                ? 'Add a custom passage above to begin.'
+                : 'No passages are available in this collection. Try another collection or reload.';
         } else if (document.activeElement !== this.inputArea) {
-            this.canvasPrompt.textContent = 'Click anywhere in the canvas to continue.';
+            this.canvasPrompt.textContent = 'Press / or click anywhere in the canvas to continue.';
         } else if (this.getTypedText().length === 0) {
-            this.canvasPrompt.textContent = 'Start typing when you are ready.';
+            this.canvasPrompt.textContent = hasLongToken
+                ? '↳ marks a visual-only long-token wrap; do not type the arrow or Enter.'
+                : 'Start typing when you are ready.';
         } else if (this.zenToggle.checked) {
             this.canvasPrompt.textContent = 'Stay with the next key.';
         } else {
             this.canvasPrompt.textContent = 'Keep typing, then check the exact match.';
         }
+    }
+
+    updatePassageSource() {
+        if (!this.canvasSource) return;
+
+        const source = this.currentPassage?.source;
+        if (!source || source.verified !== true) {
+            this.canvasSource.hidden = true;
+            this.canvasSource.removeAttribute('href');
+            this.canvasSource.textContent = '';
+            return;
+        }
+
+        this.canvasSource.textContent = `${source.author} · ${source.title}`;
+        this.canvasSource.href = source.url;
+        this.canvasSource.hidden = false;
     }
 
     updateCollectionControls() {
@@ -434,8 +599,10 @@ class PrecisionTyper {
             return;
         }
 
-        localStorage.setItem('precisionTyperCustomPassages', this.customPassages.value);
-        this.customStatus.textContent = `${passages.length} custom passage${passages.length === 1 ? '' : 's'} saved.`;
+        const wasSaved = writeStoredValue('precisionTyperCustomPassages', this.customPassages.value);
+        this.customStatus.textContent = wasSaved
+            ? `${passages.length} custom passage${passages.length === 1 ? '' : 's'} saved.`
+            : 'Browser storage is unavailable. These passages will work for this session only.';
         this.resetGame();
     }
 
@@ -447,11 +614,11 @@ class PrecisionTyper {
             difficulty: this.difficultySelect.value,
             collection: this.collectionSelect.value
         };
-        localStorage.setItem('precisionTyperSettings', JSON.stringify(settings));
+        writeStoredValue('precisionTyperSettings', JSON.stringify(settings));
     }
 
     loadSettings() {
-        const saved = localStorage.getItem('precisionTyperSettings');
+        const saved = readStoredValue('precisionTyperSettings');
         if (saved) {
             try {
                 const settings = JSON.parse(saved);
@@ -470,7 +637,7 @@ class PrecisionTyper {
             }
         }
 
-        this.customPassages.value = localStorage.getItem('precisionTyperCustomPassages') || '';
+        this.customPassages.value = readStoredValue('precisionTyperCustomPassages', '');
         this.applyZenMode();
     }
 
@@ -531,7 +698,9 @@ class PrecisionTyper {
 
     updateTextStyles(typed) {
         if (!this.currentTargetText) {
-            this.textDisplay.textContent = 'Add a custom passage above, then choose Save & start.';
+            this.textDisplay.textContent = this.collectionSelect.value === 'custom'
+                ? 'Add a custom passage above, then choose Save & start.'
+                : 'This collection could not be loaded. Try another collection or reload the page.';
             this.textDisplay.classList.add('is-loading');
             this.targetTextA11y.textContent = '';
             this.canvasProgress.textContent = '0 / 0';
@@ -546,27 +715,68 @@ class PrecisionTyper {
             0,
             Math.min(Number.isInteger(this.inputArea.selectionStart) ? this.inputArea.selectionStart : typed.length, typed.length)
         );
-        let html = '';
+        const displayCharacters = [];
         for (let i = 0; i < this.currentTargetText.length; i++) {
             const char = this.escapeCharacter(this.currentTargetText[i]);
 
             if (i < typed.length) {
                 const match = typed[i] === this.currentTargetText[i];
                 const cursorClass = i === caretPosition ? ' char-cursor' : '';
-                html += `<span class="char-${match ? 'correct' : 'wrong'}${cursorClass}">${char}</span>`;
+                displayCharacters.push({
+                    value: this.currentTargetText[i],
+                    markup: `<span class="char-${match ? 'correct' : 'wrong'}${cursorClass}">${char}</span>`
+                });
             } else {
                 if (i === caretPosition) {
-                    html += `<span class="char-cursor">${char}</span>`;
+                    displayCharacters.push({
+                        value: this.currentTargetText[i],
+                        markup: `<span class="char-cursor">${char}</span>`
+                    });
                 } else {
-                    html += `<span class="char-untyped">${char}</span>`;
+                    displayCharacters.push({
+                        value: this.currentTargetText[i],
+                        markup: `<span class="char-untyped">${char}</span>`
+                    });
                 }
             }
         }
 
         for (let i = this.currentTargetText.length; i < typed.length; i++) {
             const cursorClass = i === caretPosition ? ' char-cursor' : '';
-            html += `<span class="char-wrong char-extra${cursorClass}">${this.escapeCharacter(typed[i])}</span>`;
+            displayCharacters.push({
+                value: typed[i],
+                markup: `<span class="char-wrong char-extra${cursorClass}">${this.escapeCharacter(typed[i])}</span>`
+            });
         }
+
+        let html = '';
+        let tokenMarkup = '';
+        let tokenLength = 0;
+        const flushToken = () => {
+            if (!tokenMarkup) return;
+            const isLongToken = tokenLength > 32;
+            const marker = isLongToken
+                ? '<span class="soft-wrap-marker" aria-hidden="true">↳</span>'
+                : '';
+            html += `<span class="text-token${isLongToken ? ' text-token-long' : ''}">${marker}${tokenMarkup}</span>`;
+            tokenMarkup = '';
+            tokenLength = 0;
+        };
+
+        for (const character of displayCharacters) {
+            if (character.value === '\n') {
+                flushToken();
+                html += '<span class="text-newline" aria-hidden="true">↵</span><br>';
+            } else if (/\s/u.test(character.value)) {
+                flushToken();
+                html += character.markup;
+            } else {
+                tokenMarkup += character.markup;
+                tokenLength++;
+            }
+        }
+        flushToken();
+
         if (caretPosition === typed.length && typed.length >= this.currentTargetText.length) {
             html += '<span class="char-cursor char-end" aria-hidden="true">&nbsp;</span>';
         }
@@ -577,8 +787,8 @@ class PrecisionTyper {
         if (char === '<') return '&lt;';
         if (char === '>') return '&gt;';
         if (char === '&') return '&amp;';
-        if (char === ' ') return '&nbsp;';
-        if (char === '\n') return '↵\n';
+        if (char === ' ') return ' ';
+        if (char === '\n') return '';
         return char;
     }
 
@@ -815,7 +1025,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     textDisplay.classList.add('is-loading');
     inputArea.disabled = true;
 
-    let textDatabase = FALLBACK_TEXT_DATABASE;
+    // Keep the offline/file:// fallback in the same passage-object shape as texts.json.
+    // Passing the legacy difficulty array also attaches and normalizes fallback collections.
+    let textDatabase = normalizeTextDatabase(FALLBACK_TEXT_DATABASE.difficulty);
     try {
         textDatabase = await loadTextDatabase();
     } catch (error) {
