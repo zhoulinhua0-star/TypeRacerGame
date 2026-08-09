@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=11">
+    <link rel="stylesheet" href="styles.css?v=12">
 </head>
 <body>
     <a class="skip-link" href="#input-area">Skip to typing area</a>
@@ -36,7 +36,7 @@
 
     <main class="game-main container">
         <header class="game-toolbar" aria-label="Settings &amp; statistics">
-            <div class="game-toolbar-card controls-card">
+            <div class="game-toolbar-card controls-card" id="session-controls">
                 <h2 class="visually-hidden">Session options</h2>
                 <div class="controls-row">
                     <div class="field-group">
@@ -136,7 +136,7 @@
                         autocapitalize="off"
                         inputmode="text"
                         rows="1"
-                        aria-keyshortcuts="/"
+                        aria-keyshortcuts="/ Enter Control+Enter Meta+Enter"
                         aria-label="Type the displayed passage exactly"
                         aria-describedby="target-text-a11y typing-help"
                     ></textarea>
@@ -144,17 +144,23 @@
                 <div class="canvas-footer">
                     <span id="canvas-prompt">Press / or click anywhere in the canvas to start typing.</span>
                     <span class="canvas-meta">
+                        <button
+                            type="button"
+                            class="canvas-settings-button"
+                            id="session-settings-button"
+                            aria-controls="session-controls"
+                        >Session settings</button>
                         <a class="canvas-source" id="canvas-source" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
                         <span class="canvas-progress" id="canvas-progress" aria-hidden="true">0 / 0</span>
                     </span>
                 </div>
             </div>
-            <p class="typing-help" id="typing-help"><kbd>/</kbd> type · <kbd>Ctrl/Cmd + Enter</kbd> check · <kbd>Esc</kbd> restart · <kbd>Ctrl/Cmd + →</kbd> skip · <kbd>Ctrl/Cmd + Shift + F</kbd> focus</p>
+            <p class="typing-help" id="typing-help"><kbd>/</kbd> type · <kbd>Enter</kbd> check · <kbd>Tab</kbd> settings · <kbd>Esc</kbd> restart · <kbd>Ctrl/Cmd + →</kbd> skip · <kbd>Ctrl/Cmd + Shift + F</kbd> focus</p>
             <p class="visually-hidden" id="target-text-a11y"></p>
             <p class="visually-hidden" id="game-status" aria-live="polite"></p>
         </section>
     </main>
 
-    <script src="script.js?v=13"></script>
+    <script src="script.js?v=14"></script>
 </body>
 </html>

@@ -730,6 +730,31 @@ body.light-mode .canvas-footer {
     transition: opacity var(--transition);
 }
 
+.canvas-settings-button {
+    flex-shrink: 0;
+    min-height: 44px;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-faint);
+    font: 700 0.75rem/1 var(--font-sans);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+
+.canvas-settings-button:hover {
+    border-color: var(--border-strong);
+    background: color-mix(in srgb, var(--teal-500) 8%, transparent);
+    color: var(--teal-400);
+}
+
+.canvas-settings-button:focus-visible {
+    outline: 2px solid var(--cta);
+    outline-offset: 2px;
+}
+
 /* Character states — script-generated */
 .char-correct {
     color: var(--green-text);
@@ -794,6 +819,7 @@ body.light-mode .canvas-footer {
 }
 
 .canvas-source {
+    min-width: 0;
     color: var(--text-faint);
     overflow: hidden;
     text-decoration: none;
@@ -830,6 +856,13 @@ body.zen-mode.zen-active .game-toolbar {
     visibility: hidden;
     pointer-events: none;
     transform: translateY(-8px);
+}
+
+body.zen-mode.zen-active.settings-active .game-toolbar {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
 }
 
 body.zen-mode.zen-active .canvas-progress {

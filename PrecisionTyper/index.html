@@ -73,7 +73,7 @@
                     <ol class="guide-flow">
                         <li><span class="guide-step-number">1</span><kbd>/</kbd><span>Jump to typing</span></li>
                         <li><span class="guide-step-number">2</span><span class="guide-key-word">Type</span><span>Match every character</span></li>
-                        <li><span class="guide-step-number">3</span><kbd>Ctrl/Cmd + Enter</kbd><span>Check the passage</span></li>
+                        <li><span class="guide-step-number">3</span><kbd>Enter</kbd><span>Check the passage</span></li>
                         <li><span class="guide-step-number">4</span><kbd>Enter</kbd><span>Continue after success</span></li>
                     </ol>
                 </section>
@@ -92,7 +92,8 @@
                     <section class="guide-panel" aria-labelledby="guide-display-title">
                         <h3 class="guide-section-title" id="guide-display-title">Read the canvas</h3>
                         <ul class="guide-notes">
-                            <li>Normal visual line wraps never require <kbd>Enter</kbd>.</li>
+                            <li><kbd>Enter</kbd> checks the passage unless the target's next character is a real newline.</li>
+                            <li>Normal visual line wraps never require a line break.</li>
                             <li>A teal <strong>↳</strong> marks a visual-only long-token wrap. Do not type the arrow.</li>
                             <li>Green is correct, red is a mismatch, and grey is still untyped.</li>
                         </ul>
@@ -101,10 +102,12 @@
                     <section class="guide-panel guide-panel-wide" aria-labelledby="guide-settings-title">
                         <h3 class="guide-section-title" id="guide-settings-title">Change settings without a mouse</h3>
                         <ul class="guide-settings">
-                            <li><kbd>Tab</kbd><span>Move forward through controls</span></li>
+                            <li><kbd>Tab</kbd><span>Reach Session settings from the canvas</span></li>
+                            <li><kbd>Enter</kbd><span>Open the existing settings controls</span></li>
                             <li><kbd>Shift + Tab</kbd><span>Move backward</span></li>
                             <li><kbd>Space</kbd><span>Toggle Sound, Zen, or Light Mode</span></li>
                             <li><kbd>↑ ↓</kbd><span>Choose Collection or Difficulty</span></li>
+                            <li><kbd>Esc</kbd> / <kbd>/</kbd><span>Return to the typing canvas</span></li>
                         </ul>
                     </section>
                 </div>

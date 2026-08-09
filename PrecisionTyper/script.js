@@ -7,7 +7,7 @@
  * - Passage database loaded from texts.json
  */
 
-const APP_ASSET_VERSION = '13';
+const APP_ASSET_VERSION = '14';
 const SHUFFLE_BAGS_STORAGE_KEY = 'precisionTyperShuffleBagsV2';
 const STORAGE_WARNING_KEYS = new Set();
 const DEFAULT_SOURCE = {
@@ -192,6 +192,9 @@ class PrecisionTyper {
         this.completionOverlay = null;
         this.isShakeActive = false;
         this.isFocusMode = false;
+        this.isSettingsMode = false;
+        this.restoreFocusModeAfterSettings = false;
+        this.mismatchFeedbackTimer = null;
         
         // DOM elements
         this.textDisplay = document.getElementById('text-display');
@@ -217,6 +220,7 @@ class PrecisionTyper {
         this.skipButton = document.getElementById('skip-button');
         this.focusButton = document.getElementById('focus-button');
         this.focusButtonLabel = document.getElementById('focus-button-label');
+        this.sessionSettingsButton = document.getElementById('session-settings-button');
         this.canvasPrompt = document.getElementById('canvas-prompt');
         this.canvasSource = document.getElementById('canvas-source');
         this.canvasProgress = document.getElementById('canvas-progress');
@@ -319,7 +323,7 @@ class PrecisionTyper {
     setupEventListeners() {
         this.skipLink.addEventListener('click', (e) => {
             e.preventDefault();
-            this.focusInput();
+            this.returnToTyping();
         });
 
         // Input area listener
@@ -372,8 +376,19 @@ class PrecisionTyper {
             this.setFocusMode(!this.isFocusMode);
         });
 
+        this.sessionSettingsButton.addEventListener('click', () => {
+            this.openSessionSettings();
+        });
+
+        this.gameToolbar.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isSettingsMode) {
+                e.preventDefault();
+                this.closeSessionSettings();
+            }
+        });
+
         this.typingSurface.addEventListener('click', () => {
-            this.focusInput();
+            this.returnToTyping();
         });
 
         this.inputArea.addEventListener('focus', () => {
@@ -412,16 +427,14 @@ class PrecisionTyper {
                 !this.isShowingCompletion
             ) {
                 e.preventDefault();
-                this.focusInput();
-                this.announce('Typing canvas focused.');
+                this.returnToTyping();
             }
         });
 
-        // Ctrl/Cmd+Enter checks, Escape restarts, and Ctrl/Cmd+Right skips.
+        // Enter checks unless the target expects a newline. Ctrl/Cmd+Enter always checks.
         this.inputArea.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-                e.preventDefault();
-                this.handleEnterSubmit();
+            if (e.key === 'Enter') {
+                this.handleTypingEnter(e);
             } else if (e.key === 'Escape') {
                 e.preventDefault();
                 if (this.isFocusMode) {
@@ -446,6 +459,25 @@ class PrecisionTyper {
         return this.inputArea.value.replace(/\r\n?/g, '\n');
     }
 
+    shouldInsertTargetNewline() {
+        const caretPosition = Number.isInteger(this.inputArea.selectionStart)
+            ? this.inputArea.selectionStart
+            : this.getTypedText().length;
+        return this.currentTargetText[caretPosition] === '\n';
+    }
+
+    handleTypingEnter(event) {
+        if (event.isComposing) return;
+
+        const forceCheck = event.ctrlKey || event.metaKey;
+        if (!forceCheck && this.shouldInsertTargetNewline()) {
+            return;
+        }
+
+        event.preventDefault();
+        this.handleEnterSubmit();
+    }
+
     handleEnterSubmit() {
         if (this.isShowingCompletion) return;
 
@@ -453,9 +485,24 @@ class PrecisionTyper {
         if (typed === this.currentTargetText) {
             this.gameOver();
         } else {
-            this.triggerMismatchShake();
+            if (this.zenToggle.checked) {
+                this.showGentleMismatchFeedback();
+            } else {
+                this.triggerMismatchShake();
+            }
             this.announce('The passage is not an exact match yet. Correct the highlighted characters and try again.');
         }
+    }
+
+    showGentleMismatchFeedback() {
+        if (this.mismatchFeedbackTimer) {
+            window.clearTimeout(this.mismatchFeedbackTimer);
+        }
+        this.canvasPrompt.textContent = 'Not an exact match yet — stay with the highlighted keys.';
+        this.mismatchFeedbackTimer = window.setTimeout(() => {
+            this.mismatchFeedbackTimer = null;
+            this.updateCanvasPrompt();
+        }, 1800);
     }
 
     announce(message) {
@@ -523,7 +570,56 @@ class PrecisionTyper {
         this.updateTextStyles(this.getTypedText());
     }
 
+    returnToTyping() {
+        if (this.isSettingsMode) {
+            this.closeSessionSettings();
+            return;
+        }
+        if (this.inputArea.disabled) return;
+
+        this.focusInput();
+        this.announce('Typing canvas focused.');
+    }
+
+    openSessionSettings() {
+        if (this.isSettingsMode || this.isShowingCompletion) return;
+
+        this.isSettingsMode = true;
+        this.restoreFocusModeAfterSettings = this.isFocusMode;
+        document.body.classList.add('settings-active');
+        if (this.restoreFocusModeAfterSettings) {
+            document.body.classList.remove('focus-mode');
+        }
+        this.syncChromeVisibility();
+        this.collectionSelect.focus();
+        this.announce('Session settings opened. Use Tab to move, arrow keys to choose, Space to toggle, and Escape or slash to return to typing.');
+    }
+
+    closeSessionSettings() {
+        if (!this.isSettingsMode) return;
+
+        this.isSettingsMode = false;
+        document.body.classList.remove('settings-active');
+        if (this.restoreFocusModeAfterSettings && this.isFocusMode) {
+            document.body.classList.add('focus-mode');
+        }
+        this.restoreFocusModeAfterSettings = false;
+        this.syncChromeVisibility();
+        if (this.inputArea.disabled) {
+            this.sessionSettingsButton.focus({ preventScroll: true });
+        } else {
+            this.focusInput();
+        }
+        this.typingCanvas.scrollIntoView({ block: 'center' });
+        this.announce(this.inputArea.disabled
+            ? 'Session settings closed. Add a passage to begin typing.'
+            : 'Session settings closed. Typing canvas focused.');
+    }
+
     setFocusMode(enabled) {
+        if (this.isSettingsMode) {
+            this.closeSessionSettings();
+        }
         this.isFocusMode = enabled;
         document.body.classList.toggle('focus-mode', enabled);
         this.focusButton.setAttribute('aria-pressed', String(enabled));
@@ -535,7 +631,7 @@ class PrecisionTyper {
 
     syncChromeVisibility() {
         const zenIsActive = this.zenToggle.checked && this.isGameRunning;
-        const hideToolbar = this.isFocusMode || zenIsActive;
+        const hideToolbar = !this.isSettingsMode && (this.isFocusMode || zenIsActive);
         document.body.classList.toggle('zen-active', zenIsActive);
         this.gameToolbar.inert = hideToolbar;
         this.gameToolbar.setAttribute('aria-hidden', String(hideToolbar));
@@ -878,6 +974,10 @@ class PrecisionTyper {
             window.clearTimeout(this.autoAdvanceTimer);
             this.autoAdvanceTimer = null;
         }
+        if (this.mismatchFeedbackTimer) {
+            window.clearTimeout(this.mismatchFeedbackTimer);
+            this.mismatchFeedbackTimer = null;
+        }
 
         this.completionOverlay.classList.remove('is-visible');
         window.setTimeout(() => {
@@ -928,6 +1028,10 @@ class PrecisionTyper {
             window.clearTimeout(this.autoAdvanceTimer);
             this.autoAdvanceTimer = null;
         }
+        if (this.mismatchFeedbackTimer) {
+            window.clearTimeout(this.mismatchFeedbackTimer);
+            this.mismatchFeedbackTimer = null;
+        }
         this.elapsedSeconds = 0;
         this.startedAt = null;
         this.isGameRunning = false;
@@ -941,7 +1045,7 @@ class PrecisionTyper {
         }
         this.updateTextStyles('');
         this.inputArea.disabled = !this.currentTargetText;
-        if (!this.inputArea.disabled) {
+        if (!this.inputArea.disabled && !this.isSettingsMode) {
             this.focusInput();
         }
     }

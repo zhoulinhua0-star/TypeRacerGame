@@ -3,10 +3,24 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const source = fs.readFileSync(new URL('../PrecisionTyper/script.js', import.meta.url), 'utf8');
+const gameHtml = fs.readFileSync(new URL('../PrecisionTyper/game.html', import.meta.url), 'utf8');
 const storage = new Map();
+const bodyClasses = new Set();
 const context = vm.createContext({
     console,
-    document: { addEventListener() {} },
+    document: {
+        addEventListener() {},
+        body: {
+            classList: {
+                add(value) { bodyClasses.add(value); },
+                remove(value) { bodyClasses.delete(value); },
+                toggle(value, enabled) {
+                    if (enabled) bodyClasses.add(value);
+                    else bodyClasses.delete(value);
+                }
+            }
+        }
+    },
     window: {},
     localStorage: {
         getItem(key) { return storage.get(key) ?? null; },
@@ -25,6 +39,11 @@ const normalized = normalizeTextDatabase(database);
 assert.equal(normalized.difficulty.flat().length, 98);
 assert.equal(Object.values(normalized.collections).flat().length, 36);
 assert.equal(normalized.collections.quotes.every((passage) => passage.source.verified), true);
+const gameIds = [...gameHtml.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+assert.equal(new Set(gameIds).size, gameIds.length, 'Game page IDs must be unique');
+assert.match(gameHtml, /id="input-area"[\s\S]*id="session-settings-button"/);
+assert.match(gameHtml, /id="session-settings-button"[\s\S]*aria-controls="session-controls"/);
+assert.match(gameHtml, /aria-keyshortcuts="\/ Enter Control\+Enter Meta\+Enter"/);
 
 // Regression: a failed texts.json request must still provide usable built-in passages.
 const fallbackNormalized = normalizeTextDatabase(FALLBACK_TEXT_DATABASE.difficulty);
@@ -58,6 +77,144 @@ renderGame.currentTargetText = "document.querySelector('#input-area').focus();";
 renderGame.updateTextStyles('');
 assert.match(renderGame.textDisplay.innerHTML, /text-token-long/);
 assert.match(renderGame.textDisplay.innerHTML, /soft-wrap-marker/);
+
+// Enter checks by default, but preserves a real newline when the target expects one.
+const enterGame = Object.create(PrecisionTyper.prototype);
+enterGame.currentTargetText = 'first\nsecond';
+enterGame.inputArea = { value: 'first', selectionStart: 5 };
+let checks = 0;
+enterGame.handleEnterSubmit = () => { checks++; };
+let prevented = false;
+enterGame.handleTypingEnter({
+    ctrlKey: false,
+    metaKey: false,
+    isComposing: false,
+    preventDefault() { prevented = true; }
+});
+assert.equal(prevented, false);
+assert.equal(checks, 0);
+
+enterGame.inputArea.selectionStart = 2;
+enterGame.handleTypingEnter({
+    ctrlKey: false,
+    metaKey: false,
+    isComposing: false,
+    preventDefault() { prevented = true; }
+});
+assert.equal(prevented, true);
+assert.equal(checks, 1);
+
+prevented = false;
+enterGame.inputArea.selectionStart = 5;
+enterGame.handleTypingEnter({
+    ctrlKey: true,
+    metaKey: false,
+    isComposing: false,
+    preventDefault() { prevented = true; }
+});
+assert.equal(prevented, true);
+assert.equal(checks, 2);
+
+const mismatchGame = Object.create(PrecisionTyper.prototype);
+mismatchGame.isShowingCompletion = false;
+mismatchGame.currentTargetText = 'target';
+mismatchGame.inputArea = { value: 'typo' };
+mismatchGame.zenToggle = { checked: true };
+let gentleFeedback = 0;
+let shakes = 0;
+mismatchGame.showGentleMismatchFeedback = () => { gentleFeedback++; };
+mismatchGame.triggerMismatchShake = () => { shakes++; };
+mismatchGame.announce = () => {};
+mismatchGame.handleEnterSubmit();
+assert.equal(gentleFeedback, 1);
+assert.equal(shakes, 0);
+
+mismatchGame.zenToggle.checked = false;
+mismatchGame.handleEnterSubmit();
+assert.equal(gentleFeedback, 1);
+assert.equal(shakes, 1);
+
+// Session settings reuse native controls and restore an active Focus view on exit.
+bodyClasses.clear();
+bodyClasses.add('focus-mode');
+const settingsGame = Object.create(PrecisionTyper.prototype);
+settingsGame.isSettingsMode = false;
+settingsGame.isShowingCompletion = false;
+settingsGame.isFocusMode = true;
+settingsGame.isGameRunning = true;
+settingsGame.zenToggle = { checked: true };
+settingsGame.gameToolbar = {
+    inert: true,
+    setAttribute(name, value) { this[name] = value; }
+};
+let settingsButtonFocused = 0;
+settingsGame.sessionSettingsButton = {
+    focus() { settingsButtonFocused++; }
+};
+settingsGame.inputArea = { disabled: false };
+let settingsFocused = 0;
+let canvasFocused = 0;
+let canvasScrolled = 0;
+settingsGame.collectionSelect = { focus() { settingsFocused++; } };
+settingsGame.typingCanvas = { scrollIntoView() { canvasScrolled++; } };
+settingsGame.focusInput = () => { canvasFocused++; };
+settingsGame.announce = () => {};
+
+settingsGame.openSessionSettings();
+assert.equal(settingsGame.isSettingsMode, true);
+assert.equal(settingsFocused, 1);
+assert.equal(settingsGame.gameToolbar.inert, false);
+assert.equal(bodyClasses.has('settings-active'), true);
+assert.equal(bodyClasses.has('focus-mode'), false);
+
+settingsGame.closeSessionSettings();
+assert.equal(settingsGame.isSettingsMode, false);
+assert.equal(canvasFocused, 1);
+assert.equal(canvasScrolled, 1);
+assert.equal(settingsGame.gameToolbar.inert, true);
+assert.equal(bodyClasses.has('settings-active'), false);
+assert.equal(bodyClasses.has('focus-mode'), true);
+
+settingsGame.focusButton = {
+    setAttribute(name, value) { this[name] = value; }
+};
+settingsGame.focusButtonLabel = { textContent: '' };
+settingsGame.openSessionSettings();
+settingsGame.setFocusMode(false);
+assert.equal(settingsGame.isSettingsMode, false);
+assert.equal(settingsGame.isFocusMode, false);
+assert.equal(bodyClasses.has('settings-active'), false);
+assert.equal(bodyClasses.has('focus-mode'), false);
+
+settingsGame.inputArea.disabled = true;
+settingsGame.openSessionSettings();
+settingsGame.closeSessionSettings();
+assert.equal(settingsButtonFocused, 1);
+
+// Every canvas-return path closes settings before it focuses the typing input.
+const returnGame = Object.create(PrecisionTyper.prototype);
+returnGame.isSettingsMode = true;
+returnGame.inputArea = { disabled: false };
+let returnCloses = 0;
+let returnFocuses = 0;
+let returnAnnouncements = 0;
+returnGame.closeSessionSettings = () => {
+    returnCloses++;
+    returnGame.isSettingsMode = false;
+};
+returnGame.focusInput = () => { returnFocuses++; };
+returnGame.announce = () => { returnAnnouncements++; };
+
+returnGame.returnToTyping();
+assert.equal(returnCloses, 1);
+assert.equal(returnFocuses, 0);
+assert.equal(returnAnnouncements, 0);
+
+returnGame.returnToTyping();
+assert.equal(returnCloses, 1);
+assert.equal(returnFocuses, 1);
+assert.equal(returnAnnouncements, 1);
+assert.ok((source.match(/this\.returnToTyping\(\);/g) || []).length >= 3);
 
 const deckGame = Object.create(PrecisionTyper.prototype);
 deckGame.collectionSelect = { value: 'general' };

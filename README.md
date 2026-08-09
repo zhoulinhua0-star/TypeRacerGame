@@ -54,35 +54,39 @@ Use General passages and visible statistics when you want structured practice, o
    - The timer starts automatically when you begin
    - Match every character exactly — 100% accuracy is required
    - The hidden native text input preserves normal keyboard, selection, paste, and mobile keyboard behavior while the canvas renders your progress
-   - Normal words stay together when the passage wraps. A teal **↳** marks an unusually long code token that may wrap visually; do not type the arrow or press Enter for that wrap
+   - Normal words stay together when the passage wraps. A teal **↳** marks an unusually long code token that may wrap visually; do not type the arrow or add a line break for that wrap
 
 4. **Choose Your Experience**
    - **Zen is enabled by default**: once typing begins, settings and live statistics disappear, correct text becomes visually quiet, and mistakes use soft amber feedback
    - **Focus view**: expands the canvas and removes navigation, settings, and help without requesting browser fullscreen permission
    - **Sound**: enables an original, softly synthesized tap with subtle variations for regular keys, Space, Backspace, and Enter
+   - **Session settings**: from the typing canvas, press **Tab** and then **Enter** to reach Collection, Difficulty, Sound, Zen, and Light Mode without a mouse; **Esc**, **/**, or clicking the canvas returns to typing
    - Turn off Zen whenever you want to watch real-time statistics:
      - **WPM (Words Per Minute)**: Your typing speed
      - **Accuracy**: Percentage of correct characters
      - **Time**: Elapsed time since you started
 
 5. **Complete the Challenge**
-   - When you believe the passage is perfect, press **Cmd+Enter** (Mac) or **Ctrl+Enter** (Windows) to check
-   - Perfect match → success overlay with your stats; imperfect match → the panel shakes (fix errors and check again)
+   - When you believe the passage is perfect, press **Enter** to check; **Cmd+Enter** (Mac) and **Ctrl+Enter** (Windows) remain supported aliases
+   - Perfect match → success overlay with your stats; imperfect match → a shake in regular practice or a gentler prompt in Zen
    - In Zen mode, the next passage starts automatically about 2.4 seconds after completion
-   - Plain **Enter** adds a line break and counts as a character, so it will not match a single-line passage
+   - **Enter** inserts a line break only when the target's next character is a real newline; visual wrapping never requires one
 
 #### ⌨️ Controls and Shortcuts
 
 | Action | Keyboard | On-screen control |
 | --- | --- | --- |
 | Jump to typing canvas | **/** | Click the canvas |
-| Check exact match | **Cmd/Ctrl + Enter** | — |
+| Check exact match | **Enter** or **Cmd/Ctrl + Enter** | — |
+| Open session settings | **Tab**, then **Enter** | **Session settings** |
+| Change session settings | **Tab**, **↑/↓**, **Space** | Native controls |
+| Return from session settings | **Esc** or **/** | Click the canvas |
 | Restart current passage | **Esc** | **Restart** |
 | Skip to another passage | **Cmd/Ctrl + →** | **Skip** |
 | Toggle Focus view | **Cmd/Ctrl + Shift + F** | **Focus** |
 | Leave Focus view | **Esc** | **Exit focus** |
 
-When Focus view is active, the first **Esc** leaves Focus; pressing **Esc** again restarts the passage. Arrow keys, Home, End, selection, editing, and paste retain native text-input behavior.
+When Focus view is active, the first **Esc** leaves Focus; pressing **Esc** again restarts the passage. From the typing canvas, **Tab** reaches the Session settings button without a mouse. Opening it temporarily reveals the existing native controls in Zen or Focus view; closing it restores the previous view and returns focus to the canvas. Arrow keys, Home, End, selection, editing, and paste retain native text-input behavior.
 
 #### 💡 Pro Tips for Best Results
 
@@ -96,8 +100,8 @@ When Focus view is active, the first **Esc** leaves Focus; pressing **Esc** agai
   - ⚪ **Grey** = Not yet typed
   - 🟡 **Yellow** = Current position
 - **Zen feedback**: Correct text becomes muted and mistakes switch from red to softer amber with a dotted underline
-- **Strict submit**: Press **Cmd+Enter** / **Ctrl+Enter** to finish — typing the last character alone does not auto-complete
-- **Mismatch feedback**: Wrong submit attempt shakes the typing panel
+- **Strict submit**: Press **Enter** to finish — typing the last character alone does not auto-complete; **Cmd/Ctrl + Enter** remains an alias
+- **Mismatch feedback**: A wrong check shakes the typing panel in regular practice and uses a quieter prompt in Zen
 
 #### 🎨 Features
 
@@ -105,6 +109,8 @@ When Focus view is active, the first **Esc** leaves Focus; pressing **Esc** agai
 - **Zen Mode**: Hides live performance pressure and keeps passages flowing automatically
 - **Single Typing Canvas**: Target, feedback, and caret share one central surface instead of separate reading and input panels
 - **Keyboard Workflow Guide**: Open the compact homepage guide with the **?** button or the **?** key
+- **Enter-First Exact Check**: Plain Enter checks the passage, while Cmd/Ctrl + Enter remains an alias and a real newline is inserted only when the target expects one
+- **Keyboard-Reachable Session Settings**: Tab reaches a single settings entry point; native arrows, Space, and Tab operate the existing controls, and every return path restores the canvas and prior Zen/Focus state
 - **Focus View**: Removes navigation and settings without requiring browser fullscreen permission
 - **Text Collections**: General, calm, quotes, code, and browser-saved custom passages
 - **Strict Text Matching**: Preserves newlines, highlights extra characters, and requires an explicit exact-match check
@@ -133,7 +139,7 @@ node scripts/test-web-logic.mjs
 node scripts/test-keyboard-guide.mjs
 ```
 
-The validator rejects invalid IDs, exact normalized duplicates, malformed text, missing source fields, and unverified Quote entries. It also reports possible near-overlaps and remaining legacy provenance work. The web-logic suite covers database normalization, fallback passage selection, full-pool shuffling, word-safe wrapping, and denied/quota-limited browser storage. The keyboard-guide suite checks the homepage dialog structure and keyboard behavior contract.
+The validator rejects invalid IDs, exact normalized duplicates, malformed text, missing source fields, and unverified Quote entries. It also reports possible near-overlaps and remaining legacy provenance work. The web-logic suite covers database normalization, fallback passage selection, full-pool shuffling, word-safe wrapping, semantic Enter handling, Session settings focus restoration, and denied/quota-limited browser storage. The keyboard-guide suite checks the homepage dialog structure and keyboard behavior contract.
 
 #### Storage and fallback behavior
 
@@ -212,7 +218,7 @@ TypeRacerGame/
 │   ├── website.css             # Landing page styles
 │   ├── website.js              # Landing navigation, reveals, and keyboard-guide dialog
 │   ├── styles.css              # Canvas, Zen, Focus, theme, and responsive styles
-│   ├── script.js               # Typing, timing, persistence, and procedural audio
+│   ├── script.js               # Typing, timing, settings focus, persistence, and procedural audio
 │   └── texts.json              # General, Calm, Quotes, and Code passages
 ├── .github/workflows/          # Deploy GitHub Pages (publishes PrecisionTyper/)
 ├── .nojekyll                   # GitHub Pages helper (static site hosting)
