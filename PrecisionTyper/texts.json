@@ -102,5 +102,47 @@
     "When you have eliminated the impossible, whatever remains, however improbable, must be the truth; yet in production postmortems, teams discover that the impossible persisted because logging sampled away critical spans, metrics aggregated away outliers, and on-call runbooks assumed dependencies that silently changed behavior during a migration announced only in a Slack thread archived after thirty days.",
     "The Byzantine fault tolerance threshold requires at least three f plus one replicas to survive f faulty nodes; practical implementations such as Raft and Paxos sacrifice theoretical generality for understandability, enabling engineers to implement consensus without first obtaining doctoral degrees in distributed algorithms, though split-brain scenarios still punish operators who underestimate clock skew and network partition duration.",
     "Shakespeare, Dickens, Austen, Tolstoy, Doyle, and Knuth collectively remind us that precision in language—whether literary or programmatic—demands patience: every character matters, every punctuation mark alters meaning, and every careless substitution propagates errors downstream; therefore, typists who rush sacrifice accuracy, and engineers who rush sacrifice systems, and both professions punish hubris with equal severity."
+  ],
+  "calm": [
+    "Breathe in slowly, breathe out gently, and return to the next key.",
+    "There is nowhere else to be and nothing else to finish right now.",
+    "Let each quiet keystroke make a little more room in your mind.",
+    "The rain moves softly across the window while the room remains warm and still.",
+    "A calm pace is still progress, and every small movement is enough.",
+    "Rest your shoulders, loosen your hands, and type only the word in front of you.",
+    "Morning light gathers slowly on the floor, asking nothing from the day.",
+    "The path does not hurry through the forest, yet it always reaches the clearing.",
+    "You can begin again with this breath, this word, and this quiet moment.",
+    "Clouds pass without effort, and thoughts can be allowed to do the same.",
+    "Slow is smooth, smooth is steady, and steady is more than enough.",
+    "For now, let the sound of the keys be the only thing that needs your attention."
+  ],
+  "quotes": [
+    "The journey of a thousand miles begins with a single step.",
+    "Well begun is half done.",
+    "Simplicity is the ultimate sophistication.",
+    "Nothing is worth more than this day.",
+    "The quieter you become, the more you are able to hear.",
+    "It always seems impossible until it is done.",
+    "Adopt the pace of nature: her secret is patience.",
+    "No act of kindness, no matter how small, is ever wasted.",
+    "A smooth sea never made a skilled sailor.",
+    "What we think, we become.",
+    "Do what you can, with what you have, where you are.",
+    "The sun is new each day."
+  ],
+  "code": [
+    "const pause = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));",
+    "function breathe() { return 'slow and steady'; }",
+    "git commit -m \"Keep the change small and clear\"",
+    "for (const thought of thoughts) { observe(thought); release(thought); }",
+    "if (tired) { rest(); } else { continueGently(); }",
+    "const focus = currentTask ?? 'the next key';",
+    "document.querySelector('#input-area').focus();",
+    "type Session = { wpm: number; accuracy: number; elapsed: number };",
+    "SELECT passage FROM practice_texts ORDER BY RANDOM() LIMIT 1;",
+    "public static void main(String[] args) { System.out.println(\"Begin.\"); }",
+    "while (mind.isBusy()) { breatheIn(); breatheOut(); }",
+    "export function nextStep() { return steps.shift() ?? null; }"
   ]
 }

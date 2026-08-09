@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="PrecisionTyper — strict typing practice with live WPM and accuracy.">
+    <meta name="description" content="PrecisionTyper — immersive single-canvas typing practice with Zen and Focus views.">
     <title>PrecisionTyper — Play</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=7">
+    <link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
     <a class="skip-link" href="#input-area">Skip to typing area</a>
@@ -40,6 +40,19 @@
                 <h2 class="visually-hidden">Session options</h2>
                 <div class="controls-row">
                     <div class="field-group">
+                        <label for="collection-select">Collection</label>
+                        <div class="select-wrap">
+                            <select id="collection-select" class="difficulty-select" aria-describedby="collection-hint">
+                                <option value="general" selected>General</option>
+                                <option value="calm">Calm</option>
+                                <option value="quotes">Quotes</option>
+                                <option value="code">Code</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <p id="collection-hint" class="field-hint">Choose the kind of text you want to type.</p>
+                    </div>
+                    <div class="field-group">
                         <label for="difficulty-select">Difficulty</label>
                         <div class="select-wrap">
                             <select id="difficulty-select" class="difficulty-select" aria-describedby="difficulty-hint">
@@ -48,7 +61,7 @@
                                 <option value="2">Hard</option>
                             </select>
                         </div>
-                        <p id="difficulty-hint" class="field-hint">Changing difficulty resets the passage.</p>
+                        <p id="difficulty-hint" class="field-hint">Used by General; changing it resets the passage.</p>
                     </div>
                     <div class="toggles">
                         <label class="toggle">
@@ -56,7 +69,15 @@
                             <span class="toggle-ui" aria-hidden="true"></span>
                             <span class="toggle-text">
                                 Sound
-                                <span id="sound-desc" class="visually-hidden">Mechanical keystroke preview on input</span>
+                                <span id="sound-desc" class="visually-hidden">Soft tap feedback with subtle key variations</span>
+                            </span>
+                        </label>
+                        <label class="toggle">
+                            <input type="checkbox" id="zen-toggle" checked aria-describedby="zen-desc">
+                            <span class="toggle-ui" aria-hidden="true"></span>
+                            <span class="toggle-text">
+                                Zen
+                                <span id="zen-desc" class="visually-hidden">Hides live statistics while typing and continues automatically after completion</span>
                             </span>
                         </label>
                         <label class="toggle">
@@ -69,6 +90,14 @@
                         </label>
                     </div>
                 </div>
+                <div class="custom-panel" id="custom-panel" hidden>
+                    <label for="custom-passages">Custom passages</label>
+                    <textarea id="custom-passages" rows="4" placeholder="Add one passage per line…" spellcheck="true"></textarea>
+                    <div class="custom-panel-footer">
+                        <p id="custom-status" class="field-hint" aria-live="polite">Your passages stay in this browser.</p>
+                        <button type="button" class="secondary-btn" id="save-custom">Save &amp; start</button>
+                    </div>
+                </div>
             </div>
 
             <div class="stats-wrap">
@@ -79,39 +108,49 @@
         </header>
 
         <section class="play-zone" aria-label="Typing area">
-            <div class="panel panel-readonly">
-                <div class="panel-head">
-                    <span class="panel-label">Passage</span>
-                    <span class="panel-badge">Strict match</span>
-                </div>
-                <div class="panel-body text-display" id="text-display"></div>
-            </div>
-
-            <div class="panel panel-input-shell">
-                <label class="panel-head panel-head-input" for="input-area">
-                    <span class="panel-label">Your typing</span>
-                    <span class="panel-kbdHints" aria-hidden="true">
-                        <kbd class="panel-kbdHint">Tab stays here</kbd>
-                        <kbd class="panel-kbdHint">Ctrl+Enter to check</kbd>
+            <div class="panel typing-canvas" id="typing-canvas">
+                <div class="panel-head panel-head-input">
+                    <span class="canvas-label-group">
+                        <label class="panel-label" for="input-area">Typing canvas</label>
+                        <span class="panel-badge">Strict match</span>
                     </span>
-                </label>
-                <div class="panel-body panel-body-input">
+                    <span class="panel-actions">
+                        <button type="button" class="panel-action" id="restart-button" title="Restart this passage (Escape)">Restart</button>
+                        <button type="button" class="panel-action" id="skip-button" title="Skip this passage (Ctrl or Cmd + Right Arrow)">Skip</button>
+                        <button type="button" class="panel-action focus-action" id="focus-button" title="Toggle focus view (Ctrl or Cmd + Shift + F)" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span id="focus-button-label">Focus</span>
+                        </button>
+                    </span>
+                </div>
+                <div class="typing-surface" id="typing-surface">
+                    <div class="text-display" id="text-display" aria-hidden="true"></div>
                     <textarea
                         id="input-area"
-                        class="input-area"
-                        placeholder="Focus here and start typing to begin…"
+                        class="input-capture"
                         spellcheck="false"
                         autocomplete="off"
                         autocorrect="off"
                         autocapitalize="off"
-                        rows="6"
-                        aria-label="Typed text matches the passage above exactly"
+                        inputmode="text"
+                        rows="1"
+                        aria-label="Type the displayed passage exactly"
+                        aria-describedby="target-text-a11y typing-help"
                     ></textarea>
                 </div>
+                <div class="canvas-footer">
+                    <span id="canvas-prompt">Click anywhere in the canvas and start typing.</span>
+                    <span class="canvas-progress" id="canvas-progress" aria-hidden="true">0 / 0</span>
+                </div>
             </div>
+            <p class="typing-help" id="typing-help"><kbd>Ctrl/Cmd + Enter</kbd> check · <kbd>Esc</kbd> restart · <kbd>Ctrl/Cmd + →</kbd> skip · <kbd>Ctrl/Cmd + Shift + F</kbd> focus</p>
+            <p class="visually-hidden" id="target-text-a11y"></p>
+            <p class="visually-hidden" id="game-status" aria-live="polite"></p>
         </section>
     </main>
 
-    <script src="script.js?v=7"></script>
+    <script src="script.js?v=10"></script>
 </body>
 </html>
