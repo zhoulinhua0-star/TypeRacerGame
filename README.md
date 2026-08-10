@@ -23,10 +23,11 @@ PrecisionTyper is a dependency-free typing trainer built around one rule: a pass
   <img src="./assets/readme/modes.svg" width="100%" alt="Practice mode shows performance signals while Zen mode provides quieter feedback; both require an exact match">
 </p>
 
-- **One typing canvas:** read, type, correct, and submit in the same surface.
+- **Exactness without guesswork:** type, correct, and submit in one canvas that reveals the currently required space as `·`, target line breaks as `↵`, and display-only wrapping as `↳`.
 - **Practice or unwind:** keep WPM, accuracy, and time visible—or let Zen hide performance pressure and continue automatically.
-- **Five collection choices:** General, Calm, Quotes, Code, and browser-saved Custom passages.
-- **Keyboard-first flow:** `/` starts typing, `Enter` checks the match, and `Tab` opens session settings.
+- **140 bundled passages:** practice with General, Calm, Quotes, and Code—including six multiline exercises—or save your own Custom passages in the browser.
+- **Keyboard-first—even in Zen:** `/` starts typing; `Tab`, then `Enter`, opens session settings; native controls handle every choice from there.
+- **Quietly tactile:** optional low, soft procedural taps distinguish normal typing, Space, Backspace/Delete, and Enter.
 - **Focus without fullscreen:** remove surrounding navigation and controls without a browser permission prompt.
 - **Resilient by design:** local preferences degrade safely to session memory, and built-in passages cover restrictive `file://` use.
 
@@ -55,19 +56,26 @@ The landing page also works when opened directly. If a browser blocks `texts.jso
 | Action | Shortcut |
 | --- | --- |
 | Focus the typing canvas | `/` |
-| Check for an exact match | `Enter` or `Cmd/Ctrl + Enter` |
+| Check, or insert a required target line break | `Enter` |
+| Always check for an exact match | `Cmd/Ctrl + Enter` |
 | Open session settings | `Tab`, then `Enter` |
+| Move through session settings | `Tab` / `Shift + Tab` |
+| Change a selected option | `↑` / `↓` |
+| Toggle Sound or Zen | `Space` |
+| Return from settings to the canvas | `Esc` or `/` |
 | Restart the current passage | `Esc` |
 | Skip to another passage | `Cmd/Ctrl + →` |
 | Toggle Focus view | `Cmd/Ctrl + Shift + F` |
 | Leave Focus view | `Esc` |
 
-Typing keeps native editing behavior: arrow keys, selection, paste, Home, and End continue to work. `Enter` inserts a line break only when the target passage actually expects one. A teal `↳` can mark a visually wrapped code token; it is never a character you need to type.
+Typing keeps native editing behavior: arrow keys, selection, paste, Home, and End continue to work. The same settings workflow works in Zen: open it with `Tab`, then `Enter`; use native keyboard controls; press `Esc` or `/` to return to the canvas. In Code passages, `Enter` inserts a line break only when the target shows `↵`; otherwise it checks the passage. A teal `↳` can mark a visually wrapped code token and is never typed. When the next required character is a space, a temporary `·` makes that invisible character clear.
+
+With **Sound** enabled, normal characters, Space, Backspace/Delete, and Enter use subtly different low-frequency tap profiles. Sound remains optional and is generated locally in the browser.
 
 ## What happens in a session
 
 1. **Choose a collection.** General includes Easy, Medium, and Hard pools; the other collections use their own passage sets.
-2. **Type exactly.** Correct, current, remaining, and extra characters receive distinct visual feedback in one canvas.
+2. **Type exactly.** Correct, current, remaining, extra, and currently required whitespace receive distinct visual feedback in one canvas.
 3. **Check with Enter.** A perfect match opens the result overlay; an incomplete match prompts you to correct the passage.
 4. **Continue your way.** Regular practice keeps statistics visible. Zen softens mistakes, hides evaluative chrome, and advances after a short success pause.
 
@@ -85,10 +93,11 @@ The Java editions target Java 21+ and run on Windows, macOS, and Linux. The Web 
 
 ## Passage quality, privacy, and fallback behavior
 
-The Web Edition ships **134 passages across six internal pools**. The UI presents those pools as General difficulty levels plus Calm, Quotes, and Code; Custom passages are supplied by the user.
+The Web Edition ships **140 passages across six internal pools**. The UI presents those pools as General difficulty levels plus Calm, Quotes, and Code; Custom passages are supplied by the user.
 
 - Every bundled passage has a stable ID and source record.
 - The 12 Quote entries include verified public-domain literature metadata.
+- Six original multiline Code exercises are verified under the project license.
 - The remaining 122 project-curated passages are marked as awaiting full provenance review instead of receiving guessed attribution.
 - Preferences, custom passages, and shuffle progress stay in the browser; the app does not upload them.
 - Denied or full `localStorage` falls back to in-memory session state without blocking play.
@@ -104,7 +113,7 @@ node scripts/test-web-logic.mjs
 node scripts/test-keyboard-guide.mjs
 ```
 
-These checks cover passage schema and duplication, source metadata, fallback selection, shuffle behavior, word-safe wrapping, semantic Enter handling, browser-storage failures, session-setting focus restoration, and the landing-page keyboard guide contract.
+These checks cover passage schema and duplication, source metadata, multiline coverage, fallback selection, shuffle behavior, contextual whitespace markers, word-safe wrapping, semantic Enter handling, browser-storage failures, Zen session-setting focus restoration, and the landing-page keyboard guide contract.
 
 <details>
 <summary><strong>Project structure</strong></summary>
@@ -118,7 +127,7 @@ TypeRacerGame/
 │   ├── game.html               # Typing canvas
 │   ├── website.css             # Landing-page design
 │   ├── website.js              # Navigation and keyboard guide
-│   ├── styles.css              # Game, Zen, Focus, and themes
+│   ├── styles.css              # Dark game, Zen, and Focus views
 │   ├── script.js               # Typing engine and persistence
 │   └── texts.json              # Versioned passage database
 ├── assets/readme/              # README visual system

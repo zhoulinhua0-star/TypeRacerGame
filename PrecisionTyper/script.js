@@ -3,11 +3,11 @@
  * A rigorous typing speed and accuracy trainer.
  * Requires 100% character-match accuracy for completion.
  * - Procedural Soft Tap Engine (Web Audio Version)
- * - Persistent Theme (Dark/Light) [FIXED & ENHANCED]
+ * - Immersive dark interface with Zen and Focus views
  * - Passage database loaded from texts.json
  */
 
-const APP_ASSET_VERSION = '14';
+const APP_ASSET_VERSION = '17';
 const SHUFFLE_BAGS_STORAGE_KEY = 'precisionTyperShuffleBagsV2';
 const STORAGE_WARNING_KEYS = new Set();
 const DEFAULT_SOURCE = {
@@ -211,7 +211,6 @@ class PrecisionTyper {
         this.difficultySelect = document.getElementById('difficulty-select');
         this.soundToggle = document.getElementById('sound-toggle');
         this.zenToggle = document.getElementById('zen-toggle');
-        this.modeToggle = document.getElementById('mode-toggle');
         this.customPanel = document.getElementById('custom-panel');
         this.customPassages = document.getElementById('custom-passages');
         this.customStatus = document.getElementById('custom-status');
@@ -351,12 +350,6 @@ class PrecisionTyper {
         // Zen mode toggle
         this.zenToggle.addEventListener('change', () => {
             this.applyZenMode();
-            this.saveSettings();
-        });
-
-        // Theme toggle
-        this.modeToggle.addEventListener('change', () => {
-            this.toggleTheme();
             this.saveSettings();
         });
 
@@ -550,14 +543,6 @@ class PrecisionTyper {
         this.checkProgress();
     }
 
-    toggleTheme() {
-        if (this.modeToggle.checked) {
-            document.body.classList.add('light-mode');
-        } else {
-            document.body.classList.remove('light-mode');
-        }
-    }
-
     focusInput() {
         if (this.inputArea.disabled) return;
 
@@ -591,8 +576,23 @@ class PrecisionTyper {
             document.body.classList.remove('focus-mode');
         }
         this.syncChromeVisibility();
-        this.collectionSelect.focus();
+        this.focusFirstSessionControl();
         this.announce('Session settings opened. Use Tab to move, arrow keys to choose, Space to toggle, and Escape or slash to return to typing.');
+    }
+
+    focusFirstSessionControl() {
+        const focusControl = () => {
+            if (!this.isSettingsMode) return;
+            this.collectionSelect.focus();
+        };
+        const focusAndVerify = () => {
+            focusControl();
+            if (this.isSettingsMode && document.activeElement !== this.collectionSelect) {
+                window.requestAnimationFrame(focusControl);
+            }
+        };
+
+        window.requestAnimationFrame(focusAndVerify);
     }
 
     closeSessionSettings() {
@@ -646,6 +646,7 @@ class PrecisionTyper {
         const hasLongToken = this.currentTargetText
             .split(/\s/u)
             .some((token) => token.length > 32);
+        const hasTargetNewline = this.currentTargetText.includes('\n');
 
         if (!this.currentTargetText) {
             this.canvasPrompt.textContent = this.collectionSelect.value === 'custom'
@@ -654,9 +655,13 @@ class PrecisionTyper {
         } else if (document.activeElement !== this.inputArea) {
             this.canvasPrompt.textContent = 'Press / or click anywhere in the canvas to continue.';
         } else if (this.getTypedText().length === 0) {
-            this.canvasPrompt.textContent = hasLongToken
-                ? '↳ marks a visual-only long-token wrap; do not type the arrow or Enter.'
-                : 'Start typing when you are ready.';
+            if (hasTargetNewline) {
+                this.canvasPrompt.textContent = '↵ marks a required line break; press Enter when you reach it.';
+            } else {
+                this.canvasPrompt.textContent = hasLongToken
+                    ? '↳ marks a visual-only long-token wrap; do not type the arrow or Enter.'
+                    : 'Start typing when you are ready.';
+            }
         } else if (this.zenToggle.checked) {
             this.canvasPrompt.textContent = 'Stay with the next key.';
         } else {
@@ -704,7 +709,6 @@ class PrecisionTyper {
 
     saveSettings() {
         const settings = {
-            isLightMode: this.modeToggle.checked,
             soundEnabled: this.soundToggle.checked,
             zenEnabled: this.zenToggle.checked,
             difficulty: this.difficultySelect.value,
@@ -718,7 +722,6 @@ class PrecisionTyper {
         if (saved) {
             try {
                 const settings = JSON.parse(saved);
-                this.modeToggle.checked = settings.isLightMode === true;
                 this.soundToggle.checked = settings.soundEnabled !== false;
                 this.zenToggle.checked = settings.zenEnabled !== false;
                 if (['0', '1', '2'].includes(String(settings.difficulty))) {
@@ -727,7 +730,6 @@ class PrecisionTyper {
                 if (['general', 'calm', 'quotes', 'code', 'custom'].includes(settings.collection)) {
                     this.collectionSelect.value = settings.collection;
                 }
-                this.toggleTheme();
             } catch (e) {
                 console.error('Error loading settings:', e);
             }
@@ -814,24 +816,29 @@ class PrecisionTyper {
         const displayCharacters = [];
         for (let i = 0; i < this.currentTargetText.length; i++) {
             const char = this.escapeCharacter(this.currentTargetText[i]);
+            const isSpace = this.currentTargetText[i] === ' ';
 
             if (i < typed.length) {
                 const match = typed[i] === this.currentTargetText[i];
                 const cursorClass = i === caretPosition ? ' char-cursor' : '';
+                const spaceClass = isSpace ? ' text-space' : '';
+                const visibleSpaceClass = isSpace && (!match || i === caretPosition)
+                    ? ' text-space-visible'
+                    : '';
                 displayCharacters.push({
                     value: this.currentTargetText[i],
-                    markup: `<span class="char-${match ? 'correct' : 'wrong'}${cursorClass}">${char}</span>`
+                    markup: `<span class="char-${match ? 'correct' : 'wrong'}${cursorClass}${spaceClass}${visibleSpaceClass}">${char}</span>`
                 });
             } else {
                 if (i === caretPosition) {
                     displayCharacters.push({
                         value: this.currentTargetText[i],
-                        markup: `<span class="char-cursor">${char}</span>`
+                        markup: `<span class="char-cursor${isSpace ? ' text-space text-space-visible' : ''}">${char}</span>`
                     });
                 } else {
                     displayCharacters.push({
                         value: this.currentTargetText[i],
-                        markup: `<span class="char-untyped">${char}</span>`
+                        markup: `<span class="char-untyped${isSpace ? ' text-space' : ''}">${char}</span>`
                     });
                 }
             }
@@ -839,9 +846,10 @@ class PrecisionTyper {
 
         for (let i = this.currentTargetText.length; i < typed.length; i++) {
             const cursorClass = i === caretPosition ? ' char-cursor' : '';
+            const spaceClass = typed[i] === ' ' ? ' text-space text-space-visible' : '';
             displayCharacters.push({
                 value: typed[i],
-                markup: `<span class="char-wrong char-extra${cursorClass}">${this.escapeCharacter(typed[i])}</span>`
+                markup: `<span class="char-wrong char-extra${cursorClass}${spaceClass}">${this.escapeCharacter(typed[i])}</span>`
             });
         }
 

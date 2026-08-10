@@ -1618,6 +1618,78 @@
         "license": "Provenance pending review",
         "verified": false
       }
+    },
+    {
+      "id": "code-013",
+      "text": "const greet = (name) => {\n  return `Hello, ${name}!`;\n};",
+      "source": {
+        "type": "project-original",
+        "title": "PrecisionTyper original multiline exercises",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "MIT",
+        "verified": true
+      }
+    },
+    {
+      "id": "code-014",
+      "text": "if (isReady) {\n  startSession();\n} else {\n  showHint();\n}",
+      "source": {
+        "type": "project-original",
+        "title": "PrecisionTyper original multiline exercises",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "MIT",
+        "verified": true
+      }
+    },
+    {
+      "id": "code-015",
+      "text": "for (const key of keys) {\n  practice(key);\n}",
+      "source": {
+        "type": "project-original",
+        "title": "PrecisionTyper original multiline exercises",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "MIT",
+        "verified": true
+      }
+    },
+    {
+      "id": "code-016",
+      "text": "git status\ngit add PrecisionTyper/\ngit commit -m \"Improve the typing flow\"",
+      "source": {
+        "type": "project-original",
+        "title": "PrecisionTyper original multiline exercises",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "MIT",
+        "verified": true
+      }
+    },
+    {
+      "id": "code-017",
+      "text": "{\n  \"mode\": \"zen\",\n  \"sound\": true\n}",
+      "source": {
+        "type": "project-original",
+        "title": "PrecisionTyper original multiline exercises",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "MIT",
+        "verified": true
+      }
+    },
+    {
+      "id": "code-018",
+      "text": ".typing-canvas {\n  outline: 2px solid var(--cta);\n}",
+      "source": {
+        "type": "project-original",
+        "title": "PrecisionTyper original multiline exercises",
+        "author": "PrecisionTyper contributors",
+        "url": "https://github.com/zhoulinhua0-star/TypeRacerGame/blob/main/PrecisionTyper/texts.json",
+        "license": "MIT",
+        "verified": true
+      }
     }
   ]
 }

@@ -16,9 +16,12 @@ assert.match(html, /id="keyboard-guide" hidden/);
 assert.match(html, /role="dialog" aria-modal="true"/);
 assert.ok((html.match(/data-guide-close/g) || []).length >= 2, 'Guide needs close and backdrop controls');
 assert.match(html, /Normal visual line wraps never require/);
+assert.match(html, /temporary <strong>·<\/strong> marks the next required space/);
 assert.match(html, /<kbd>Enter<\/kbd><span>Check the passage<\/span>/);
 assert.match(html, /Reach Session settings from the canvas/);
 assert.match(html, /Return to the typing canvas/);
+assert.match(html, /Multiline code practice/);
+assert.doesNotMatch(html, /Light Mode|Dark &amp; light themes/);
 
 assert.match(css, /\.guide-trigger\s*\{/);
 assert.match(css, /\.guide-dialog\.is-visible\s*\{/);

@@ -4,46 +4,68 @@ import vm from 'node:vm';
 
 const source = fs.readFileSync(new URL('../PrecisionTyper/script.js', import.meta.url), 'utf8');
 const gameHtml = fs.readFileSync(new URL('../PrecisionTyper/game.html', import.meta.url), 'utf8');
+const gameStyles = fs.readFileSync(new URL('../PrecisionTyper/styles.css', import.meta.url), 'utf8');
 const storage = new Map();
 const bodyClasses = new Set();
-const context = vm.createContext({
-    console,
-    document: {
-        addEventListener() {},
-        body: {
-            classList: {
-                add(value) { bodyClasses.add(value); },
-                remove(value) { bodyClasses.delete(value); },
-                toggle(value, enabled) {
-                    if (enabled) bodyClasses.add(value);
-                    else bodyClasses.delete(value);
-                }
+const animationFrames = [];
+const testDocument = {
+    activeElement: null,
+    addEventListener() {},
+    body: {
+        classList: {
+            add(value) { bodyClasses.add(value); },
+            remove(value) { bodyClasses.delete(value); },
+            toggle(value, enabled) {
+                if (enabled) bodyClasses.add(value);
+                else bodyClasses.delete(value);
             }
         }
+    }
+};
+const context = vm.createContext({
+    console,
+    document: testDocument,
+    window: {
+        requestAnimationFrame(callback) {
+            animationFrames.push(callback);
+            return animationFrames.length;
+        }
     },
-    window: {},
     localStorage: {
         getItem(key) { return storage.get(key) ?? null; },
         setItem(key, value) { storage.set(key, value); }
     }
 });
+const runNextAnimationFrame = () => {
+    const callback = animationFrames.shift();
+    assert.ok(callback, 'Expected a queued animation frame');
+    callback(0);
+};
 
 vm.runInContext(
     `${source}\nglobalThis.__testExports = { FALLBACK_TEXT_DATABASE, normalizeTextDatabase, readStoredValue, writeStoredValue, PrecisionTyper };`,
     context
 );
 
-const { FALLBACK_TEXT_DATABASE, normalizeTextDatabase, PrecisionTyper } = context.__testExports;
+const {
+    FALLBACK_TEXT_DATABASE,
+    normalizeTextDatabase,
+    PrecisionTyper
+} = context.__testExports;
 const database = JSON.parse(fs.readFileSync(new URL('../PrecisionTyper/texts.json', import.meta.url), 'utf8'));
 const normalized = normalizeTextDatabase(database);
 assert.equal(normalized.difficulty.flat().length, 98);
-assert.equal(Object.values(normalized.collections).flat().length, 36);
+assert.equal(Object.values(normalized.collections).flat().length, 42);
 assert.equal(normalized.collections.quotes.every((passage) => passage.source.verified), true);
+assert.equal(normalized.collections.code.filter((passage) => passage.text.includes('\n')).length, 6);
 const gameIds = [...gameHtml.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
 assert.equal(new Set(gameIds).size, gameIds.length, 'Game page IDs must be unique');
 assert.match(gameHtml, /id="input-area"[\s\S]*id="session-settings-button"/);
 assert.match(gameHtml, /id="session-settings-button"[\s\S]*aria-controls="session-controls"/);
 assert.match(gameHtml, /aria-keyshortcuts="\/ Enter Control\+Enter Meta\+Enter"/);
+assert.doesNotMatch(gameHtml, /mode-toggle|Light Mode/);
+assert.doesNotMatch(source, /modeToggle|toggleTheme|isLightMode/);
+assert.doesNotMatch(gameStyles, /light-mode/);
 
 // Regression: a failed texts.json request must still provide usable built-in passages.
 const fallbackNormalized = normalizeTextDatabase(FALLBACK_TEXT_DATABASE.difficulty);
@@ -77,6 +99,18 @@ renderGame.currentTargetText = "document.querySelector('#input-area').focus();";
 renderGame.updateTextStyles('');
 assert.match(renderGame.textDisplay.innerHTML, /text-token-long/);
 assert.match(renderGame.textDisplay.innerHTML, /soft-wrap-marker/);
+
+renderGame.currentTargetText = 'word next';
+renderGame.inputArea.selectionStart = 4;
+renderGame.updateTextStyles('word');
+assert.match(renderGame.textDisplay.innerHTML, /char-cursor text-space text-space-visible/);
+
+renderGame.inputArea.selectionStart = 5;
+renderGame.updateTextStyles('word ');
+assert.doesNotMatch(renderGame.textDisplay.innerHTML, /text-space-visible/);
+
+renderGame.updateTextStyles('wordx');
+assert.match(renderGame.textDisplay.innerHTML, /char-wrong text-space text-space-visible/);
 
 // Enter checks by default, but preserves a real newline when the target expects one.
 const enterGame = Object.create(PrecisionTyper.prototype);
@@ -155,17 +189,30 @@ settingsGame.inputArea = { disabled: false };
 let settingsFocused = 0;
 let canvasFocused = 0;
 let canvasScrolled = 0;
-settingsGame.collectionSelect = { focus() { settingsFocused++; } };
+settingsGame.collectionSelect = {
+    focus() {
+        settingsFocused++;
+        if (settingsFocused > 1) {
+            testDocument.activeElement = this;
+        }
+    }
+};
 settingsGame.typingCanvas = { scrollIntoView() { canvasScrolled++; } };
 settingsGame.focusInput = () => { canvasFocused++; };
 settingsGame.announce = () => {};
 
 settingsGame.openSessionSettings();
 assert.equal(settingsGame.isSettingsMode, true);
-assert.equal(settingsFocused, 1);
+assert.equal(settingsFocused, 0);
 assert.equal(settingsGame.gameToolbar.inert, false);
 assert.equal(bodyClasses.has('settings-active'), true);
 assert.equal(bodyClasses.has('focus-mode'), false);
+runNextAnimationFrame();
+assert.equal(settingsFocused, 1);
+assert.notEqual(testDocument.activeElement, settingsGame.collectionSelect);
+runNextAnimationFrame();
+assert.equal(settingsFocused, 2);
+assert.equal(testDocument.activeElement, settingsGame.collectionSelect);
 
 settingsGame.closeSessionSettings();
 assert.equal(settingsGame.isSettingsMode, false);
@@ -179,7 +226,9 @@ settingsGame.focusButton = {
     setAttribute(name, value) { this[name] = value; }
 };
 settingsGame.focusButtonLabel = { textContent: '' };
+testDocument.activeElement = null;
 settingsGame.openSessionSettings();
+runNextAnimationFrame();
 settingsGame.setFocusMode(false);
 assert.equal(settingsGame.isSettingsMode, false);
 assert.equal(settingsGame.isFocusMode, false);
@@ -189,6 +238,7 @@ assert.equal(bodyClasses.has('focus-mode'), false);
 settingsGame.inputArea.disabled = true;
 settingsGame.openSessionSettings();
 settingsGame.closeSessionSettings();
+runNextAnimationFrame();
 assert.equal(settingsButtonFocused, 1);
 
 // Every canvas-return path closes settings before it focuses the typing input.
@@ -260,13 +310,11 @@ blockedGame.shuffleBags = {};
 assert.equal(Object.keys(blockedGame.loadShuffleBags()).length, 0);
 assert.doesNotThrow(() => blockedGame.saveShuffleBags());
 
-blockedGame.modeToggle = { checked: false };
 blockedGame.soundToggle = { checked: true };
 blockedGame.zenToggle = { checked: true };
 blockedGame.difficultySelect = { value: '1' };
 blockedGame.collectionSelect = { value: 'general' };
 blockedGame.customPassages = { value: '' };
-blockedGame.toggleTheme = () => {};
 blockedGame.applyZenMode = () => {};
 assert.doesNotThrow(() => blockedGame.loadSettings());
 assert.doesNotThrow(() => blockedGame.saveSettings());

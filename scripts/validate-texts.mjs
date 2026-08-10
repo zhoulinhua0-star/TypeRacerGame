@@ -32,6 +32,21 @@ for (const group of groups) {
         if (passage.text?.includes('\r') || passage.text?.includes('\t')) {
             errors.push(`${location} contains a tab or carriage return`);
         }
+        if (/[\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]/u.test(passage.text)) {
+            errors.push(`${location} contains non-standard whitespace`);
+        }
+        if (/[\u00ad\u200b-\u200d\u2060]/u.test(passage.text)) {
+            errors.push(`${location} contains a zero-width or soft-hyphen character`);
+        }
+        if (/ +$/mu.test(passage.text)) {
+            errors.push(`${location} contains trailing spaces on a line`);
+        }
+        passage.text?.split('\n').forEach((line, lineIndex) => {
+            const contentWithoutIndentation = line.replace(/^ +/u, '');
+            if (/ {2,}/u.test(contentWithoutIndentation)) {
+                errors.push(`${location} contains repeated spaces on line ${lineIndex + 1}`);
+            }
+        });
 
         const source = passage.source;
         for (const field of ['type', 'title', 'author', 'url', 'license']) {
