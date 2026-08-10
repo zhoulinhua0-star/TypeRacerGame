@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Practice mode and Zen mode</title>
+  <desc id="desc">A comparison of structured typing practice with visible statistics and Zen typing with quieter feedback, both using the same exact-match engine.</desc>
+
+  <rect width="1200" height="360" rx="26" fill="#0a1210"/>
+  <path d="M600 110V310" stroke="#5eead4" stroke-opacity="0.14"/>
+
+  <g id="heading" transform="translate(60 48)">
+    <text x="0" y="0" fill="#5eead4" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15" font-weight="700" letter-spacing="2">TWO EXPERIENCES · ONE ENGINE</text>
+    <text x="0" y="47" fill="#e7fbf7" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="38" font-weight="760" letter-spacing="-0.8">Choose the pressure level. Keep the precision.</text>
+  </g>
+
+  <g id="practice" transform="translate(60 142)">
+    <rect width="480" height="160" rx="18" fill="#0f1916" stroke="#5eead4" stroke-opacity="0.2"/>
+    <rect x="24" y="22" width="102" height="30" rx="15" fill="#123129"/>
+    <text x="75" y="42" text-anchor="middle" fill="#5eead4" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700">PRACTICE</text>
+    <text x="24" y="84" fill="#e7fbf7" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="23" font-weight="700">See every signal</text>
+    <text x="24" y="116" fill="#9db8b3" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18">Live WPM · accuracy · time · direct corrections</text>
+    <g transform="translate(348 21)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+      <text x="0" y="16" fill="#6b827d" font-size="12" font-weight="700">WPM</text>
+      <text x="0" y="46" fill="#5eead4" font-size="24" font-weight="700">LIVE</text>
+      <rect x="0" y="64" width="94" height="4" rx="2" fill="#15372f"/>
+      <rect x="0" y="64" width="72" height="4" rx="2" fill="#34d399"/>
+    </g>
+  </g>
+
+  <g id="zen" transform="translate(660 142)">
+    <rect width="480" height="160" rx="18" fill="#0f1916" stroke="#f97316" stroke-opacity="0.2"/>
+    <rect x="24" y="22" width="72" height="30" rx="15" fill="#2a1c10"/>
+    <text x="60" y="42" text-anchor="middle" fill="#fbbf24" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700">ZEN</text>
+    <text x="24" y="84" fill="#e7fbf7" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="23" font-weight="700">Let the numbers fade</text>
+    <text x="24" y="116" fill="#9db8b3" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18">Soft feedback · quiet canvas · automatic next passage</text>
+    <g transform="translate(370 26)">
+      <circle cx="30" cy="30" r="28" fill="#251b10" stroke="#f97316" stroke-opacity="0.35"/>
+      <path d="M31 15L21 32h9l-2 14 12-20h-9z" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+  <g transform="translate(545 316)">
+    <rect width="110" height="28" rx="14" fill="#10201c" stroke="#5eead4" stroke-opacity="0.2"/>
+    <text x="55" y="19" text-anchor="middle" fill="#9db8b3" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700">100% MATCH</text>
+  </g>
+</svg>
