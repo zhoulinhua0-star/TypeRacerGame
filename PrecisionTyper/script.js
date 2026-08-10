@@ -7,8 +7,10 @@
  * - Passage database loaded from texts.json
  */
 
-const APP_ASSET_VERSION = '17';
-const SHUFFLE_BAGS_STORAGE_KEY = 'precisionTyperShuffleBagsV2';
+const APP_ASSET_VERSION = '20';
+const SHUFFLE_BAGS_STORAGE_KEY = 'precisionTyperShuffleBagsV3';
+const BUILT_IN_COLLECTIONS = ['general', 'calm', 'quotes', 'code'];
+const DIFFICULTY_KEYS = ['easy', 'medium', 'hard'];
 const STORAGE_WARNING_KEYS = new Set();
 const DEFAULT_SOURCE = {
     type: 'bundled-fallback',
@@ -58,19 +60,19 @@ const FALLBACK_TEXT_DATABASE = {
     ],
     collections: {
         calm: [
-            "Breathe in slowly, breathe out gently, and return to the next key.",
-            "There is nowhere else to be and nothing else to finish right now.",
-            "Let each quiet keystroke make a little more room in your mind."
+            "Take one slow breath and let your hands rest lightly.",
+            "Let your eyes rest on the next phrase, then allow your hands to follow without rushing. A steady pace leaves enough room to notice and correct each small movement.",
+            "Begin by noticing the small points of contact around you: your feet on the floor, your hands above the keyboard, and the air moving quietly through the room. Nothing needs to change before you continue; awareness itself is enough. As you continue, distinguish sensation from reaction: notice pressure, release what is unnecessary, and preserve an unbroken thread of attention through the final clause."
         ],
         quotes: [
-            "The journey of a thousand miles begins with a single step.",
-            "Well begun is half done.",
-            "Simplicity is the ultimate sophistication."
+            "Call me Ishmael.",
+            "I have no data yet. It is a capital mistake to theorise before one has data. Insensibly one begins to twist facts to suit theories, instead of theories to suit facts.",
+            "Curiouser and curiouser! cried Alice (she was so much surprised, that for the moment she quite forgot how to speak good English); now I'm opening out like the largest telescope that ever was! Good-bye, feet!"
         ],
         code: [
-            "const pause = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));",
-            "function breathe() { return 'slow and steady'; }",
-            "git commit -m \"Keep the change small and clear\""
+            "const mode = 'practice';",
+            "export function nextStep() {\n  return steps.shift() ?? null;\n}",
+            "async function loadPassages(url) {\n  const response = await fetch(url);\n  if (!response.ok) {\n    throw new Error(`Request failed: ${response.status}`);\n  }\n  return response.json();\n}"
         ]
     }
 };
@@ -114,33 +116,62 @@ async function loadTextDatabase() {
 }
 
 function normalizeTextDatabase(data) {
-    if (Array.isArray(data) && data.length >= 3) {
+    if (data?.schemaVersion === 3 && data.collections) {
+        const collections = {};
+        for (const collection of BUILT_IN_COLLECTIONS) {
+            collections[collection] = DIFFICULTY_KEYS.map((difficulty) => sanitizePassageList(
+                data.collections?.[collection]?.[difficulty],
+                `${collection}-${difficulty}`
+            ));
+        }
         return {
-            difficulty: data.map((passages, index) => sanitizePassageList(passages, `general-${index}`)),
-            collections: {
-                calm: sanitizePassageList(FALLBACK_TEXT_DATABASE.collections.calm, 'calm'),
-                quotes: sanitizePassageList(FALLBACK_TEXT_DATABASE.collections.quotes, 'quotes'),
-                code: sanitizePassageList(FALLBACK_TEXT_DATABASE.collections.code, 'code')
-            }
+            difficultyStandard: data.difficultyStandard,
+            collections
+        };
+    }
+
+    if (Array.isArray(data) && data.length >= 3) {
+        const collections = {
+            general: data.map((passages, index) => sanitizePassageList(passages, `general-${index}`))
+        };
+        for (const collection of BUILT_IN_COLLECTIONS.slice(1)) {
+            const passages = FALLBACK_TEXT_DATABASE.collections[collection];
+            collections[collection] = DIFFICULTY_KEYS.map((difficulty, index) => sanitizePassageList(
+                passages.length > 0 ? [passages[index % passages.length]] : [],
+                `${collection}-${difficulty}`
+            ));
+        }
+        return {
+            difficultyStandard: null,
+            collections
         };
     }
 
     if (data && data.easy && data.medium && data.hard) {
         return {
-            difficulty: [
-                sanitizePassageList(data.easy, 'easy'),
-                sanitizePassageList(data.medium, 'medium'),
-                sanitizePassageList(data.hard, 'hard')
-            ],
             collections: {
-                calm: sanitizePassageList(data.calm, 'calm'),
-                quotes: sanitizePassageList(data.quotes, 'quotes'),
-                code: sanitizePassageList(data.code, 'code')
+                general: [
+                    sanitizePassageList(data.easy, 'general-easy'),
+                    sanitizePassageList(data.medium, 'general-medium'),
+                    sanitizePassageList(data.hard, 'general-hard')
+                ],
+                calm: DIFFICULTY_KEYS.map((difficulty, index) => sanitizePassageList(
+                    data.calm?.filter((_, passageIndex) => passageIndex % 3 === index),
+                    `calm-${difficulty}`
+                )),
+                quotes: DIFFICULTY_KEYS.map((difficulty, index) => sanitizePassageList(
+                    data.quotes?.filter((_, passageIndex) => passageIndex % 3 === index),
+                    `quotes-${difficulty}`
+                )),
+                code: DIFFICULTY_KEYS.map((difficulty, index) => sanitizePassageList(
+                    data.code?.filter((_, passageIndex) => passageIndex % 3 === index),
+                    `code-${difficulty}`
+                ))
             }
         };
     }
 
-    throw new Error('texts.json must contain easy, medium, and hard arrays');
+    throw new Error('texts.json must contain difficulty levels for every built-in collection');
 }
 
 function hashPassage(text) {
@@ -209,6 +240,7 @@ class PrecisionTyper {
         this.accuracyLabel = document.getElementById('accuracy-label');
         this.collectionSelect = document.getElementById('collection-select');
         this.difficultySelect = document.getElementById('difficulty-select');
+        this.difficultyHint = document.getElementById('difficulty-hint');
         this.soundToggle = document.getElementById('sound-toggle');
         this.zenToggle = document.getElementById('zen-toggle');
         this.customPanel = document.getElementById('custom-panel');
@@ -250,10 +282,7 @@ class PrecisionTyper {
         if (collection === 'custom') {
             return this.getCustomPassageList();
         }
-        if (collection === 'general') {
-            return this.TEXT_DATABASE.difficulty[Number(this.difficultySelect.value)] || [];
-        }
-        return this.TEXT_DATABASE.collections[collection] || [];
+        return this.TEXT_DATABASE.collections[collection]?.[Number(this.difficultySelect.value)] || [];
     }
 
     pickNewText() {
@@ -292,9 +321,9 @@ class PrecisionTyper {
 
     getPassagePoolKey() {
         const collection = this.collectionSelect.value;
-        return collection === 'general'
-            ? `${collection}:${this.difficultySelect.value}`
-            : collection;
+        return collection === 'custom'
+            ? collection
+            : `${collection}:${this.difficultySelect.value}`;
     }
 
     shuffle(values) {
@@ -686,9 +715,11 @@ class PrecisionTyper {
     }
 
     updateCollectionControls() {
-        const isGeneral = this.collectionSelect.value === 'general';
         const isCustom = this.collectionSelect.value === 'custom';
-        this.difficultySelect.disabled = !isGeneral;
+        this.difficultySelect.disabled = isCustom;
+        this.difficultyHint.textContent = isCustom
+            ? 'Custom passages use the mix you provide.'
+            : 'Applies to this collection; changing it resets the passage.';
         this.customPanel.hidden = !isCustom;
     }
 
@@ -1137,8 +1168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     textDisplay.classList.add('is-loading');
     inputArea.disabled = true;
 
-    // Keep the offline/file:// fallback in the same passage-object shape as texts.json.
-    // Passing the legacy difficulty array also attaches and normalizes fallback collections.
+    // Keep every built-in collection usable when texts.json cannot be loaded.
     let textDatabase = normalizeTextDatabase(FALLBACK_TEXT_DATABASE.difficulty);
     try {
         textDatabase = await loadTextDatabase();

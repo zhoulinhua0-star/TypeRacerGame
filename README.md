@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="PrecisionTyper — exact-match typing practice with Zen and Focus modes">
+  <img src="./assets/readme/hero.svg" width="100%" alt="PrecisionTyper — exact-match typing practice with 237 passages across twelve quantitatively separated difficulty pools">
 </p>
 
 <p align="center">
-  <strong>Exact-match typing practice that can feel measurable or meditative.</strong><br>
-  Train with live feedback, or switch on Zen and let the numbers disappear.
+  <strong>Exact-match typing practice, from short calm sentences to structured multiline code.</strong><br>
+  Keep the performance signals visible, or switch on Zen and let the numbers disappear.
 </p>
 
 <p align="center">
@@ -12,24 +12,54 @@
   ·
   <a href="https://zhoulinhua0-star.github.io/TypeRacerGame/game.html">Open the typing canvas</a>
   ·
-  <a href="#three-editions">Explore all three editions</a>
+  <a href="#training-library">Explore the training library</a>
 </p>
 
-## Why PrecisionTyper?
+## One rule, two experiences
 
-PrecisionTyper is a dependency-free typing trainer built around one rule: a passage is complete only when every character matches. The Web Edition adds two distinct ways to practice without changing that rule.
+PrecisionTyper completes a passage only when every character matches. Practice mode keeps WPM, accuracy, and elapsed time visible; Zen mode keeps the same strict engine while softening evaluative feedback and advancing automatically.
 
 <p align="center">
   <img src="./assets/readme/modes.svg" width="100%" alt="Practice mode shows performance signals while Zen mode provides quieter feedback; both require an exact match">
 </p>
 
-- **Exactness without guesswork:** type, correct, and submit in one canvas that reveals the currently required space as `·`, target line breaks as `↵`, and display-only wrapping as `↳`.
-- **Practice or unwind:** keep WPM, accuracy, and time visible—or let Zen hide performance pressure and continue automatically.
-- **140 bundled passages:** practice with General, Calm, Quotes, and Code—including six multiline exercises—or save your own Custom passages in the browser.
-- **Keyboard-first—even in Zen:** `/` starts typing; `Tab`, then `Enter`, opens session settings; native controls handle every choice from there.
-- **Quietly tactile:** optional low, soft procedural taps distinguish normal typing, Space, Backspace/Delete, and Enter.
-- **Focus without fullscreen:** remove surrounding navigation and controls without a browser permission prompt.
-- **Resilient by design:** local preferences degrade safely to session memory, and built-in passages cover restrictive `file://` use.
+- **One readable canvas:** correct, current, remaining, and extra characters share the same surface.
+- **Visible whitespace:** the next required space appears as `·`, a target line break as `↵`, and a display-only code wrap as `↳`.
+- **Keyboard-first control:** `/` focuses the canvas; `Tab`, then `Enter`, opens session settings without leaving the typing flow.
+- **Optional atmosphere:** Focus removes surrounding chrome, while locally generated key sounds distinguish normal keys, Space, deletion, and Enter.
+
+## Training library
+
+The Web Edition ships **237 passages across twelve independent built-in pools**. Every built-in collection supports Easy, Medium, and Hard; Custom keeps the passages supplied by the user and therefore does not apply a generated difficulty label.
+
+| Collection | Easy | Medium | Hard | Total |
+| --- | ---: | ---: | ---: | ---: |
+| **General** | 40 | 36 | 22 | 98 |
+| **Calm** | 15 | 15 | 15 | 45 |
+| **Quotes** | 15 | 15 | 15 | 45 |
+| **Code** | 15 | 19 | 15 | 49 |
+| **All built-in passages** | **85** | **85** | **67** | **237** |
+
+### One difficulty standard
+
+Every passage receives a deterministic **0–100 difficulty score**. Prose combines length, average word length, long-word ratio, precision-mark density, and sentence structure. Code combines length, line count, symbol density, delimiter nesting, indentation, and syntax transitions. Fixed collection-specific thresholds calibrate those shared signals without forcing Calm, Quotes, and Code into the same writing style.
+
+| Tier | Score band | Training load |
+| --- | ---: | --- |
+| **Easy** | 0–24 | One compact idea or statement, familiar language or syntax, limited punctuation, and little structural switching |
+| **Medium** | 40–60 | Multiple clauses or a short multiline structure, moderate punctuation or symbols, and sustained attention across transitions |
+| **Hard** | 72–100 | A sustained passage or nested structure with dense punctuation, symbols, line changes, or advanced language and syntax |
+
+A short nested code sample can demand more precision than prose with the same character count. The current score ranges leave visible space between adjacent tiers:
+
+| Collection | Easy scores | Medium scores | Hard scores |
+| --- | ---: | ---: | ---: |
+| General | 3–20 | 45–56 | 75–91 |
+| Calm | 3–14 | 46–53 | 80–87 |
+| Quotes | 6–19 | 45–58 | 77–89 |
+| Code | 0–18 | 42–57 | 81–96 |
+
+Repository validation rejects a passage assigned outside its score band, reserves a two-point buffer inside each band, and requires adjacent median scores to differ by at least 25 points. The raw feature-load gaps must be at least 10 points for Calm, Quotes, and Code; collection-specific profiles also constrain prose length and structure plus Code line count, nesting, and indentation. Validation continues to enforce at least 15 unique passages per pool, verified public-domain sources for every Quote, single-line Easy code, two-to-five-line Medium code, and six-or-more-line Hard code.
 
 ## Start typing
 
@@ -37,7 +67,7 @@ PrecisionTyper is a dependency-free typing trainer built around one rule: a pass
 
 Open **[PrecisionTyper](https://zhoulinhua0-star.github.io/TypeRacerGame/)**, choose **Play now**, and press `/` to focus the typing canvas. Nothing needs to be installed.
 
-For a focused session, try **Calm + Zen + Focus + Sound**. For deliberate practice, choose **General**, set a difficulty, and turn Zen off to watch live statistics.
+For a quiet first session, try **Calm + Easy + Zen + Focus + Sound**. For deliberate practice, combine any built-in collection with a difficulty and turn Zen off to watch live statistics.
 
 ### Run it locally
 
@@ -49,9 +79,9 @@ python3 -m http.server 8000
 
 Then open [http://localhost:8000/PrecisionTyper/](http://localhost:8000/PrecisionTyper/).
 
-The landing page also works when opened directly. If a browser blocks `texts.json` under `file://`, PrecisionTyper automatically uses its smaller built-in passage set.
+The landing page also works when opened directly. If a browser blocks `texts.json` under `file://`, PrecisionTyper automatically switches to its smaller bundled fallback.
 
-## Keyboard map
+## Keyboard-first workflow
 
 | Action | Shortcut |
 | --- | --- |
@@ -72,9 +102,9 @@ Typing keeps native editing behavior: arrow keys, selection, paste, Home, and En
 
 With **Sound** enabled, normal characters, Space, Backspace/Delete, and Enter use subtly different low-frequency tap profiles. Sound remains optional and is generated locally in the browser.
 
-## What happens in a session
+### What happens in a session
 
-1. **Choose a collection.** General includes Easy, Medium, and Hard pools; the other collections use their own passage sets.
+1. **Choose a collection and difficulty.** General, Calm, Quotes, and Code each include independent Easy, Medium, and Hard pools; Custom uses the passages you provide.
 2. **Type exactly.** Correct, current, remaining, extra, and currently required whitespace receive distinct visual feedback in one canvas.
 3. **Check with Enter.** A perfect match opens the result overlay; an incomplete match prompts you to correct the passage.
 4. **Continue your way.** Regular practice keeps statistics visible. Zen softens mistakes, hides evaluative chrome, and advances after a short success pause.
@@ -91,17 +121,15 @@ The timer uses the browser's monotonic clock, and WPM follows the standard five-
 
 The Java editions target Java 21+ and run on Windows, macOS, and Linux. The Web Edition uses HTML, CSS, and vanilla JavaScript with no runtime dependencies.
 
-## Passage quality, privacy, and fallback behavior
-
-The Web Edition ships **140 passages across six internal pools**. The UI presents those pools as General difficulty levels plus Calm, Quotes, and Code; Custom passages are supplied by the user.
+## Quality, privacy, and resilience
 
 - Every bundled passage has a stable ID and source record.
-- The 12 Quote entries include verified public-domain literature metadata.
-- Six original multiline Code exercises are verified under the project license.
-- The remaining 122 project-curated passages are marked as awaiting full provenance review instead of receiving guessed attribution.
+- All 45 Quote entries include verified public-domain literature metadata and Project Gutenberg links.
+- The Code collection includes 49 exercises, including 34 multiline passages; project-authored additions are verified under the repository license.
+- The remaining 121 project-curated passages are marked as awaiting full provenance review instead of receiving guessed attribution.
 - Preferences, custom passages, and shuffle progress stay in the browser; the app does not upload them.
 - Denied or full `localStorage` falls back to in-memory session state without blocking play.
-- Each pool is exhausted before reshuffling when persistent storage is available.
+- Each collection-and-difficulty pool is exhausted before reshuffling when persistent storage is available.
 
 ## Development
 
@@ -109,11 +137,12 @@ There is no package install step. Before deploying changes, run the repository c
 
 ```bash
 node scripts/validate-texts.mjs
+node scripts/test-difficulty-score.mjs
 node scripts/test-web-logic.mjs
 node scripts/test-keyboard-guide.mjs
 ```
 
-These checks cover passage schema and duplication, source metadata, multiline coverage, fallback selection, shuffle behavior, contextual whitespace markers, word-safe wrapping, semantic Enter handling, browser-storage failures, Zen session-setting focus restoration, and the landing-page keyboard guide contract.
+These checks cover schema v3, scoring model v3, perceptual profiles, score bands and raw separation, minimum pool sizes, global duplication, public-domain Quote sources, Code structure, fallback selection, independent shuffle bags, contextual whitespace markers, word-safe wrapping, semantic Enter handling, browser-storage failures, Zen session-setting focus restoration, and the landing-page keyboard guide contract.
 
 <details>
 <summary><strong>Project structure</strong></summary>

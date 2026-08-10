@@ -54,10 +54,21 @@ const {
 } = context.__testExports;
 const database = JSON.parse(fs.readFileSync(new URL('../PrecisionTyper/texts.json', import.meta.url), 'utf8'));
 const normalized = normalizeTextDatabase(database);
-assert.equal(normalized.difficulty.flat().length, 98);
-assert.equal(Object.values(normalized.collections).flat().length, 42);
-assert.equal(normalized.collections.quotes.every((passage) => passage.source.verified), true);
-assert.equal(normalized.collections.code.filter((passage) => passage.text.includes('\n')).length, 6);
+assert.equal(
+    JSON.stringify(Object.fromEntries(Object.entries(normalized.collections).map(([collection, levels]) => [
+        collection,
+        levels.map((passages) => passages.length)
+    ]))),
+    JSON.stringify({
+        general: [40, 36, 22],
+        calm: [15, 15, 15],
+        quotes: [15, 15, 15],
+        code: [15, 19, 15]
+    })
+);
+assert.equal(normalized.collections.quotes.flat().every((passage) => passage.source.verified), true);
+assert.equal(normalized.collections.code[0].every((passage) => !passage.text.includes('\n')), true);
+assert.equal(normalized.collections.code[2].every((passage) => passage.text.includes('\n')), true);
 const gameIds = [...gameHtml.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
 assert.equal(new Set(gameIds).size, gameIds.length, 'Game page IDs must be unique');
 assert.match(gameHtml, /id="input-area"[\s\S]*id="session-settings-button"/);
@@ -78,12 +89,42 @@ fallbackGame.shuffleBags = {};
 assert.ok(fallbackGame.getAvailablePassages().every((passage) => typeof passage.text === 'string'));
 for (const collection of ['general', 'calm', 'quotes', 'code']) {
     fallbackGame.collectionSelect.value = collection;
-    const passages = fallbackGame.getAvailablePassages();
-    assert.ok(passages.length > 0, `${collection} fallback must not be empty`);
-    assert.ok(passages.every((passage) => typeof passage.text === 'string'));
-    assert.equal(fallbackGame.pickNewText(), true);
-    assert.ok(fallbackGame.currentTargetText.length > 0, `${collection} fallback must open a passage`);
+    for (const difficulty of ['0', '1', '2']) {
+        fallbackGame.difficultySelect.value = difficulty;
+        const passages = fallbackGame.getAvailablePassages();
+        assert.ok(passages.length > 0, `${collection}:${difficulty} fallback must not be empty`);
+        assert.ok(passages.every((passage) => typeof passage.text === 'string'));
+        assert.equal(fallbackGame.pickNewText(), true);
+        assert.ok(fallbackGame.currentTargetText.length > 0, `${collection}:${difficulty} fallback must open a passage`);
+    }
 }
+for (const collection of ['calm', 'quotes', 'code']) {
+    const lengths = fallbackNormalized.collections[collection].map(([passage]) => passage.text.length);
+    assert.ok(
+        lengths[0] < lengths[1] && lengths[1] < lengths[2],
+        `${collection} fallback length must increase by difficulty`
+    );
+}
+assert.equal(fallbackNormalized.collections.code[0][0].text.includes('\n'), false);
+assert.equal(fallbackNormalized.collections.code[1][0].text.includes('\n'), true);
+assert.equal(fallbackNormalized.collections.code[2][0].text.split('\n').length >= 6, true);
+
+// Every built-in collection uses Difficulty; only Custom disables the selector.
+const collectionGame = Object.create(PrecisionTyper.prototype);
+collectionGame.TEXT_DATABASE = normalized;
+collectionGame.collectionSelect = { value: 'code' };
+collectionGame.difficultySelect = { value: '2', disabled: false };
+collectionGame.difficultyHint = { textContent: '' };
+collectionGame.customPanel = { hidden: true };
+assert.equal(collectionGame.getAvailablePassages().length, 15);
+assert.equal(collectionGame.getPassagePoolKey(), 'code:2');
+collectionGame.updateCollectionControls();
+assert.equal(collectionGame.difficultySelect.disabled, false);
+assert.match(collectionGame.difficultyHint.textContent, /Applies to this collection/);
+collectionGame.collectionSelect.value = 'custom';
+collectionGame.updateCollectionControls();
+assert.equal(collectionGame.difficultySelect.disabled, true);
+assert.match(collectionGame.difficultyHint.textContent, /mix you provide/);
 
 const renderGame = Object.create(PrecisionTyper.prototype);
 renderGame.currentTargetText = 'non-blocking word';
@@ -273,7 +314,7 @@ deckGame.canvasSource = null;
 deckGame.currentPassage = null;
 deckGame.currentTargetText = '';
 deckGame.shuffleBags = {};
-const pool = normalized.difficulty[0].slice(0, 3);
+const pool = normalized.collections.general[0].slice(0, 3);
 deckGame.getAvailablePassages = () => pool;
 
 const firstCycle = [];
