@@ -3,8 +3,8 @@
 </p>
 
 <p align="center">
-  <strong>Exact-match typing practice, from short calm sentences to structured multiline code.</strong><br>
-  Keep the performance signals visible, or switch on Zen and let the numbers disappear.
+  <strong>Exact-match typing practice across four curated collections, from short calm sentences to structured multiline code.</strong><br>
+  Keep the performance signals visible, switch on Zen for a quieter session, and move through every pool as a two-way shuffled loop.
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
 
 ## One rule, two experiences
 
-PrecisionTyper completes a passage only when every character matches. Practice mode keeps WPM, accuracy, and elapsed time visible; Zen mode keeps the same strict engine while softening evaluative feedback and advancing automatically.
+PrecisionTyper completes a passage only when every character matches. Practice mode keeps WPM, accuracy, and elapsed time visible; Zen mode keeps the same strict engine while hiding evaluative chrome throughout the session, softening feedback, and advancing automatically after a perfect match.
 
 <p align="center">
   <img src="./assets/readme/modes.svg" width="100%" alt="Practice mode shows performance signals while Zen mode provides quieter feedback; both require an exact match">
@@ -25,12 +25,12 @@ PrecisionTyper completes a passage only when every character matches. Practice m
 
 - **One readable canvas:** correct, current, remaining, and extra characters share the same surface.
 - **Visible whitespace:** the next required space appears as `·`, a target line break as `↵`, and a display-only code wrap as `↳`.
-- **Keyboard-first control:** `/` focuses the canvas; `Tab`, then `Enter`, opens session settings without leaving the typing flow.
+- **Keyboard-first control:** `/` focuses the canvas; `Tab`, then `Enter`, opens session settings; `Cmd/Ctrl + ← / →` moves backward or forward without hitting an endpoint.
 - **Optional atmosphere:** Focus removes surrounding chrome, while locally generated key sounds distinguish normal keys, Space, deletion, and Enter.
 
 ## Training library
 
-The Web Edition ships **237 passages across twelve independent built-in pools**. Every built-in collection supports Easy, Medium, and Hard; Custom keeps the passages supplied by the user and therefore does not apply a generated difficulty label.
+The Web Edition ships **237 passages across twelve independent built-in pools**. Every collection supports Easy, Medium, and Hard.
 
 | Collection | Easy | Medium | Hard | Total |
 | --- | ---: | ---: | ---: | ---: |
@@ -39,6 +39,8 @@ The Web Edition ships **237 passages across twelve independent built-in pools**.
 | **Quotes** | 15 | 15 | 15 | 45 |
 | **Code** | 15 | 19 | 15 | 49 |
 | **All built-in passages** | **85** | **85** | **67** | **237** |
+
+[`PrecisionTyper/texts.json`](./PrecisionTyper/texts.json) is the sole passage source. PrecisionTyper validates schema v3 and every collection/difficulty pool before starting; it never silently substitutes a reduced library.
 
 ### One difficulty standard
 
@@ -79,7 +81,7 @@ python3 -m http.server 8000
 
 Then open [http://localhost:8000/PrecisionTyper/](http://localhost:8000/PrecisionTyper/).
 
-The landing page also works when opened directly. If a browser blocks `texts.json` under `file://`, PrecisionTyper automatically switches to its smaller bundled fallback.
+The landing page can be opened directly, but the game must be served over HTTP so the browser can load `texts.json`. If the passage library cannot load, PrecisionTyper keeps typing disabled and shows the exact local-server or deployment recovery step instead of silently substituting a partial library.
 
 ## Keyboard-first workflow
 
@@ -94,20 +96,23 @@ The landing page also works when opened directly. If a browser blocks `texts.jso
 | Toggle Sound or Zen | `Space` |
 | Return from settings to the canvas | `Esc` or `/` |
 | Restart the current passage | `Esc` |
-| Skip to another passage | `Cmd/Ctrl + →` |
+| Previous passage | `Cmd/Ctrl + ←` |
+| Next passage | `Cmd/Ctrl + →` |
 | Toggle Focus view | `Cmd/Ctrl + Shift + F` |
 | Leave Focus view | `Esc` |
 
-Typing keeps native editing behavior: arrow keys, selection, paste, Home, and End continue to work. Every Quote exercise displays typographic quotation marks; passages without dialogue punctuation receive a single outer `“ ”` pair. Built-in passages accept standard English-keyboard equivalents: type `"` for `“` or `”`, `'` for `‘` or `’`, and `-` for `—` or `–`. Custom passages still require the exact characters supplied by the user. The same settings workflow works in Zen: open it with `Tab`, then `Enter`; use native keyboard controls; press `Esc` or `/` to return to the canvas. In Code passages, `Enter` inserts a line break only when the target shows `↵`; otherwise it checks the passage. A teal `↳` can mark a visually wrapped code token and is never typed. When the next required character is a space, a temporary `·` makes that invisible character clear.
+Typing keeps native editing behavior: plain arrow keys, selection, paste, Home, and End continue to work. Every Quote exercise displays typographic quotation marks; passages without dialogue punctuation receive a single outer `“ ”` pair. Passages accept standard English-keyboard equivalents: type `"` for `“` or `”`, `'` for `‘` or `’`, and `-` for `—` or `–`. The same settings workflow works in Zen: `Tab` deterministically focuses the Session settings button, then `Enter` opens the controls; use native keyboard controls; press `Esc` or `/` to return to the canvas. `Cmd/Ctrl + ← / →` remains available even when a collection or difficulty control has focus. In Code passages, `Enter` inserts a line break only when the target shows `↵`; otherwise it checks the passage. A teal `↳` can mark a visually wrapped code token and is never typed. When the next required character is a space, a temporary `·` makes that invisible character clear.
+
+Each collection/difficulty pair owns one persistent shuffled circular deck. Moving right from the final passage wraps to the first; moving left from the first wraps to the final passage. Completing a passage advances through that same order, so keyboard navigation, the Skip action, and post-completion continuation stay consistent.
 
 With **Sound** enabled, normal characters, Space, Backspace/Delete, and Enter use subtly different low-frequency tap profiles. Sound remains optional and is generated locally in the browser.
 
 ### What happens in a session
 
-1. **Choose a collection and difficulty.** General, Calm, Quotes, and Code each include independent Easy, Medium, and Hard pools; Custom uses the passages you provide.
+1. **Choose a collection and difficulty.** General, Calm, Quotes, and Code each include independent Easy, Medium, and Hard pools.
 2. **Type exactly.** Correct, current, remaining, extra, and currently required whitespace receive distinct visual feedback in one canvas.
 3. **Check with Enter.** A perfect match opens the result overlay; an incomplete match prompts you to correct the passage.
-4. **Continue your way.** Regular practice keeps statistics visible. Zen softens mistakes, hides evaluative chrome, and advances after a short success pause.
+4. **Continue your way.** Press `Enter` after success to advance through the circular deck, or let Zen continue automatically after a short pause.
 
 The timer uses the browser's monotonic clock, and WPM follows the standard five-characters-per-word calculation.
 
@@ -115,7 +120,7 @@ The timer uses the browser's monotonic clock, and WPM follows the standard five-
 
 | Edition | Best for | Run it |
 | --- | --- | --- |
-| **Web · PrecisionTyper** | Single-canvas practice, Zen/Focus sessions, custom passages, and responsive use | [Open online](https://zhoulinhua0-star.github.io/TypeRacerGame/) or serve `PrecisionTyper/` |
+| **Web · PrecisionTyper** | Single-canvas practice, Zen/Focus sessions, and responsive use | [Open online](https://zhoulinhua0-star.github.io/TypeRacerGame/) or serve `PrecisionTyper/` |
 | **Desktop · PrecisionTyper.java** | Strict Java Swing practice with difficulty levels, themes, and synthesized key sounds | `javac PrecisionTyper.java && java PrecisionTyper` |
 | **Console · TypeRacerGame.java** | A minimal terminal loop with per-round timing, accuracy, and WPM | `javac TypeRacerGame.java && java TypeRacerGame` |
 
@@ -127,9 +132,9 @@ The Java editions target Java 21+ and run on Windows, macOS, and Linux. The Web 
 - All 45 Quote entries include verified public-domain literature metadata and Project Gutenberg links.
 - The Code collection includes 49 exercises, including 34 multiline passages; project-authored additions are verified under the repository license.
 - The remaining 121 project-curated passages are marked as awaiting full provenance review instead of receiving guessed attribution.
-- Preferences, custom passages, and shuffle progress stay in the browser; the app does not upload them.
+- Preferences and circular-deck positions stay in the browser; the app does not upload them.
 - Denied or full `localStorage` falls back to in-memory session state without blocking play.
-- Each collection-and-difficulty pool is exhausted before reshuffling when persistent storage is available.
+- Each collection-and-difficulty pool uses a persistent shuffled circular order: forward wraps from last to first, and backward wraps from first to last.
 
 ## Development
 
@@ -142,7 +147,7 @@ node scripts/test-web-logic.mjs
 node scripts/test-keyboard-guide.mjs
 ```
 
-These checks cover schema v3, scoring model v3, perceptual profiles, score bands and raw separation, English-keyboard punctuation equivalents, minimum pool sizes, global duplication, public-domain Quote sources, Code structure, fallback selection, independent shuffle bags, contextual whitespace markers, word-safe wrapping, semantic Enter handling, browser-storage failures, Zen session-setting focus restoration, and the landing-page keyboard guide contract.
+These checks cover schema v3, scoring model v3, perceptual profiles, score bands and raw separation, English-keyboard punctuation equivalents, minimum pool sizes, global duplication, public-domain Quote sources, Code structure, explicit database-load errors, independent circular decks, contextual whitespace markers, word-safe wrapping, semantic Enter handling, deterministic Tab routing, browser-storage failures, session-wide Zen visibility, Zen session-setting focus restoration, and the landing-page keyboard guide contract.
 
 <details>
 <summary><strong>Project structure</strong></summary>
@@ -157,8 +162,8 @@ TypeRacerGame/
 │   ├── website.css             # Landing-page design
 │   ├── website.js              # Navigation and keyboard guide
 │   ├── styles.css              # Dark game, Zen, and Focus views
-│   ├── script.js               # Typing engine and persistence
-│   └── texts.json              # Versioned passage database
+│   ├── script.js               # Typing engine and circular-deck persistence
+│   └── texts.json              # Sole versioned passage database
 ├── assets/readme/              # README visual system
 ├── scripts/                    # Validation and behavior checks
 ├── .github/workflows/          # GitHub Pages deployment

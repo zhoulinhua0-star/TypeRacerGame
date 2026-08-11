@@ -218,8 +218,25 @@ body {
     min-width: 0;
 }
 
-.field-group > label:first-of-type {
+.collection-field {
+    flex: 2 1 430px;
+}
+
+.difficulty-field {
+    flex: 1 1 260px;
+}
+
+.option-field {
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.field-group > label:first-of-type,
+.option-field > legend {
     display: block;
+    padding: 0;
     font-weight: 800;
     font-size: 0.72rem;
     letter-spacing: 0.07em;
@@ -235,53 +252,85 @@ body {
     line-height: 1.45;
 }
 
-.select-wrap {
+.segmented-options {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.collection-options {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.difficulty-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.segmented-option {
     position: relative;
-}
-
-.select-wrap::after {
-    content: "";
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    width: 0.5rem;
-    height: 0.5rem;
-    border-right: 2px solid var(--text-muted);
-    border-bottom: 2px solid var(--text-muted);
-    transform: translateY(-65%) rotate(45deg);
-    pointer-events: none;
-    opacity: 0.7;
-}
-
-.difficulty-select {
-    width: 100%;
-    max-width: 280px;
-    min-height: 44px;
-    appearance: none;
-    padding: 0.65rem 2.5rem 0.65rem 1rem;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-strong);
-    background: var(--accent-surface);
-    color: var(--text-main);
-    font-family: var(--font-sans);
-    font-weight: 600;
-    font-size: 0.95rem;
+    min-width: 0;
     cursor: pointer;
-    transition: border-color var(--transition), box-shadow var(--transition);
+    user-select: none;
 }
 
-.difficulty-select:hover {
-    border-color: var(--teal-400);
+.segmented-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    clip-path: inset(50%);
+    pointer-events: none;
 }
 
-.difficulty-select:focus-visible {
+.segmented-option span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.6rem 0.65rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    background: rgba(12, 24, 21, 0.68);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    transition: color var(--transition), background var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.segmented-option span::before {
+    content: "\2713";
+    width: 0.75rem;
+    color: var(--cta);
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity var(--transition), transform var(--transition);
+}
+
+.segmented-option input:not(:disabled) + span:hover {
+    border-color: var(--border-strong);
+    background: rgba(45, 212, 191, 0.08);
+    color: var(--text-main);
+}
+
+.segmented-option input:checked + span {
+    border-color: rgba(249, 115, 22, 0.72);
+    background: rgba(249, 115, 22, 0.14);
+    color: var(--text-main);
+    box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.14), 0 0 18px rgba(249, 115, 22, 0.08);
+}
+
+.segmented-option input:checked + span::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.segmented-option input:focus-visible + span {
     outline: 2px solid var(--cta);
     outline-offset: 2px;
-}
-
-.difficulty-select:disabled {
-    cursor: not-allowed;
-    opacity: 0.48;
 }
 
 .toggles {
@@ -352,59 +401,6 @@ body {
     color: var(--text-muted);
 }
 
-.custom-panel {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border-subtle);
-}
-
-.custom-panel[hidden] {
-    display: none;
-}
-
-.custom-panel > label {
-    display: block;
-    margin-bottom: 0.45rem;
-    color: var(--text-faint);
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-}
-
-.custom-panel textarea {
-    display: block;
-    width: 100%;
-    min-height: 7rem;
-    padding: 0.8rem 0.9rem;
-    resize: vertical;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-md);
-    background: var(--accent-surface);
-    color: var(--text-main);
-    font-family: var(--font-mono);
-    font-size: 1rem;
-    line-height: 1.55;
-}
-
-.custom-panel textarea:focus-visible {
-    outline: 2px solid var(--cta);
-    outline-offset: 2px;
-}
-
-.custom-panel-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 0.65rem;
-}
-
-.custom-panel-footer .field-hint {
-    margin-top: 0;
-}
-
-.secondary-btn,
 .panel-action {
     min-height: 44px;
     border: 1px solid var(--border-strong);
@@ -417,18 +413,11 @@ body {
     transition: border-color var(--transition), color var(--transition), background var(--transition);
 }
 
-.secondary-btn {
-    flex-shrink: 0;
-    padding: 0.65rem 1rem;
-}
-
-.secondary-btn:hover,
 .panel-action:hover {
     border-color: var(--teal-400);
     color: var(--teal-400);
 }
 
-.secondary-btn:focus-visible,
 .panel-action:focus-visible {
     outline: 2px solid var(--cta);
     outline-offset: 2px;
@@ -622,6 +611,14 @@ body {
     font-weight: 500;
 }
 
+.text-display.is-load-error {
+    max-width: 62ch;
+    color: var(--red-text);
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    font-weight: 600;
+    line-height: 1.7;
+}
+
 .input-capture {
     position: absolute;
     top: 50%;
@@ -802,7 +799,7 @@ body {
     font-size: 0.7rem;
 }
 
-/* Zen mode removes evaluative chrome without shifting the canvas. */
+/* Zen mode removes evaluative chrome for the full session without shifting the canvas. */
 body.zen-mode.zen-active .game-toolbar {
     opacity: 0;
     visibility: hidden;
@@ -875,17 +872,8 @@ body.focus-mode .typing-canvas {
         align-items: stretch;
     }
 
-    .difficulty-select {
-        max-width: none;
-    }
-
-    .custom-panel-footer {
-        align-items: stretch;
-        flex-direction: column;
-    }
-
-    .secondary-btn {
-        width: 100%;
+    .collection-options {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .typing-surface {

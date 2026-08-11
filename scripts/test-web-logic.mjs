@@ -43,13 +43,14 @@ const runNextAnimationFrame = () => {
 };
 
 vm.runInContext(
-    `${source}\nglobalThis.__testExports = { FALLBACK_TEXT_DATABASE, normalizeTextDatabase, readStoredValue, writeStoredValue, PrecisionTyper };`,
+    `${source}\nglobalThis.__testExports = { getTextDatabaseErrorMessage, normalizeTextDatabase, readStoredValue, writeStoredValue, SegmentedControl, PrecisionTyper };`,
     context
 );
 
 const {
-    FALLBACK_TEXT_DATABASE,
+    getTextDatabaseErrorMessage,
     normalizeTextDatabase,
+    SegmentedControl,
     PrecisionTyper
 } = context.__testExports;
 const database = JSON.parse(fs.readFileSync(new URL('../PrecisionTyper/texts.json', import.meta.url), 'utf8'));
@@ -82,61 +83,59 @@ const gameIds = [...gameHtml.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1
 assert.equal(new Set(gameIds).size, gameIds.length, 'Game page IDs must be unique');
 assert.match(gameHtml, /id="input-area"[\s\S]*id="session-settings-button"/);
 assert.match(gameHtml, /id="session-settings-button"[\s\S]*aria-controls="session-controls"/);
-assert.match(gameHtml, /aria-keyshortcuts="\/ Enter Control\+Enter Meta\+Enter"/);
+assert.match(gameHtml, /aria-keyshortcuts="[^"]*Control\+ArrowLeft[^"]*Meta\+ArrowRight"/);
+assert.equal((gameHtml.match(/name="collection"/g) || []).length, 4);
+assert.equal((gameHtml.match(/name="difficulty"/g) || []).length, 3);
+assert.match(gameHtml, /<fieldset[^>]+id="collection-options"/);
+assert.match(gameHtml, /<fieldset[^>]+id="difficulty-options"/);
+assert.doesNotMatch(gameHtml, /<select\b/);
+assert.doesNotMatch(gameHtml, /value="custom"|custom-passages|save-custom/);
+assert.doesNotMatch(source, /precisionTyperCustomPassages|saveCustomPassages|getCustomPassageList/);
+assert.match(gameStyles, /\.segmented-option input:checked \+ span/);
+assert.match(gameStyles, /\.segmented-option input:focus-visible \+ span/);
 assert.doesNotMatch(gameHtml, /mode-toggle|Light Mode/);
 assert.doesNotMatch(source, /modeToggle|toggleTheme|isLightMode/);
 assert.doesNotMatch(gameStyles, /light-mode/);
+assert.doesNotMatch(source, /FALLBACK_TEXT_DATABASE|using fallback passages/);
+assert.match(gameStyles, /\.text-display\.is-load-error/);
+assert.match(getTextDatabaseErrorMessage('file:'), /python3 -m http\.server 8000/);
+assert.match(getTextDatabaseErrorMessage('https:'), /texts\.json/);
+assert.throws(
+    () => normalizeTextDatabase([[], [], []]),
+    /schema version 3/
+);
+const incompleteDatabase = JSON.parse(JSON.stringify(database));
+incompleteDatabase.collections.quotes.easy = [];
+assert.throws(
+    () => normalizeTextDatabase(incompleteDatabase),
+    /quotes:easy/
+);
 
-// Regression: a failed texts.json request must still provide usable built-in passages.
-const fallbackNormalized = normalizeTextDatabase(FALLBACK_TEXT_DATABASE.difficulty);
-const fallbackGame = Object.create(PrecisionTyper.prototype);
-fallbackGame.TEXT_DATABASE = fallbackNormalized;
-fallbackGame.difficultySelect = { value: '0' };
-fallbackGame.collectionSelect = { value: 'general' };
-fallbackGame.canvasSource = null;
-fallbackGame.shuffleBags = {};
-assert.ok(fallbackGame.getAvailablePassages().every((passage) => typeof passage.text === 'string'));
-for (const collection of ['general', 'calm', 'quotes', 'code']) {
-    fallbackGame.collectionSelect.value = collection;
-    for (const difficulty of ['0', '1', '2']) {
-        fallbackGame.difficultySelect.value = difficulty;
-        const passages = fallbackGame.getAvailablePassages();
-        assert.ok(passages.length > 0, `${collection}:${difficulty} fallback must not be empty`);
-        assert.ok(passages.every((passage) => typeof passage.text === 'string'));
-        assert.equal(fallbackGame.pickNewText(), true);
-        assert.ok(fallbackGame.currentTargetText.length > 0, `${collection}:${difficulty} fallback must open a passage`);
-        if (collection === 'quotes') {
-            assert.match(fallbackGame.currentTargetText, /[“”]/u);
-        }
-    }
-}
-for (const collection of ['calm', 'quotes', 'code']) {
-    const lengths = fallbackNormalized.collections[collection].map(([passage]) => passage.text.length);
-    assert.ok(
-        lengths[0] < lengths[1] && lengths[1] < lengths[2],
-        `${collection} fallback length must increase by difficulty`
-    );
-}
-assert.equal(fallbackNormalized.collections.code[0][0].text.includes('\n'), false);
-assert.equal(fallbackNormalized.collections.code[1][0].text.includes('\n'), true);
-assert.equal(fallbackNormalized.collections.code[2][0].text.split('\n').length >= 6, true);
+// Segmented controls preserve select-like state access while using native radio inputs.
+const segmentedInputs = [
+    { value: 'general', checked: true, listeners: [], addEventListener(type) { this.listeners.push(type); }, focus() {} },
+    { value: 'calm', checked: false, listeners: [], addEventListener(type) { this.listeners.push(type); }, focus() { testDocument.activeElement = this; } }
+];
+const segmentedControl = Object.create(SegmentedControl.prototype);
+segmentedControl.inputs = segmentedInputs;
+assert.equal(segmentedControl.value, 'general');
+segmentedControl.value = 'calm';
+assert.equal(segmentedControl.value, 'calm');
+assert.equal(segmentedInputs[0].checked, false);
+segmentedControl.addEventListener('change', () => {});
+assert.deepEqual(segmentedInputs.map((input) => input.listeners), [['change'], ['change']]);
+segmentedControl.focus();
+assert.equal(testDocument.activeElement, segmentedInputs[1]);
+assert.equal(segmentedControl.contains(segmentedInputs[1]), true);
+testDocument.activeElement = null;
 
-// Every built-in collection uses Difficulty; only Custom disables the selector.
+// Every collection uses its selected Difficulty pool.
 const collectionGame = Object.create(PrecisionTyper.prototype);
 collectionGame.TEXT_DATABASE = normalized;
 collectionGame.collectionSelect = { value: 'code' };
-collectionGame.difficultySelect = { value: '2', disabled: false };
-collectionGame.difficultyHint = { textContent: '' };
-collectionGame.customPanel = { hidden: true };
+collectionGame.difficultySelect = { value: '2' };
 assert.equal(collectionGame.getAvailablePassages().length, 15);
 assert.equal(collectionGame.getPassagePoolKey(), 'code:2');
-collectionGame.updateCollectionControls();
-assert.equal(collectionGame.difficultySelect.disabled, false);
-assert.match(collectionGame.difficultyHint.textContent, /Applies to this collection/);
-collectionGame.collectionSelect.value = 'custom';
-collectionGame.updateCollectionControls();
-assert.equal(collectionGame.difficultySelect.disabled, true);
-assert.match(collectionGame.difficultyHint.textContent, /mix you provide/);
 
 // Built-in passages preserve smart typography while accepting standard English-keyboard keys.
 const punctuationGame = Object.create(PrecisionTyper.prototype);
@@ -171,19 +170,6 @@ for (const [collection, levels] of Object.entries(normalized.collections)) {
         }
     }
 }
-for (const [collection, levels] of Object.entries(fallbackNormalized.collections)) {
-    punctuationGame.collectionSelect.value = collection;
-    for (const passage of levels.flat()) {
-        punctuationGame.currentTargetText = punctuationGame.getTypingTargetText(passage.text);
-        punctuationGame.inputArea.value = toEnglishKeyboardText(punctuationGame.currentTargetText);
-        assert.match(punctuationGame.inputArea.value, /^[\n\x20-\x7e]+$/u);
-        assert.equal(punctuationGame.getTypedText(), punctuationGame.currentTargetText);
-        if (collection === 'quotes') {
-            assert.match(punctuationGame.currentTargetText, /[“”]/u);
-        }
-    }
-}
-
 punctuationGame.collectionSelect.value = 'quotes';
 punctuationGame.currentTargetText = '“I’ll wait—now.”';
 punctuationGame.inputArea.value = "\"I'll wait-now.\"";
@@ -211,10 +197,6 @@ testDocument.activeElement = punctuationGame.inputArea;
 punctuationGame.updateCanvasPrompt();
 assert.match(punctuationGame.canvasPrompt.textContent, /Use English keys/);
 
-punctuationGame.collectionSelect.value = 'custom';
-assert.equal(punctuationGame.getTypingTargetText('Call me Ishmael.'), 'Call me Ishmael.');
-punctuationGame.inputArea.value = "\"I'll wait-now.\"";
-assert.equal(punctuationGame.getTypedText(), punctuationGame.inputArea.value);
 testDocument.activeElement = null;
 
 const renderGame = Object.create(PrecisionTyper.prototype);
@@ -281,6 +263,44 @@ enterGame.handleTypingEnter({
 assert.equal(prevented, true);
 assert.equal(checks, 2);
 
+// Tab from the typing capture deterministically focuses the settings entry point.
+const tabGame = Object.create(PrecisionTyper.prototype);
+let tabFocuses = 0;
+let tabAnnouncements = 0;
+tabGame.sessionSettingsButton = {
+    focus(options) {
+        tabFocuses++;
+        assert.equal(options.preventScroll, true);
+    }
+};
+tabGame.canvasPrompt = { textContent: '' };
+tabGame.announce = () => { tabAnnouncements++; };
+let tabPrevented = false;
+tabGame.handleTypingTab({
+    isComposing: false,
+    shiftKey: false,
+    ctrlKey: false,
+    metaKey: false,
+    altKey: false,
+    preventDefault() { tabPrevented = true; }
+});
+assert.equal(tabPrevented, true);
+assert.equal(tabFocuses, 1);
+assert.equal(tabAnnouncements, 1);
+assert.match(tabGame.canvasPrompt.textContent, /Press Enter to open session settings/);
+
+tabPrevented = false;
+tabGame.handleTypingTab({
+    isComposing: false,
+    shiftKey: true,
+    ctrlKey: false,
+    metaKey: false,
+    altKey: false,
+    preventDefault() { tabPrevented = true; }
+});
+assert.equal(tabPrevented, false);
+assert.equal(tabFocuses, 1);
+
 const mismatchGame = Object.create(PrecisionTyper.prototype);
 mismatchGame.isShowingCompletion = false;
 mismatchGame.currentTargetText = 'target';
@@ -299,6 +319,74 @@ mismatchGame.zenToggle.checked = false;
 mismatchGame.handleEnterSubmit();
 assert.equal(gentleFeedback, 1);
 assert.equal(shakes, 1);
+
+// Passage navigation is document-scoped so it works even when a collection radio retains focus.
+const navigationGame = Object.create(PrecisionTyper.prototype);
+navigationGame.isSettingsMode = false;
+navigationGame.isShowingCompletion = false;
+let nextNavigations = 0;
+let previousNavigations = 0;
+let navigationPreventions = 0;
+navigationGame.skipPassage = () => { nextNavigations++; };
+navigationGame.previousPassage = () => { previousNavigations++; };
+const navigationEvent = {
+    key: 'ArrowRight',
+    ctrlKey: false,
+    metaKey: true,
+    isComposing: false,
+    target: { type: 'radio' },
+    preventDefault() { navigationPreventions++; }
+};
+assert.equal(navigationGame.handlePassageNavigation(navigationEvent), true);
+assert.equal(nextNavigations, 1);
+navigationEvent.key = 'ArrowLeft';
+navigationEvent.ctrlKey = true;
+navigationEvent.metaKey = false;
+assert.equal(navigationGame.handlePassageNavigation(navigationEvent), true);
+assert.equal(previousNavigations, 1);
+assert.equal(navigationPreventions, 2);
+navigationEvent.ctrlKey = false;
+assert.equal(navigationGame.handlePassageNavigation(navigationEvent), false);
+
+navigationGame.isSettingsMode = true;
+navigationEvent.ctrlKey = true;
+assert.equal(navigationGame.handlePassageNavigation(navigationEvent), true);
+assert.equal(previousNavigations, 2);
+
+// Zen keeps evaluative chrome hidden across idle, typing, completion, and passage changes.
+bodyClasses.clear();
+const zenChromeGame = Object.create(PrecisionTyper.prototype);
+zenChromeGame.isSettingsMode = false;
+zenChromeGame.isFocusMode = false;
+zenChromeGame.zenToggle = { checked: true };
+zenChromeGame.gameToolbar = {
+    inert: false,
+    setAttribute(name, value) { this[name] = value; }
+};
+for (const state of [
+    { isGameRunning: false, isShowingCompletion: false },
+    { isGameRunning: true, isShowingCompletion: false },
+    { isGameRunning: false, isShowingCompletion: true }
+]) {
+    Object.assign(zenChromeGame, state);
+    zenChromeGame.syncChromeVisibility();
+    assert.equal(bodyClasses.has('zen-active'), true);
+    assert.equal(zenChromeGame.gameToolbar.inert, true);
+    assert.equal(zenChromeGame.gameToolbar['aria-hidden'], 'true');
+}
+
+zenChromeGame.isSettingsMode = true;
+zenChromeGame.syncChromeVisibility();
+assert.equal(bodyClasses.has('zen-active'), true);
+assert.equal(zenChromeGame.gameToolbar.inert, false);
+assert.equal(zenChromeGame.gameToolbar['aria-hidden'], 'false');
+
+zenChromeGame.isSettingsMode = false;
+zenChromeGame.zenToggle.checked = false;
+zenChromeGame.syncChromeVisibility();
+assert.equal(bodyClasses.has('zen-active'), false);
+assert.equal(zenChromeGame.gameToolbar.inert, false);
+assert.equal(zenChromeGame.gameToolbar['aria-hidden'], 'false');
 
 // Session settings reuse native controls and restore an active Focus view on exit.
 bodyClasses.clear();
@@ -398,26 +486,32 @@ assert.equal(returnFocuses, 1);
 assert.equal(returnAnnouncements, 1);
 assert.ok((source.match(/this\.returnToTyping\(\);/g) || []).length >= 3);
 
-const deckGame = Object.create(PrecisionTyper.prototype);
-deckGame.collectionSelect = { value: 'general' };
-deckGame.difficultySelect = { value: '0' };
-deckGame.canvasSource = null;
-deckGame.currentPassage = null;
-deckGame.currentTargetText = '';
-deckGame.shuffleBags = {};
-const pool = normalized.collections.general[0].slice(0, 3);
-deckGame.getAvailablePassages = () => pool;
+// Every collection and difficulty behaves as a fixed, bidirectional circular deck.
+for (const [collection, levels] of Object.entries(normalized.collections)) {
+    for (const [difficulty, pool] of levels.entries()) {
+        const deckGame = Object.create(PrecisionTyper.prototype);
+        deckGame.collectionSelect = { value: collection };
+        deckGame.difficultySelect = { value: String(difficulty) };
+        deckGame.canvasSource = null;
+        deckGame.currentPassage = null;
+        deckGame.currentTargetText = '';
+        deckGame.passageDecks = {};
+        deckGame.savePassageDecks = () => {};
+        deckGame.getAvailablePassages = () => pool;
 
-const firstCycle = [];
-for (let index = 0; index < pool.length; index++) {
-    assert.equal(deckGame.pickNewText(), true);
-    firstCycle.push(deckGame.currentPassage.id);
+        const firstCycle = [];
+        for (let index = 0; index < pool.length; index++) {
+            assert.equal(deckGame.pickNewText(), true);
+            firstCycle.push(deckGame.currentPassage.id);
+        }
+        assert.equal(new Set(firstCycle).size, pool.length, `${collection}:${difficulty} must exhaust its deck`);
+
+        assert.equal(deckGame.pickNewText(), true);
+        assert.equal(deckGame.currentPassage.id, firstCycle[0], `${collection}:${difficulty} must wrap forward`);
+        assert.equal(deckGame.pickPreviousText(), true);
+        assert.equal(deckGame.currentPassage.id, firstCycle.at(-1), `${collection}:${difficulty} must wrap backward`);
+    }
 }
-assert.equal(new Set(firstCycle).size, pool.length);
-
-const lastOfFirstCycle = deckGame.currentPassage.id;
-deckGame.pickNewText();
-assert.notEqual(deckGame.currentPassage.id, lastOfFirstCycle);
 
 // Regression: denied or full browser storage must never interrupt a session.
 const blockedStorageContext = vm.createContext({
@@ -438,23 +532,16 @@ assert.equal(blocked.readStoredValue('missing', 'fallback'), 'fallback');
 assert.equal(blocked.writeStoredValue('setting', 'value'), false);
 
 const blockedGame = Object.create(blocked.PrecisionTyper.prototype);
-blockedGame.shuffleBags = {};
-assert.equal(Object.keys(blockedGame.loadShuffleBags()).length, 0);
-assert.doesNotThrow(() => blockedGame.saveShuffleBags());
+blockedGame.passageDecks = {};
+assert.equal(Object.keys(blockedGame.loadPassageDecks()).length, 0);
+assert.doesNotThrow(() => blockedGame.savePassageDecks());
 
 blockedGame.soundToggle = { checked: true };
 blockedGame.zenToggle = { checked: true };
 blockedGame.difficultySelect = { value: '1' };
 blockedGame.collectionSelect = { value: 'general' };
-blockedGame.customPassages = { value: '' };
 blockedGame.applyZenMode = () => {};
 assert.doesNotThrow(() => blockedGame.loadSettings());
 assert.doesNotThrow(() => blockedGame.saveSettings());
 
-blockedGame.customPassages.value = 'Session-only passage';
-blockedGame.customStatus = { textContent: '' };
-blockedGame.resetGame = () => {};
-assert.doesNotThrow(() => blockedGame.saveCustomPassages());
-assert.match(blockedGame.customStatus.textContent, /session only/i);
-
-console.log('Web passage, shuffle-bag, and storage-resilience tests passed.');
+console.log('Web passage, circular-deck, and storage-resilience tests passed.');

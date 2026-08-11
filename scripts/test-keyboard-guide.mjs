@@ -18,6 +18,7 @@ assert.ok((html.match(/data-guide-close/g) || []).length >= 2, 'Guide needs clos
 assert.match(html, /Normal visual line wraps never require/);
 assert.match(html, /temporary <strong>·<\/strong> marks the next required space/);
 assert.match(html, /<kbd>Enter<\/kbd><span>Check the passage<\/span>/);
+assert.match(html, /Ctrl\/Cmd \+ ← \/ →<\/kbd><\/dt><dd>Move to the previous or next passage/);
 assert.match(html, /Reach Session settings from the canvas/);
 assert.match(html, /Return to the typing canvas/);
 assert.match(html, /Multiline code practice/);

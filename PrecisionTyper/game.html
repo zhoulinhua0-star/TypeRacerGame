@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=13">
+    <link rel="stylesheet" href="styles.css?v=16">
 </head>
 <body>
     <a class="skip-link" href="#input-area">Skip to typing area</a>
@@ -39,30 +39,46 @@
             <div class="game-toolbar-card controls-card" id="session-controls">
                 <h2 class="visually-hidden">Session options</h2>
                 <div class="controls-row">
-                    <div class="field-group">
-                        <label for="collection-select">Collection</label>
-                        <div class="select-wrap">
-                            <select id="collection-select" class="difficulty-select" aria-describedby="collection-hint">
-                                <option value="general" selected>General</option>
-                                <option value="calm">Calm</option>
-                                <option value="quotes">Quotes</option>
-                                <option value="code">Code</option>
-                                <option value="custom">Custom</option>
-                            </select>
+                    <fieldset class="field-group option-field collection-field" id="collection-options" aria-describedby="collection-hint">
+                        <legend>Collection</legend>
+                        <div class="segmented-options collection-options">
+                            <label class="segmented-option">
+                                <input type="radio" name="collection" value="general" checked>
+                                <span>General</span>
+                            </label>
+                            <label class="segmented-option">
+                                <input type="radio" name="collection" value="calm">
+                                <span>Calm</span>
+                            </label>
+                            <label class="segmented-option">
+                                <input type="radio" name="collection" value="quotes">
+                                <span>Quotes</span>
+                            </label>
+                            <label class="segmented-option">
+                                <input type="radio" name="collection" value="code">
+                                <span>Code</span>
+                            </label>
                         </div>
                         <p id="collection-hint" class="field-hint">Choose the kind of text you want to type.</p>
-                    </div>
-                    <div class="field-group">
-                        <label for="difficulty-select">Difficulty</label>
-                        <div class="select-wrap">
-                            <select id="difficulty-select" class="difficulty-select" aria-describedby="difficulty-hint">
-                                <option value="0">Easy</option>
-                                <option value="1" selected>Medium</option>
-                                <option value="2">Hard</option>
-                            </select>
+                    </fieldset>
+                    <fieldset class="field-group option-field difficulty-field" id="difficulty-options" aria-describedby="difficulty-hint">
+                        <legend>Difficulty</legend>
+                        <div class="segmented-options difficulty-options">
+                            <label class="segmented-option">
+                                <input type="radio" name="difficulty" value="0">
+                                <span>Easy</span>
+                            </label>
+                            <label class="segmented-option">
+                                <input type="radio" name="difficulty" value="1" checked>
+                                <span>Medium</span>
+                            </label>
+                            <label class="segmented-option">
+                                <input type="radio" name="difficulty" value="2">
+                                <span>Hard</span>
+                            </label>
                         </div>
                         <p id="difficulty-hint" class="field-hint">Applies to this collection; changing it resets the passage.</p>
-                    </div>
+                    </fieldset>
                     <div class="toggles">
                         <label class="toggle">
                             <input type="checkbox" id="sound-toggle" checked aria-describedby="sound-desc">
@@ -77,17 +93,9 @@
                             <span class="toggle-ui" aria-hidden="true"></span>
                             <span class="toggle-text">
                                 Zen
-                                <span id="zen-desc" class="visually-hidden">Hides live statistics while typing and continues automatically after completion</span>
+                                <span id="zen-desc" class="visually-hidden">Keeps session settings and live statistics hidden until requested, then continues automatically after completion</span>
                             </span>
                         </label>
-                    </div>
-                </div>
-                <div class="custom-panel" id="custom-panel" hidden>
-                    <label for="custom-passages">Custom passages</label>
-                    <textarea id="custom-passages" rows="4" placeholder="Add one passage per line…" spellcheck="true"></textarea>
-                    <div class="custom-panel-footer">
-                        <p id="custom-status" class="field-hint" aria-live="polite">Your passages stay in this browser.</p>
-                        <button type="button" class="secondary-btn" id="save-custom">Save &amp; start</button>
                     </div>
                 </div>
             </div>
@@ -128,7 +136,7 @@
                         autocapitalize="off"
                         inputmode="text"
                         rows="1"
-                        aria-keyshortcuts="/ Enter Control+Enter Meta+Enter"
+                        aria-keyshortcuts="/ Enter Control+Enter Meta+Enter Control+ArrowLeft Meta+ArrowLeft Control+ArrowRight Meta+ArrowRight"
                         aria-label="Type the displayed passage exactly"
                         aria-describedby="target-text-a11y typing-help"
                     ></textarea>
@@ -147,12 +155,12 @@
                     </span>
                 </div>
             </div>
-            <p class="typing-help" id="typing-help"><kbd>/</kbd> type · <kbd>Enter</kbd> check / <kbd>↵</kbd> line break · <kbd>Tab</kbd> settings · <kbd>Esc</kbd> restart · <kbd>Ctrl/Cmd + →</kbd> skip · <kbd>Ctrl/Cmd + Shift + F</kbd> focus</p>
+            <p class="typing-help" id="typing-help"><kbd>/</kbd> type · <kbd>Enter</kbd> check / <kbd>↵</kbd> line break · <kbd>Tab</kbd> settings · <kbd>Esc</kbd> restart · <kbd>Ctrl/Cmd + ← / →</kbd> previous / next · <kbd>Ctrl/Cmd + Shift + F</kbd> focus</p>
             <p class="visually-hidden" id="target-text-a11y"></p>
             <p class="visually-hidden" id="game-status" aria-live="polite"></p>
         </section>
     </main>
 
-    <script src="script.js?v=20"></script>
+    <script src="script.js?v=25"></script>
 </body>
 </html>

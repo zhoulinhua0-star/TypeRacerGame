@@ -7,8 +7,8 @@
  * - Passage database loaded from texts.json
  */
 
-const APP_ASSET_VERSION = '20';
-const SHUFFLE_BAGS_STORAGE_KEY = 'precisionTyperShuffleBagsV3';
+const APP_ASSET_VERSION = '25';
+const PASSAGE_DECKS_STORAGE_KEY = 'precisionTyperPassageDecksV4';
 const BUILT_IN_COLLECTIONS = ['general', 'calm', 'quotes', 'code'];
 const DIFFICULTY_KEYS = ['easy', 'medium', 'hard'];
 const ENGLISH_KEYBOARD_EQUIVALENTS = {
@@ -21,68 +21,12 @@ const ENGLISH_KEYBOARD_EQUIVALENTS = {
 };
 const STORAGE_WARNING_KEYS = new Set();
 const DEFAULT_SOURCE = {
-    type: 'bundled-fallback',
-    title: 'PrecisionTyper fallback passage collection',
+    type: 'project-curated',
+    title: 'PrecisionTyper passage collection',
     author: 'PrecisionTyper contributors',
     url: 'https://github.com/zhoulinhua0-star/TypeRacerGame',
     license: 'Repository MIT; legacy provenance pending review',
     verified: false
-};
-
-const FALLBACK_TEXT_DATABASE = {
-    difficulty: [
-        [
-            "Practice makes perfect.",
-            "The sun rises in the east and sets in the west.",
-            "Clean code is happy code.",
-            "Actions speak louder than words.",
-            "No pain, no gain.",
-            "Think before you type.",
-            "const greeting = \"Hello, world!\";",
-            "Save your work often.",
-            "Less is more.",
-            "Focus on the next key."
-        ],
-        [
-            "Object-oriented design emphasizes encapsulation, inheritance, and polymorphism, yet experienced architects frequently prefer composition over inheritance when modeling systems that must evolve under changing requirements.",
-            "Relational databases enforce integrity through normalization, foreign keys, and transactional isolation levels; understanding ACID properties remains essential when reasoning about consistency under failure.",
-            "Microservices decompose monoliths into independently deployable services, trading operational complexity for scalability, though distributed tracing becomes mandatory when diagnosing latency across network boundaries.",
-            "CAP theorem states that distributed systems cannot simultaneously guarantee consistency, availability, and partition tolerance, forcing architects to choose trade-offs aligned with business requirements.",
-            "Continuous integration pipelines automate compilation, testing, and deployment, converting integration from a periodic crisis into a routine feedback loop after every commit.",
-            "Cryptographic hash functions map inputs to fixed-length digests with collision resistance; they underpin blockchains, password storage, and integrity verification of downloaded artifacts.",
-            "Functional programming treats computation as evaluation of mathematical functions, minimizing mutable state and side effects to simplify reasoning about correctness in concurrent environments.",
-            "Observability combines metrics, structured logging, and distributed tracing so engineers can infer internal system states from external outputs during production incidents.",
-            "Semantic versioning communicates compatibility through major, minor, and patch increments, signaling whether dependent projects can upgrade safely without breaking API contracts.",
-            "Test-driven development writes failing tests before implementation, forcing explicit requirements and enabling refactoring confidence when suites remain comprehensive."
-        ],
-        [
-            "To be, or not to be, that is the question: whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles, and by opposing end them; to die, to sleep—no more—and by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.",
-            "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.",
-            "The Byzantine Generals Problem illustrates how distributed processes must reach consensus despite unreliable communication channels and potentially malicious participants, forming the theoretical foundation for fault-tolerant replication protocols that underpin modern blockchain consensus mechanisms.",
-            "In software engineering, loose coupling is a design goal that seeks to reduce the interdependencies between components of a system with the goal of reducing the risk that changes in one component will require changes in any other component, thereby improving modularity and testability.",
-            "Technical debt, a metaphor introduced by Cunningham, describes the implied cost of additional rework caused by choosing an expedient solution now instead of a better approach that would take longer; compound interest applies until refactoring becomes archaeological excavation.",
-            "Concurrency is not parallelism: the former structures programs as interacting events while the latter executes simultaneous computation on multiple processors; conflating them produces race conditions that manifest only under production load.",
-            "When you have eliminated the impossible, whatever remains, however improbable, must be the truth; yet in production postmortems, teams discover that the impossible persisted because logging sampled away critical spans and metrics aggregated away outliers.",
-            "Shakespeare, Dickens, Austen, Tolstoy, and Knuth collectively remind us that precision in language demands patience: every character matters, every punctuation mark alters meaning, and every careless substitution propagates errors downstream with equal severity."
-        ]
-    ],
-    collections: {
-        calm: [
-            "Take one slow breath and let your hands rest lightly.",
-            "Let your eyes rest on the next phrase, then allow your hands to follow without rushing. A steady pace leaves enough room to notice and correct each small movement.",
-            "Begin by noticing the small points of contact around you: your feet on the floor, your hands above the keyboard, and the air moving quietly through the room. Nothing needs to change before you continue; awareness itself is enough. As you continue, distinguish sensation from reaction: notice pressure, release what is unnecessary, and preserve an unbroken thread of attention through the final clause."
-        ],
-        quotes: [
-            "Call me Ishmael.",
-            "I have no data yet. It is a capital mistake to theorise before one has data. Insensibly one begins to twist facts to suit theories, instead of theories to suit facts.",
-            "Curiouser and curiouser! cried Alice (she was so much surprised, that for the moment she quite forgot how to speak good English); now I'm opening out like the largest telescope that ever was! Good-bye, feet!"
-        ],
-        code: [
-            "const mode = 'practice';",
-            "export function nextStep() {\n  return steps.shift() ?? null;\n}",
-            "async function loadPassages(url) {\n  const response = await fetch(url);\n  if (!response.ok) {\n    throw new Error(`Request failed: ${response.status}`);\n  }\n  return response.json();\n}"
-        ]
-    }
 };
 
 function warnStorageOnce(action, key, error) {
@@ -127,10 +71,16 @@ function normalizeTextDatabase(data) {
     if (data?.schemaVersion === 3 && data.collections) {
         const collections = {};
         for (const collection of BUILT_IN_COLLECTIONS) {
-            collections[collection] = DIFFICULTY_KEYS.map((difficulty) => sanitizePassageList(
-                data.collections?.[collection]?.[difficulty],
-                `${collection}-${difficulty}`
-            ));
+            collections[collection] = DIFFICULTY_KEYS.map((difficulty) => {
+                const passages = sanitizePassageList(
+                    data.collections?.[collection]?.[difficulty],
+                    `${collection}-${difficulty}`
+                );
+                if (passages.length === 0) {
+                    throw new Error(`texts.json is missing passages for ${collection}:${difficulty}`);
+                }
+                return passages;
+            });
         }
         return {
             difficultyStandard: data.difficultyStandard,
@@ -138,48 +88,14 @@ function normalizeTextDatabase(data) {
         };
     }
 
-    if (Array.isArray(data) && data.length >= 3) {
-        const collections = {
-            general: data.map((passages, index) => sanitizePassageList(passages, `general-${index}`))
-        };
-        for (const collection of BUILT_IN_COLLECTIONS.slice(1)) {
-            const passages = FALLBACK_TEXT_DATABASE.collections[collection];
-            collections[collection] = DIFFICULTY_KEYS.map((difficulty, index) => sanitizePassageList(
-                passages.length > 0 ? [passages[index % passages.length]] : [],
-                `${collection}-${difficulty}`
-            ));
-        }
-        return {
-            difficultyStandard: null,
-            collections
-        };
-    }
+    throw new Error('texts.json must use schema version 3 with every built-in collection and difficulty');
+}
 
-    if (data && data.easy && data.medium && data.hard) {
-        return {
-            collections: {
-                general: [
-                    sanitizePassageList(data.easy, 'general-easy'),
-                    sanitizePassageList(data.medium, 'general-medium'),
-                    sanitizePassageList(data.hard, 'general-hard')
-                ],
-                calm: DIFFICULTY_KEYS.map((difficulty, index) => sanitizePassageList(
-                    data.calm?.filter((_, passageIndex) => passageIndex % 3 === index),
-                    `calm-${difficulty}`
-                )),
-                quotes: DIFFICULTY_KEYS.map((difficulty, index) => sanitizePassageList(
-                    data.quotes?.filter((_, passageIndex) => passageIndex % 3 === index),
-                    `quotes-${difficulty}`
-                )),
-                code: DIFFICULTY_KEYS.map((difficulty, index) => sanitizePassageList(
-                    data.code?.filter((_, passageIndex) => passageIndex % 3 === index),
-                    `code-${difficulty}`
-                ))
-            }
-        };
+function getTextDatabaseErrorMessage(protocol) {
+    if (protocol === 'file:') {
+        return 'The passage library cannot load from a local file. From the project folder, run “python3 -m http.server 8000”, then open http://localhost:8000/PrecisionTyper/.';
     }
-
-    throw new Error('texts.json must contain difficulty levels for every built-in collection');
+    return 'The passage library could not load. Reload the page, or verify that texts.json is deployed beside game.html.';
 }
 
 function hashPassage(text) {
@@ -214,13 +130,45 @@ function sanitizePassageList(passages, group = 'passage') {
         .filter(Boolean);
 }
 
+class SegmentedControl {
+    constructor(elementId) {
+        const element = document.getElementById(elementId);
+        this.inputs = Array.from(element.querySelectorAll('input[type="radio"]'));
+    }
+
+    get value() {
+        return this.inputs.find((input) => input.checked)?.value || '';
+    }
+
+    set value(value) {
+        const matchingInput = this.inputs.find((input) => input.value === value);
+        if (matchingInput) {
+            this.inputs.forEach((input) => {
+                input.checked = input === matchingInput;
+            });
+        }
+    }
+
+    addEventListener(type, listener) {
+        this.inputs.forEach((input) => input.addEventListener(type, listener));
+    }
+
+    focus() {
+        (this.inputs.find((input) => input.checked) || this.inputs[0])?.focus();
+    }
+
+    contains(element) {
+        return this.inputs.includes(element);
+    }
+}
+
 class PrecisionTyper {
     constructor(textDatabase) {
         this.TEXT_DATABASE = textDatabase;
 
         this.currentPassage = null;
         this.currentTargetText = '';
-        this.shuffleBags = this.loadShuffleBags();
+        this.passageDecks = this.loadPassageDecks();
         this.isGameRunning = false;
         this.isShowingCompletion = false;
         this.isDismissingCompletion = false;
@@ -246,15 +194,10 @@ class PrecisionTyper {
         this.timerLabel = document.getElementById('timer-label');
         this.wpmLabel = document.getElementById('wpm-label');
         this.accuracyLabel = document.getElementById('accuracy-label');
-        this.collectionSelect = document.getElementById('collection-select');
-        this.difficultySelect = document.getElementById('difficulty-select');
-        this.difficultyHint = document.getElementById('difficulty-hint');
+        this.collectionSelect = new SegmentedControl('collection-options');
+        this.difficultySelect = new SegmentedControl('difficulty-options');
         this.soundToggle = document.getElementById('sound-toggle');
         this.zenToggle = document.getElementById('zen-toggle');
-        this.customPanel = document.getElementById('custom-panel');
-        this.customPassages = document.getElementById('custom-passages');
-        this.customStatus = document.getElementById('custom-status');
-        this.saveCustomButton = document.getElementById('save-custom');
         this.restartButton = document.getElementById('restart-button');
         this.skipButton = document.getElementById('skip-button');
         this.focusButton = document.getElementById('focus-button');
@@ -271,7 +214,6 @@ class PrecisionTyper {
         
         // Load settings and initialize
         this.loadSettings();
-        this.updateCollectionControls();
         this.pickNewText();
         this.setupEventListeners();
         this.updateTextStyles('');
@@ -281,15 +223,8 @@ class PrecisionTyper {
         }
     }
 
-    getCustomPassageList() {
-        return sanitizePassageList(this.customPassages.value.split(/\r?\n/), 'custom');
-    }
-
     getAvailablePassages() {
         const collection = this.collectionSelect.value;
-        if (collection === 'custom') {
-            return this.getCustomPassageList();
-        }
         return this.TEXT_DATABASE.collections[collection]?.[Number(this.difficultySelect.value)] || [];
     }
 
@@ -301,6 +236,14 @@ class PrecisionTyper {
     }
 
     pickNewText() {
+        return this.movePassage(1);
+    }
+
+    pickPreviousText() {
+        return this.movePassage(-1);
+    }
+
+    movePassage(offset) {
         const options = this.getAvailablePassages();
         if (!options || options.length === 0) {
             this.currentPassage = null;
@@ -310,35 +253,42 @@ class PrecisionTyper {
         }
 
         const key = this.getPassagePoolKey();
-        const signature = options.map((passage) => passage.id).sort().join('|');
-        let bag = this.shuffleBags[key];
+        if (!this.passageDecks) {
+            this.passageDecks = {};
+        }
+        const passageIds = options.map((passage) => passage.id);
+        const signature = [...passageIds].sort().join('|');
+        let deck = this.passageDecks[key];
+        const hasValidOrder = deck?.signature === signature &&
+            Array.isArray(deck.order) &&
+            deck.order.length === passageIds.length &&
+            new Set(deck.order).size === passageIds.length &&
+            deck.order.every((id) => passageIds.includes(id));
 
-        if (!bag || bag.signature !== signature || !Array.isArray(bag.remaining)) {
-            bag = { signature, remaining: this.shuffle(options.map((passage) => passage.id)), lastId: null };
+        if (!hasValidOrder) {
+            deck = { signature, order: this.shuffle(passageIds), index: -1 };
         }
 
-        if (bag.remaining.length === 0) {
-            bag.remaining = this.shuffle(options.map((passage) => passage.id));
-            if (bag.remaining.length > 1 && bag.remaining[0] === bag.lastId) {
-                [bag.remaining[0], bag.remaining[1]] = [bag.remaining[1], bag.remaining[0]];
-            }
-        }
-
-        const nextId = bag.remaining.shift();
-        this.currentPassage = options.find((passage) => passage.id === nextId) || options[0];
-        this.currentTargetText = this.getTypingTargetText(this.currentPassage.text);
-        bag.lastId = this.currentPassage.id;
-        this.shuffleBags[key] = bag;
-        this.saveShuffleBags();
-        this.updatePassageSource();
+        const passageCount = deck.order.length;
+        deck.index = deck.index < 0
+            ? (offset < 0 ? passageCount - 1 : 0)
+            : (deck.index + offset + passageCount) % passageCount;
+        const passage = options.find((option) => option.id === deck.order[deck.index]);
+        this.setCurrentPassage(passage);
+        this.passageDecks[key] = deck;
+        this.savePassageDecks();
         return true;
+    }
+
+    setCurrentPassage(passage) {
+        this.currentPassage = passage;
+        this.currentTargetText = this.getTypingTargetText(passage.text);
+        this.updatePassageSource();
     }
 
     getPassagePoolKey() {
         const collection = this.collectionSelect.value;
-        return collection === 'custom'
-            ? collection
-            : `${collection}:${this.difficultySelect.value}`;
+        return `${collection}:${this.difficultySelect.value}`;
     }
 
     shuffle(values) {
@@ -350,17 +300,17 @@ class PrecisionTyper {
         return shuffled;
     }
 
-    loadShuffleBags() {
+    loadPassageDecks() {
         try {
-            return JSON.parse(readStoredValue(SHUFFLE_BAGS_STORAGE_KEY, '{}')) || {};
+            return JSON.parse(readStoredValue(PASSAGE_DECKS_STORAGE_KEY, '{}')) || {};
         } catch (error) {
             console.warn('Unable to load passage order:', error);
             return {};
         }
     }
 
-    saveShuffleBags() {
-        writeStoredValue(SHUFFLE_BAGS_STORAGE_KEY, JSON.stringify(this.shuffleBags));
+    savePassageDecks() {
+        writeStoredValue(PASSAGE_DECKS_STORAGE_KEY, JSON.stringify(this.passageDecks));
     }
 
     setupEventListeners() {
@@ -381,7 +331,6 @@ class PrecisionTyper {
         });
 
         this.collectionSelect.addEventListener('change', () => {
-            this.updateCollectionControls();
             this.saveSettings();
             this.resetGame();
         });
@@ -395,10 +344,6 @@ class PrecisionTyper {
         this.zenToggle.addEventListener('change', () => {
             this.applyZenMode();
             this.saveSettings();
-        });
-
-        this.saveCustomButton.addEventListener('click', () => {
-            this.saveCustomPassages();
         });
 
         this.restartButton.addEventListener('click', () => {
@@ -449,8 +394,9 @@ class PrecisionTyper {
                 return;
             }
 
+            if (this.handlePassageNavigation(e)) return;
+
             const isTypingInput = e.target === this.inputArea;
-            const isEditingCustomPassages = e.target === this.customPassages;
             const isEditableElement = e.target?.isContentEditable;
             if (
                 e.key === '/' &&
@@ -459,7 +405,6 @@ class PrecisionTyper {
                 !e.altKey &&
                 !e.isComposing &&
                 !isTypingInput &&
-                !isEditingCustomPassages &&
                 !isEditableElement &&
                 !this.isShowingCompletion
             ) {
@@ -468,9 +413,11 @@ class PrecisionTyper {
             }
         });
 
-        // Enter checks unless the target expects a newline. Ctrl/Cmd+Enter always checks.
+        // Tab moves to session settings. Enter checks unless the target expects a newline.
         this.inputArea.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Tab') {
+                this.handleTypingTab(e);
+            } else if (e.key === 'Enter') {
                 this.handleTypingEnter(e);
             } else if (e.key === 'Escape') {
                 e.preventDefault();
@@ -479,9 +426,6 @@ class PrecisionTyper {
                 } else {
                     this.restartPassage();
                 }
-            } else if (e.key === 'ArrowRight' && (e.ctrlKey || e.metaKey)) {
-                e.preventDefault();
-                this.skipPassage();
             }
         });
 
@@ -494,10 +438,6 @@ class PrecisionTyper {
 
     getTypedText() {
         const typed = this.inputArea.value.replace(/\r\n?/g, '\n');
-        if (this.collectionSelect?.value === 'custom') {
-            return typed;
-        }
-
         let matched = '';
         for (let index = 0; index < typed.length; index++) {
             const character = typed[index];
@@ -509,11 +449,44 @@ class PrecisionTyper {
         return matched;
     }
 
+    handlePassageNavigation(event) {
+        if (
+            event.isComposing ||
+            this.isShowingCompletion ||
+            (!event.ctrlKey && !event.metaKey)
+        ) {
+            return false;
+        }
+
+        if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            this.skipPassage();
+            return true;
+        }
+
+        if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            this.previousPassage();
+            return true;
+        }
+
+        return false;
+    }
+
     shouldInsertTargetNewline() {
         const caretPosition = Number.isInteger(this.inputArea.selectionStart)
             ? this.inputArea.selectionStart
             : this.getTypedText().length;
         return this.currentTargetText[caretPosition] === '\n';
+    }
+
+    handleTypingTab(event) {
+        if (event.isComposing || event.shiftKey || event.ctrlKey || event.metaKey || event.altKey) return;
+
+        event.preventDefault();
+        this.sessionSettingsButton.focus({ preventScroll: true });
+        this.canvasPrompt.textContent = 'Press Enter to open session settings, or / to return to typing.';
+        this.announce('Session settings button focused. Press Enter to open settings.');
     }
 
     handleTypingEnter(event) {
@@ -644,7 +617,10 @@ class PrecisionTyper {
         };
         const focusAndVerify = () => {
             focusControl();
-            if (this.isSettingsMode && document.activeElement !== this.collectionSelect) {
+            const hasFocus = typeof this.collectionSelect.contains === 'function'
+                ? this.collectionSelect.contains(document.activeElement)
+                : document.activeElement === this.collectionSelect;
+            if (this.isSettingsMode && !hasFocus) {
                 window.requestAnimationFrame(focusControl);
             }
         };
@@ -687,7 +663,7 @@ class PrecisionTyper {
     }
 
     syncChromeVisibility() {
-        const zenIsActive = this.zenToggle.checked && this.isGameRunning;
+        const zenIsActive = this.zenToggle.checked;
         const hideToolbar = !this.isSettingsMode && (this.isFocusMode || zenIsActive);
         document.body.classList.toggle('zen-active', zenIsActive);
         this.gameToolbar.inert = hideToolbar;
@@ -707,9 +683,7 @@ class PrecisionTyper {
         const hasEnglishKeyboardEquivalent = /[“”‘’—–]/u.test(this.currentTargetText);
 
         if (!this.currentTargetText) {
-            this.canvasPrompt.textContent = this.collectionSelect.value === 'custom'
-                ? 'Add a custom passage above to begin.'
-                : 'No passages are available in this collection. Try another collection or reload.';
+            this.canvasPrompt.textContent = 'No passages are available in this collection. Try another collection or reload.';
         } else if (document.activeElement !== this.inputArea) {
             this.canvasPrompt.textContent = 'Press / or click anywhere in the canvas to continue.';
         } else if (this.getTypedText().length === 0) {
@@ -745,30 +719,6 @@ class PrecisionTyper {
         this.canvasSource.hidden = false;
     }
 
-    updateCollectionControls() {
-        const isCustom = this.collectionSelect.value === 'custom';
-        this.difficultySelect.disabled = isCustom;
-        this.difficultyHint.textContent = isCustom
-            ? 'Custom passages use the mix you provide.'
-            : 'Applies to this collection; changing it resets the passage.';
-        this.customPanel.hidden = !isCustom;
-    }
-
-    saveCustomPassages() {
-        const passages = this.getCustomPassageList();
-        if (passages.length === 0) {
-            this.customStatus.textContent = 'Add at least one non-empty passage.';
-            this.customPassages.focus();
-            return;
-        }
-
-        const wasSaved = writeStoredValue('precisionTyperCustomPassages', this.customPassages.value);
-        this.customStatus.textContent = wasSaved
-            ? `${passages.length} custom passage${passages.length === 1 ? '' : 's'} saved.`
-            : 'Browser storage is unavailable. These passages will work for this session only.';
-        this.resetGame();
-    }
-
     saveSettings() {
         const settings = {
             soundEnabled: this.soundToggle.checked,
@@ -789,7 +739,7 @@ class PrecisionTyper {
                 if (['0', '1', '2'].includes(String(settings.difficulty))) {
                     this.difficultySelect.value = String(settings.difficulty);
                 }
-                if (['general', 'calm', 'quotes', 'code', 'custom'].includes(settings.collection)) {
+                if (['general', 'calm', 'quotes', 'code'].includes(settings.collection)) {
                     this.collectionSelect.value = settings.collection;
                 }
             } catch (e) {
@@ -797,7 +747,6 @@ class PrecisionTyper {
             }
         }
 
-        this.customPassages.value = readStoredValue('precisionTyperCustomPassages', '');
         this.applyZenMode();
     }
 
@@ -858,9 +807,7 @@ class PrecisionTyper {
 
     updateTextStyles(typed) {
         if (!this.currentTargetText) {
-            this.textDisplay.textContent = this.collectionSelect.value === 'custom'
-                ? 'Add a custom passage above, then choose Save & start.'
-                : 'This collection could not be loaded. Try another collection or reload the page.';
+            this.textDisplay.textContent = 'This collection could not be loaded. Try another collection or reload the page.';
             this.textDisplay.classList.add('is-loading');
             this.targetTextA11y.textContent = '';
             this.canvasProgress.textContent = '0 / 0';
@@ -1086,7 +1033,17 @@ class PrecisionTyper {
     skipPassage() {
         if (this.isShowingCompletion) return;
         this.resetGame();
-        this.announce('Passage skipped.');
+        this.announce('Next passage.');
+    }
+
+    previousPassage() {
+        if (this.isShowingCompletion) return;
+        if (!this.pickPreviousText()) {
+            this.announce('No passages are available in this collection and difficulty.');
+            return;
+        }
+        this.resetGame({ pickNew: false });
+        this.announce('Previous passage.');
     }
 
     resetGame({ pickNew = true } = {}) {
@@ -1199,15 +1156,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     textDisplay.classList.add('is-loading');
     inputArea.disabled = true;
 
-    // Keep every built-in collection usable when texts.json cannot be loaded.
-    let textDatabase = normalizeTextDatabase(FALLBACK_TEXT_DATABASE.difficulty);
     try {
-        textDatabase = await loadTextDatabase();
+        const textDatabase = await loadTextDatabase();
+        textDisplay.classList.remove('is-loading');
+        inputArea.disabled = false;
+        new PrecisionTyper(textDatabase);
     } catch (error) {
-        console.error('Failed to load texts.json, using fallback passages:', error);
+        console.error('Failed to load texts.json:', error);
+        const message = getTextDatabaseErrorMessage(window.location.protocol);
+        textDisplay.textContent = message;
+        textDisplay.classList.remove('is-loading');
+        textDisplay.classList.add('is-load-error');
+        document.getElementById('canvas-prompt').textContent = 'Passage library unavailable.';
+        document.getElementById('target-text-a11y').textContent = message;
+        document.getElementById('game-status').textContent = message;
     }
-
-    textDisplay.classList.remove('is-loading');
-    inputArea.disabled = false;
-    new PrecisionTyper(textDatabase);
 });
