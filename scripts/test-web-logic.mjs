@@ -54,6 +54,10 @@ const {
 } = context.__testExports;
 const database = JSON.parse(fs.readFileSync(new URL('../PrecisionTyper/texts.json', import.meta.url), 'utf8'));
 const normalized = normalizeTextDatabase(database);
+const toEnglishKeyboardText = (text) => text
+    .replace(/[“”]/gu, '"')
+    .replace(/[‘’]/gu, "'")
+    .replace(/[—–]/gu, '-');
 assert.equal(
     JSON.stringify(Object.fromEntries(Object.entries(normalized.collections).map(([collection, levels]) => [
         collection,
@@ -67,6 +71,11 @@ assert.equal(
     })
 );
 assert.equal(normalized.collections.quotes.flat().every((passage) => passage.source.verified), true);
+assert.equal(
+    normalized.collections.quotes.flat().some((passage) => /[“”]/u.test(passage.text)),
+    true,
+    'Quote passages must preserve their original curly-quote typography'
+);
 assert.equal(normalized.collections.code[0].every((passage) => !passage.text.includes('\n')), true);
 assert.equal(normalized.collections.code[2].every((passage) => passage.text.includes('\n')), true);
 const gameIds = [...gameHtml.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
@@ -96,6 +105,9 @@ for (const collection of ['general', 'calm', 'quotes', 'code']) {
         assert.ok(passages.every((passage) => typeof passage.text === 'string'));
         assert.equal(fallbackGame.pickNewText(), true);
         assert.ok(fallbackGame.currentTargetText.length > 0, `${collection}:${difficulty} fallback must open a passage`);
+        if (collection === 'quotes') {
+            assert.match(fallbackGame.currentTargetText, /[“”]/u);
+        }
     }
 }
 for (const collection of ['calm', 'quotes', 'code']) {
@@ -125,6 +137,85 @@ collectionGame.collectionSelect.value = 'custom';
 collectionGame.updateCollectionControls();
 assert.equal(collectionGame.difficultySelect.disabled, true);
 assert.match(collectionGame.difficultyHint.textContent, /mix you provide/);
+
+// Built-in passages preserve smart typography while accepting standard English-keyboard keys.
+const punctuationGame = Object.create(PrecisionTyper.prototype);
+punctuationGame.collectionSelect = { value: 'quotes' };
+assert.equal(punctuationGame.getTypingTargetText('Call me Ishmael.'), '“Call me Ishmael.”');
+assert.equal(
+    punctuationGame.getTypingTargetText('“Already quoted.”'),
+    '“Already quoted.”'
+);
+punctuationGame.currentTargetText = '“I’ll wait—now.”';
+punctuationGame.inputArea = { value: "\"I'll wait-now.\"" };
+assert.equal(punctuationGame.getTypedText(), punctuationGame.currentTargetText);
+assert.equal(punctuationGame.inputArea.value, "\"I'll wait-now.\"");
+
+for (const [collection, levels] of Object.entries(normalized.collections)) {
+    punctuationGame.collectionSelect.value = collection;
+    for (const passage of levels.flat()) {
+        punctuationGame.currentTargetText = punctuationGame.getTypingTargetText(passage.text);
+        punctuationGame.inputArea.value = toEnglishKeyboardText(punctuationGame.currentTargetText);
+        assert.match(
+            punctuationGame.inputArea.value,
+            /^[\n\x20-\x7e]+$/u,
+            `${passage.id} must be typeable with standard English-keyboard characters`
+        );
+        assert.equal(
+            punctuationGame.getTypedText(),
+            punctuationGame.currentTargetText,
+            `${passage.id} must match through its English-keyboard equivalents`
+        );
+        if (collection === 'quotes') {
+            assert.match(punctuationGame.currentTargetText, /[“”]/u);
+        }
+    }
+}
+for (const [collection, levels] of Object.entries(fallbackNormalized.collections)) {
+    punctuationGame.collectionSelect.value = collection;
+    for (const passage of levels.flat()) {
+        punctuationGame.currentTargetText = punctuationGame.getTypingTargetText(passage.text);
+        punctuationGame.inputArea.value = toEnglishKeyboardText(punctuationGame.currentTargetText);
+        assert.match(punctuationGame.inputArea.value, /^[\n\x20-\x7e]+$/u);
+        assert.equal(punctuationGame.getTypedText(), punctuationGame.currentTargetText);
+        if (collection === 'quotes') {
+            assert.match(punctuationGame.currentTargetText, /[“”]/u);
+        }
+    }
+}
+
+punctuationGame.collectionSelect.value = 'quotes';
+punctuationGame.currentTargetText = '“I’ll wait—now.”';
+punctuationGame.inputArea.value = "\"I'll wait-now.\"";
+punctuationGame.isShowingCompletion = false;
+let punctuationCompletions = 0;
+punctuationGame.gameOver = () => { punctuationCompletions++; };
+punctuationGame.handleEnterSubmit();
+assert.equal(punctuationCompletions, 1);
+
+punctuationGame.inputArea.value = punctuationGame.currentTargetText;
+assert.equal(punctuationGame.getTypedText(), punctuationGame.currentTargetText);
+
+punctuationGame.inputArea.value = "'I'll wait-now.'";
+assert.notEqual(punctuationGame.getTypedText(), punctuationGame.currentTargetText);
+
+punctuationGame.currentTargetText = 'const label = "ready";';
+punctuationGame.inputArea.value = 'const label = "ready";';
+assert.equal(punctuationGame.getTypedText(), punctuationGame.currentTargetText);
+
+punctuationGame.currentTargetText = '“I’ll wait—now.”';
+punctuationGame.inputArea.value = '';
+punctuationGame.canvasPrompt = { textContent: '' };
+punctuationGame.zenToggle = { checked: false };
+testDocument.activeElement = punctuationGame.inputArea;
+punctuationGame.updateCanvasPrompt();
+assert.match(punctuationGame.canvasPrompt.textContent, /Use English keys/);
+
+punctuationGame.collectionSelect.value = 'custom';
+assert.equal(punctuationGame.getTypingTargetText('Call me Ishmael.'), 'Call me Ishmael.');
+punctuationGame.inputArea.value = "\"I'll wait-now.\"";
+assert.equal(punctuationGame.getTypedText(), punctuationGame.inputArea.value);
+testDocument.activeElement = null;
 
 const renderGame = Object.create(PrecisionTyper.prototype);
 renderGame.currentTargetText = 'non-blocking word';

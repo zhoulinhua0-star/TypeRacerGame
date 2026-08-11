@@ -59,7 +59,7 @@ A short nested code sample can demand more precision than prose with the same ch
 | Quotes | 6–19 | 45–58 | 77–89 |
 | Code | 0–18 | 42–57 | 81–96 |
 
-Repository validation rejects a passage assigned outside its score band, reserves a two-point buffer inside each band, and requires adjacent median scores to differ by at least 25 points. The raw feature-load gaps must be at least 10 points for Calm, Quotes, and Code; collection-specific profiles also constrain prose length and structure plus Code line count, nesting, and indentation. Validation continues to enforce at least 15 unique passages per pool, verified public-domain sources for every Quote, single-line Easy code, two-to-five-line Medium code, and six-or-more-line Hard code.
+Repository validation rejects a passage assigned outside its score band, reserves a two-point buffer inside each band, and requires adjacent median scores to differ by at least 25 points. The raw feature-load gaps must be at least 10 points for Calm, Quotes, and Code; collection-specific profiles also constrain prose length and structure plus Code line count, nesting, and indentation. Validation continues to enforce an English-keyboard equivalent for every non-ASCII practice character, at least 15 unique passages per pool, verified public-domain sources for every Quote, single-line Easy code, two-to-five-line Medium code, and six-or-more-line Hard code.
 
 ## Start typing
 
@@ -98,7 +98,7 @@ The landing page also works when opened directly. If a browser blocks `texts.jso
 | Toggle Focus view | `Cmd/Ctrl + Shift + F` |
 | Leave Focus view | `Esc` |
 
-Typing keeps native editing behavior: arrow keys, selection, paste, Home, and End continue to work. The same settings workflow works in Zen: open it with `Tab`, then `Enter`; use native keyboard controls; press `Esc` or `/` to return to the canvas. In Code passages, `Enter` inserts a line break only when the target shows `↵`; otherwise it checks the passage. A teal `↳` can mark a visually wrapped code token and is never typed. When the next required character is a space, a temporary `·` makes that invisible character clear.
+Typing keeps native editing behavior: arrow keys, selection, paste, Home, and End continue to work. Every Quote exercise displays typographic quotation marks; passages without dialogue punctuation receive a single outer `“ ”` pair. Built-in passages accept standard English-keyboard equivalents: type `"` for `“` or `”`, `'` for `‘` or `’`, and `-` for `—` or `–`. Custom passages still require the exact characters supplied by the user. The same settings workflow works in Zen: open it with `Tab`, then `Enter`; use native keyboard controls; press `Esc` or `/` to return to the canvas. In Code passages, `Enter` inserts a line break only when the target shows `↵`; otherwise it checks the passage. A teal `↳` can mark a visually wrapped code token and is never typed. When the next required character is a space, a temporary `·` makes that invisible character clear.
 
 With **Sound** enabled, normal characters, Space, Backspace/Delete, and Enter use subtly different low-frequency tap profiles. Sound remains optional and is generated locally in the browser.
 
@@ -142,7 +142,7 @@ node scripts/test-web-logic.mjs
 node scripts/test-keyboard-guide.mjs
 ```
 
-These checks cover schema v3, scoring model v3, perceptual profiles, score bands and raw separation, minimum pool sizes, global duplication, public-domain Quote sources, Code structure, fallback selection, independent shuffle bags, contextual whitespace markers, word-safe wrapping, semantic Enter handling, browser-storage failures, Zen session-setting focus restoration, and the landing-page keyboard guide contract.
+These checks cover schema v3, scoring model v3, perceptual profiles, score bands and raw separation, English-keyboard punctuation equivalents, minimum pool sizes, global duplication, public-domain Quote sources, Code structure, fallback selection, independent shuffle bags, contextual whitespace markers, word-safe wrapping, semantic Enter handling, browser-storage failures, Zen session-setting focus restoration, and the landing-page keyboard guide contract.
 
 <details>
 <summary><strong>Project structure</strong></summary>

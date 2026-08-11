@@ -11,6 +11,14 @@ const APP_ASSET_VERSION = '20';
 const SHUFFLE_BAGS_STORAGE_KEY = 'precisionTyperShuffleBagsV3';
 const BUILT_IN_COLLECTIONS = ['general', 'calm', 'quotes', 'code'];
 const DIFFICULTY_KEYS = ['easy', 'medium', 'hard'];
+const ENGLISH_KEYBOARD_EQUIVALENTS = {
+    '“': '"',
+    '”': '"',
+    '‘': "'",
+    '’': "'",
+    '—': '-',
+    '–': '-'
+};
 const STORAGE_WARNING_KEYS = new Set();
 const DEFAULT_SOURCE = {
     type: 'bundled-fallback',
@@ -285,6 +293,13 @@ class PrecisionTyper {
         return this.TEXT_DATABASE.collections[collection]?.[Number(this.difficultySelect.value)] || [];
     }
 
+    getTypingTargetText(text) {
+        if (this.collectionSelect.value === 'quotes' && !/[“”]/u.test(text)) {
+            return `“${text}”`;
+        }
+        return text;
+    }
+
     pickNewText() {
         const options = this.getAvailablePassages();
         if (!options || options.length === 0) {
@@ -311,7 +326,7 @@ class PrecisionTyper {
 
         const nextId = bag.remaining.shift();
         this.currentPassage = options.find((passage) => passage.id === nextId) || options[0];
-        this.currentTargetText = this.currentPassage.text;
+        this.currentTargetText = this.getTypingTargetText(this.currentPassage.text);
         bag.lastId = this.currentPassage.id;
         this.shuffleBags[key] = bag;
         this.saveShuffleBags();
@@ -478,7 +493,20 @@ class PrecisionTyper {
     }
 
     getTypedText() {
-        return this.inputArea.value.replace(/\r\n?/g, '\n');
+        const typed = this.inputArea.value.replace(/\r\n?/g, '\n');
+        if (this.collectionSelect?.value === 'custom') {
+            return typed;
+        }
+
+        let matched = '';
+        for (let index = 0; index < typed.length; index++) {
+            const character = typed[index];
+            const targetCharacter = this.currentTargetText[index];
+            matched += ENGLISH_KEYBOARD_EQUIVALENTS[targetCharacter] === character
+                ? targetCharacter
+                : character;
+        }
+        return matched;
     }
 
     shouldInsertTargetNewline() {
@@ -676,6 +704,7 @@ class PrecisionTyper {
             .split(/\s/u)
             .some((token) => token.length > 32);
         const hasTargetNewline = this.currentTargetText.includes('\n');
+        const hasEnglishKeyboardEquivalent = /[“”‘’—–]/u.test(this.currentTargetText);
 
         if (!this.currentTargetText) {
             this.canvasPrompt.textContent = this.collectionSelect.value === 'custom'
@@ -686,6 +715,8 @@ class PrecisionTyper {
         } else if (this.getTypedText().length === 0) {
             if (hasTargetNewline) {
                 this.canvasPrompt.textContent = '↵ marks a required line break; press Enter when you reach it.';
+            } else if (hasEnglishKeyboardEquivalent) {
+                this.canvasPrompt.textContent = 'Use English keys: " for curly quotes, \' for curly apostrophes, and - for long dashes.';
             } else {
                 this.canvasPrompt.textContent = hasLongToken
                     ? '↳ marks a visual-only long-token wrap; do not type the arrow or Enter.'

@@ -93,6 +93,9 @@ for (const collection of collections) {
             if (passage.text?.includes('\r') || passage.text?.includes('\t')) {
                 errors.push(`${location} contains a tab or carriage return`);
             }
+            if (/[^\n\x20-\x7e“”‘’—–]/u.test(passage.text || '')) {
+                errors.push(`${location} contains a character without a standard English-keyboard equivalent`);
+            }
             if (/[\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]/u.test(passage.text)) {
                 errors.push(`${location} contains non-standard whitespace`);
             }
