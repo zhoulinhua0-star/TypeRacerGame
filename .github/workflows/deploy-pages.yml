@@ -27,10 +27,14 @@ jobs:
           node-version: 22
       - name: Validate passage database
         run: node scripts/validate-texts.mjs
+      - name: Test difficulty scoring
+        run: node scripts/test-difficulty-score.mjs
       - name: Test web passage logic
         run: node scripts/test-web-logic.mjs
       - name: Test landing-page keyboard guide
         run: node scripts/test-keyboard-guide.mjs
+      - name: Test site links and metadata
+        run: node scripts/test-site-metadata.mjs
       - uses: actions/upload-pages-artifact@v3
         with:
           path: PrecisionTyper

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://precisiontyper.com/sitemap.xml

@@ -8,9 +8,9 @@
 </p>
 
 <p align="center">
-  <a href="https://zhoulinhua0-star.github.io/TypeRacerGame/"><strong>Play in your browser</strong></a>
+  <a href="https://precisiontyper.com/"><strong>Play in your browser</strong></a>
   ·
-  <a href="https://zhoulinhua0-star.github.io/TypeRacerGame/game.html">Open the typing canvas</a>
+  <a href="https://precisiontyper.com/game.html">Open the typing canvas</a>
   ·
   <a href="#training-library">Explore the training library</a>
 </p>
@@ -67,7 +67,7 @@ Repository validation rejects a passage assigned outside its score band, reserve
 
 ### Use the hosted app
 
-Open **[PrecisionTyper](https://zhoulinhua0-star.github.io/TypeRacerGame/)**, choose **Play now**, and press `/` to focus the typing canvas. Nothing needs to be installed.
+Open **[PrecisionTyper](https://precisiontyper.com/)**, choose **Play now**, and press `/` to focus the typing canvas. Nothing needs to be installed.
 
 For a quiet first session, try **Calm + Easy + Zen + Focus + Sound**. For deliberate practice, combine any built-in collection with a difficulty and turn Zen off to watch live statistics.
 
@@ -120,7 +120,7 @@ The timer uses the browser's monotonic clock, and WPM follows the standard five-
 
 | Edition | Best for | Run it |
 | --- | --- | --- |
-| **Web · PrecisionTyper** | Single-canvas practice, Zen/Focus sessions, and responsive use | [Open online](https://zhoulinhua0-star.github.io/TypeRacerGame/) or serve `PrecisionTyper/` |
+| **Web · PrecisionTyper** | Single-canvas practice, Zen/Focus sessions, and responsive use | [Open online](https://precisiontyper.com/) or serve `PrecisionTyper/` |
 | **Desktop · PrecisionTyper.java** | Strict Java Swing practice with difficulty levels, themes, and synthesized key sounds | `javac PrecisionTyper.java && java PrecisionTyper` |
 | **Console · TypeRacerGame.java** | A minimal terminal loop with per-round timing, accuracy, and WPM | `javac TypeRacerGame.java && java TypeRacerGame` |
 
@@ -145,9 +145,10 @@ node scripts/validate-texts.mjs
 node scripts/test-difficulty-score.mjs
 node scripts/test-web-logic.mjs
 node scripts/test-keyboard-guide.mjs
+node scripts/test-site-metadata.mjs
 ```
 
-These checks cover schema v3, scoring model v3, perceptual profiles, score bands and raw separation, English-keyboard punctuation equivalents, minimum pool sizes, global duplication, public-domain Quote sources, Code structure, explicit database-load errors, independent circular decks, contextual whitespace markers, word-safe wrapping, semantic Enter handling, deterministic Tab routing, browser-storage failures, session-wide Zen visibility, Zen session-setting focus restoration, and the landing-page keyboard guide contract.
+These checks cover schema v3, scoring model v3, perceptual profiles, score bands and raw separation, English-keyboard punctuation equivalents, minimum pool sizes, global duplication, public-domain Quote sources, Code structure, explicit database-load errors, independent circular decks, contextual whitespace markers, word-safe wrapping, semantic Enter handling, deterministic Tab routing, browser-storage failures, session-wide Zen visibility, Zen session-setting focus restoration, the landing-page keyboard guide contract, canonical production metadata, and local static-link integrity.
 
 <details>
 <summary><strong>Project structure</strong></summary>
@@ -163,6 +164,8 @@ TypeRacerGame/
 │   ├── website.js              # Navigation and keyboard guide
 │   ├── styles.css              # Dark game, Zen, and Focus views
 │   ├── script.js               # Typing engine and circular-deck persistence
+│   ├── robots.txt              # Search crawler policy
+│   ├── sitemap.xml             # Canonical production URLs
 │   └── texts.json              # Sole versioned passage database
 ├── assets/readme/              # README visual system
 ├── scripts/                    # Validation and behavior checks
@@ -176,7 +179,9 @@ TypeRacerGame/
 <details>
 <summary><strong>GitHub Pages deployment</strong></summary>
 
-The deployment workflow publishes `PrecisionTyper/` to the site root. In **Settings → Pages**, set **Build and deployment → Source** to **GitHub Actions**. A push to `main` then deploys the landing page at `/TypeRacerGame/` and the game at `/TypeRacerGame/game.html`.
+The deployment workflow publishes `PrecisionTyper/` to the custom-domain root. In **Settings → Pages**, set **Build and deployment → Source** to **GitHub Actions**, set **Custom domain** to `precisiontyper.com`, and enable **Enforce HTTPS** after the DNS check succeeds. A push to `main` then deploys the landing page at [precisiontyper.com](https://precisiontyper.com/) and the game at [precisiontyper.com/game.html](https://precisiontyper.com/game.html).
+
+Cloudflare DNS should keep the four GitHub Pages apex `A` records and the `www` CNAME to `zhoulinhua0-star.github.io` in **DNS only** mode. Keep the GitHub domain-verification TXT record. If GitHub reports a failed DNS check, verify those records and wait for propagation; if certificate issuance is still pending after DNS succeeds, leave the records unchanged while GitHub provisions HTTPS. Avoid Cloudflare redirect rules for these hostnames so `www` and HTTP can use GitHub Pages' canonical HTTPS redirect without a loop.
 
 If a deployment looks stale, wait for the **Deploy GitHub Pages** workflow to finish, then hard-refresh with `Cmd+Shift+R` on macOS or `Ctrl+Shift+R` on Windows.
 
