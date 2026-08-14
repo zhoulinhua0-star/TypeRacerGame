@@ -25,7 +25,7 @@ PrecisionTyper completes a passage only when every character matches. Practice m
 
 - **One readable canvas:** correct, current, remaining, and extra characters share the same surface.
 - **Visible whitespace:** the next required space appears as `·`, a target line break as `↵`, and a display-only code wrap as `↳`.
-- **Keyboard-first control:** `/` focuses the canvas; `Tab`, then `Enter`, opens session settings; `Cmd/Ctrl + ← / →` moves backward or forward without hitting an endpoint.
+- **Keyboard-first control:** `/` focuses the canvas; `Tab`, then `Enter`, opens session settings; an explicit focus path keeps those controls reachable across Chrome, Edge, and Safari; `Cmd/Ctrl + ← / →` moves backward or forward without hitting an endpoint.
 - **Optional atmosphere:** Focus removes surrounding chrome, while locally generated key sounds distinguish normal keys, Space, deletion, and Enter.
 
 ## Training library
@@ -94,14 +94,14 @@ The landing page can be opened directly, but the game must be served over HTTP s
 | Move through session settings | `Tab` / `Shift + Tab` |
 | Change a selected option | `↑` / `↓` |
 | Toggle Sound or Zen | `Space` |
-| Return from settings to the canvas | `Esc` or `/` |
+| Return from settings to the canvas | `Tab` past either edge, `Esc`, or `/` |
 | Restart the current passage | `Esc` |
 | Previous passage | `Cmd/Ctrl + ←` |
 | Next passage | `Cmd/Ctrl + →` |
 | Toggle Focus view | `Cmd/Ctrl + Shift + F` |
 | Leave Focus view | `Esc` |
 
-Typing keeps native editing behavior: plain arrow keys, selection, paste, Home, and End continue to work. Every Quote exercise displays typographic quotation marks; passages without dialogue punctuation receive a single outer `“ ”` pair. Passages accept standard English-keyboard equivalents: type `"` for `“` or `”`, `'` for `‘` or `’`, and `-` for `—` or `–`. The same settings workflow works in Zen: `Tab` deterministically focuses the Session settings button, then `Enter` opens the controls; use native keyboard controls; press `Esc` or `/` to return to the canvas. `Cmd/Ctrl + ← / →` remains available even when a collection or difficulty control has focus. In Code passages, `Enter` inserts a line break only when the target shows `↵`; otherwise it checks the passage. A teal `↳` can mark a visually wrapped code token and is never typed. When the next required character is a space, a temporary `·` makes that invisible character clear.
+Typing keeps native editing behavior: plain arrow keys, selection, paste, Home, and End continue to work. Every Quote exercise displays typographic quotation marks; passages without dialogue punctuation receive a single outer `“ ”` pair. Passages accept standard English-keyboard equivalents: type `"` for `“` or `”`, `'` for `‘` or `’`, and `-` for `—` or `–`. The same settings workflow works in Zen: `Tab` deterministically focuses the Session settings button, then `Enter` opens the controls. Once open, PrecisionTyper explicitly routes focus through Collection, Difficulty, Sound, and Zen instead of relying on each browser's native Tab preference. That keeps the sequence consistent in Chrome, Edge, and Safari without requiring Safari's “Press Tab to highlight each item on a web page” setting. Tab past either end, or press `Esc` or `/`, to return to the canvas. `Cmd/Ctrl + ← / →` remains available even when a collection or difficulty control has focus. In Code passages, `Enter` inserts a line break only when the target shows `↵`; otherwise it checks the passage. A teal `↳` can mark a visually wrapped code token and is never typed. When the next required character is a space, a temporary `·` makes that invisible character clear.
 
 Each collection/difficulty pair owns one persistent shuffled circular deck. Moving right from the final passage wraps to the first; moving left from the first wraps to the final passage. Completing a passage advances through that same order, so keyboard navigation, the Skip action, and post-completion continuation stay consistent.
 
@@ -148,7 +148,7 @@ node scripts/test-keyboard-guide.mjs
 node scripts/test-site-metadata.mjs
 ```
 
-These checks cover schema v3, scoring model v3, perceptual profiles, score bands and raw separation, English-keyboard punctuation equivalents, minimum pool sizes, global duplication, public-domain Quote sources, Code structure, explicit database-load errors, independent circular decks, contextual whitespace markers, word-safe wrapping, semantic Enter handling, deterministic Tab routing, browser-storage failures, session-wide Zen visibility, Zen session-setting focus restoration, the landing-page keyboard guide contract, canonical production metadata, and local static-link integrity.
+These checks cover schema v3, scoring model v3, perceptual profiles, score bands and raw separation, English-keyboard punctuation equivalents, minimum pool sizes, global duplication, public-domain Quote sources, Code structure, explicit database-load errors, independent circular decks, contextual whitespace markers, word-safe wrapping, semantic Enter handling, browser-independent forward and backward settings focus, browser-storage failures, session-wide Zen visibility, Zen session-setting focus restoration, the landing-page keyboard guide focus loop, canonical production metadata, and local static-link integrity.
 
 <details>
 <summary><strong>Project structure</strong></summary>

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import vm from 'node:vm';
 
 const [html, css, javascript] = await Promise.all([
     readFile(new URL('../PrecisionTyper/index.html', import.meta.url), 'utf8'),
@@ -33,5 +34,73 @@ assert.match(javascript, /event\.key === 'Escape'/);
 assert.match(javascript, /event\.key === 'Tab'/);
 assert.match(javascript, /element\.inert = isInert/);
 assert.match(javascript, /previouslyFocused\.focus\(\)/);
+
+// The guide owns its Tab order so Safari cannot skip its button or link.
+const documentListeners = new Map();
+const guideTrigger = {
+    addEventListener() {},
+    setAttribute() {},
+    focus() {}
+};
+const guideCloseButton = {
+    hidden: false,
+    focus() { testDocument.activeElement = this; }
+};
+const guideStartLink = {
+    hidden: false,
+    focus() { testDocument.activeElement = this; }
+};
+const guideCard = {
+    querySelectorAll() { return [guideCloseButton, guideStartLink]; }
+};
+const guideDialog = {
+    hidden: false,
+    querySelector(selector) {
+        if (selector === '.guide-card') return guideCard;
+        if (selector === '.guide-close') return guideCloseButton;
+        return null;
+    },
+    querySelectorAll() { return []; }
+};
+const testDocument = {
+    activeElement: guideCloseButton,
+    body: { classList: { add() {}, remove() {} } },
+    addEventListener(type, listener) { documentListeners.set(type, listener); },
+    getElementById(id) {
+        if (id === 'keyboard-guide-trigger') return guideTrigger;
+        if (id === 'keyboard-guide') return guideDialog;
+        return null;
+    },
+    querySelector() { return null; },
+    querySelectorAll() { return []; }
+};
+vm.runInNewContext(javascript, {
+    document: testDocument,
+    window: {
+        matchMedia() { return { matches: true }; },
+        clearTimeout() {},
+        requestAnimationFrame(callback) { callback(); return 1; },
+        cancelAnimationFrame() {}
+    }
+});
+documentListeners.get('DOMContentLoaded')();
+
+let guideTabPreventions = 0;
+const pressGuideTab = (shiftKey = false) => documentListeners.get('keydown')({
+    key: 'Tab',
+    shiftKey,
+    preventDefault() { guideTabPreventions++; }
+});
+
+pressGuideTab();
+assert.equal(testDocument.activeElement, guideStartLink);
+pressGuideTab();
+assert.equal(testDocument.activeElement, guideCloseButton);
+pressGuideTab(true);
+assert.equal(testDocument.activeElement, guideStartLink);
+testDocument.activeElement = null;
+pressGuideTab();
+assert.equal(testDocument.activeElement, guideCloseButton);
+assert.equal(guideTabPreventions, 4);
 
 console.log('Landing-page keyboard guide checks passed.');

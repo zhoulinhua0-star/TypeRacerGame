@@ -106,16 +106,13 @@
                 if (event.key === 'Tab') {
                     var focusable = getGuideFocusableElements();
                     if (focusable.length === 0) return;
-                    var first = focusable[0];
-                    var last = focusable[focusable.length - 1];
+                    var currentIndex = focusable.indexOf(document.activeElement);
+                    var nextIndex = currentIndex === -1
+                        ? (event.shiftKey ? focusable.length - 1 : 0)
+                        : (currentIndex + (event.shiftKey ? -1 : 1) + focusable.length) % focusable.length;
 
-                    if (event.shiftKey && document.activeElement === first) {
-                        event.preventDefault();
-                        last.focus();
-                    } else if (!event.shiftKey && document.activeElement === last) {
-                        event.preventDefault();
-                        first.focus();
-                    }
+                    event.preventDefault();
+                    focusable[nextIndex].focus();
                 }
             });
         }

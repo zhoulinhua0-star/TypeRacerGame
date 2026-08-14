@@ -7,7 +7,7 @@
  * - Passage database loaded from texts.json
  */
 
-const APP_ASSET_VERSION = '25';
+const APP_ASSET_VERSION = '26';
 const PASSAGE_DECKS_STORAGE_KEY = 'precisionTyperPassageDecksV4';
 const BUILT_IN_COLLECTIONS = ['general', 'calm', 'quotes', 'code'];
 const DIFFICULTY_KEYS = ['easy', 'medium', 'hard'];
@@ -363,7 +363,9 @@ class PrecisionTyper {
         });
 
         this.gameToolbar.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.isSettingsMode) {
+            if (e.key === 'Tab' && this.isSettingsMode) {
+                this.handleSessionSettingsTab(e);
+            } else if (e.key === 'Escape' && this.isSettingsMode) {
                 e.preventDefault();
                 this.closeSessionSettings();
             }
@@ -489,6 +491,29 @@ class PrecisionTyper {
         this.announce('Session settings button focused. Press Enter to open settings.');
     }
 
+    handleSessionSettingsTab(event) {
+        if (event.isComposing || event.ctrlKey || event.metaKey || event.altKey) return;
+
+        const focusStops = [
+            this.collectionSelect,
+            this.difficultySelect,
+            this.soundToggle,
+            this.zenToggle
+        ];
+        const activeIndex = focusStops.findIndex((stop) => stop.contains(document.activeElement));
+        const nextIndex = activeIndex === -1
+            ? (event.shiftKey ? focusStops.length - 1 : 0)
+            : activeIndex + (event.shiftKey ? -1 : 1);
+
+        event.preventDefault();
+        if (nextIndex < 0 || nextIndex >= focusStops.length) {
+            this.closeSessionSettings();
+            return;
+        }
+
+        focusStops[nextIndex].focus();
+    }
+
     handleTypingEnter(event) {
         if (event.isComposing) return;
 
@@ -607,7 +632,7 @@ class PrecisionTyper {
         }
         this.syncChromeVisibility();
         this.focusFirstSessionControl();
-        this.announce('Session settings opened. Use Tab to move, arrow keys to choose, Space to toggle, and Escape or slash to return to typing.');
+        this.announce('Session settings opened. Use Tab to move, arrow keys to choose, Space to toggle, and Tab past the edge, Escape, or slash to return to typing.');
     }
 
     focusFirstSessionControl() {

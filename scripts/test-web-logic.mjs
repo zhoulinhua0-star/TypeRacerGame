@@ -301,6 +301,72 @@ tabGame.handleTypingTab({
 assert.equal(tabPrevented, false);
 assert.equal(tabFocuses, 1);
 
+// Settings focus traversal is explicit so Safari does not depend on its native Tab preference.
+const settingsTabGame = Object.create(PrecisionTyper.prototype);
+const collectionRadio = { name: 'collection' };
+const difficultyRadio = { name: 'difficulty' };
+const focusOrder = [];
+let settingsTabCloses = 0;
+let settingsTabPreventions = 0;
+settingsTabGame.collectionSelect = {
+    contains(element) { return element === collectionRadio; },
+    focus() {
+        focusOrder.push('collection');
+        testDocument.activeElement = collectionRadio;
+    }
+};
+settingsTabGame.difficultySelect = {
+    contains(element) { return element === difficultyRadio; },
+    focus() {
+        focusOrder.push('difficulty');
+        testDocument.activeElement = difficultyRadio;
+    }
+};
+settingsTabGame.soundToggle = {
+    contains(element) { return element === this; },
+    focus() {
+        focusOrder.push('sound');
+        testDocument.activeElement = this;
+    }
+};
+settingsTabGame.zenToggle = {
+    contains(element) { return element === this; },
+    focus() {
+        focusOrder.push('zen');
+        testDocument.activeElement = this;
+    }
+};
+settingsTabGame.closeSessionSettings = () => { settingsTabCloses++; };
+const moveSettingsFocus = (shiftKey = false) => settingsTabGame.handleSessionSettingsTab({
+    isComposing: false,
+    ctrlKey: false,
+    metaKey: false,
+    altKey: false,
+    shiftKey,
+    preventDefault() { settingsTabPreventions++; }
+});
+
+testDocument.activeElement = collectionRadio;
+moveSettingsFocus();
+assert.equal(testDocument.activeElement, difficultyRadio);
+moveSettingsFocus();
+assert.equal(testDocument.activeElement, settingsTabGame.soundToggle);
+moveSettingsFocus();
+assert.equal(testDocument.activeElement, settingsTabGame.zenToggle);
+moveSettingsFocus();
+assert.equal(settingsTabCloses, 1);
+assert.deepEqual(focusOrder, ['difficulty', 'sound', 'zen']);
+
+testDocument.activeElement = collectionRadio;
+moveSettingsFocus(true);
+assert.equal(settingsTabCloses, 2);
+assert.equal(settingsTabPreventions, 5);
+
+testDocument.activeElement = null;
+moveSettingsFocus();
+assert.equal(testDocument.activeElement, collectionRadio);
+assert.equal(settingsTabPreventions, 6);
+
 const mismatchGame = Object.create(PrecisionTyper.prototype);
 mismatchGame.isShowingCompletion = false;
 mismatchGame.currentTargetText = 'target';
