@@ -67,6 +67,8 @@ Repository validation rejects a passage assigned outside its score band, reserve
 
 ### Use the hosted app
 
+**Website**: `https://precisiontyper.com/`
+
 Open **[PrecisionTyper](https://precisiontyper.com/)**, choose **Play now**, and press `/` to focus the typing canvas. Nothing needs to be installed.
 
 For a quiet first session, try **Calm + Easy + Zen + Focus + Sound**. For deliberate practice, combine any built-in collection with a difficulty and turn Zen off to watch live statistics.
