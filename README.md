@@ -27,6 +27,7 @@ PrecisionTyper completes a passage only when every character matches. Practice m
 - **Visible whitespace:** the next required space appears as `·`, a target line break as `↵`, and a display-only code wrap as `↳`.
 - **Keyboard-first control:** `/` focuses the canvas; `Tab`, then `Enter`, opens session settings; an explicit focus path keeps those controls reachable across Chrome, Edge, and Safari; `Cmd/Ctrl + ← / →` moves backward or forward without hitting an endpoint.
 - **Optional atmosphere:** Focus removes surrounding chrome, while locally generated key sounds distinguish normal keys, Space, deletion, and Enter.
+- **Habits, not conformity:** a pre-run home-row anchor and a post-run repeated-delete insight optimize observable efficiency; PrecisionTyper never tracks fingers or enforces textbook placement.
 
 ## Training library
 
@@ -118,6 +119,12 @@ With **Sound** enabled, normal characters, Space, Backspace/Delete, and Enter us
 
 The timer uses the browser's monotonic clock, and WPM follows the standard five-characters-per-word calculation.
 
+### Start centered, type naturally, edit efficiently
+
+Before a run begins, the canvas shows a quiet `A S D F    J K L ;` anchor so your hands start centered. It disappears with the first keystroke and is never enforced: PrecisionTyper does not track which finger presses a key, does not ask you to return to the home row, and never marks an alternative finger as incorrect.
+
+The result overlay adds an **Efficiency Insights** note when a run contained a repeated-deletion sequence that one macOS `⌥ + Delete` would have matched. A sequence qualifies when it was at least three consecutive single-character deletions, the deletions stayed contiguous, and they removed most or all of the word before the caret. Sequences that only trimmed part of a longer word, or that reached back past the previous word, are left alone rather than turned into forced advice. The insight is observational: it never changes WPM or accuracy, and a run without qualifying sequences shows nothing at all.
+
 ## Three editions
 
 | Edition | Best for | Run it |
@@ -150,7 +157,7 @@ node scripts/test-keyboard-guide.mjs
 node scripts/test-site-metadata.mjs
 ```
 
-These checks cover schema v3, scoring model v3, perceptual profiles, score bands and raw separation, English-keyboard punctuation equivalents, minimum pool sizes, global duplication, public-domain Quote sources, Code structure, explicit database-load errors, independent circular decks, contextual whitespace markers, word-safe wrapping, semantic Enter handling, browser-independent forward and backward settings focus, browser-storage failures, session-wide Zen visibility, Zen session-setting focus restoration, the landing-page keyboard guide focus loop, canonical production metadata, and local static-link integrity.
+These checks cover schema v3, scoring model v3, perceptual profiles, score bands and raw separation, English-keyboard punctuation equivalents, minimum pool sizes, global duplication, public-domain Quote sources, Code structure, explicit database-load errors, independent circular decks, contextual whitespace markers, word-safe wrapping, semantic Enter handling, browser-independent forward and backward settings focus, browser-storage failures, session-wide Zen visibility, word-scoped repeated-delete insights, the pre-run home-row anchor, Zen session-setting focus restoration, the landing-page keyboard guide focus loop, canonical production metadata, and local static-link integrity.
 
 <details>
 <summary><strong>Project structure</strong></summary>

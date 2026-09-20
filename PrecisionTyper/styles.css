@@ -799,6 +799,48 @@ body {
     font-size: 0.7rem;
 }
 
+/* A starting anchor before a run; PrecisionTyper never enforces finger
+   placement while typing. Hidden state keeps its space so the canvas holds still. */
+.home-row-reminder {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.2rem 0.7rem;
+    color: var(--text-faint);
+    font-size: 0.75rem;
+    text-align: center;
+    transition: opacity var(--transition), visibility var(--transition);
+}
+
+.home-row-reminder.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.home-row-title {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.home-row-keys {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--stat-text-color);
+}
+
+.home-row-split {
+    width: 0.9rem;
+}
+
 /* Zen mode removes evaluative chrome for the full session without shifting the canvas. */
 body.zen-mode.zen-active .game-toolbar {
     opacity: 0;
@@ -839,6 +881,7 @@ body.zen-mode .char-extra {
 /* Focus view is permission-free and keeps the exit control inside the canvas. */
 body.focus-mode .game-nav,
 body.focus-mode .game-toolbar,
+body.focus-mode .home-row-reminder,
 body.focus-mode .typing-help {
     display: none;
 }
@@ -1039,6 +1082,44 @@ body.focus-mode .typing-canvas {
     font-size: clamp(1rem, 3vw, 1.15rem);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
+    color: var(--stat-text-color);
+}
+
+.completion-insights {
+    margin-bottom: 1.35rem;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--accent-surface);
+    text-align: left;
+}
+
+.completion-insights[hidden] {
+    display: none;
+}
+
+.completion-insights-title {
+    margin-bottom: 0.4rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+}
+
+.completion-insight {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.completion-insight + .completion-insight {
+    margin-top: 0.2rem;
+}
+
+.completion-insight kbd {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
     color: var(--stat-text-color);
 }
 

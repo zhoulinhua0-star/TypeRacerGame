@@ -43,7 +43,7 @@ const runNextAnimationFrame = () => {
 };
 
 vm.runInContext(
-    `${source}\nglobalThis.__testExports = { getTextDatabaseErrorMessage, normalizeTextDatabase, readStoredValue, writeStoredValue, SegmentedControl, PrecisionTyper };`,
+    `${source}\nglobalThis.__testExports = { getTextDatabaseErrorMessage, normalizeTextDatabase, readStoredValue, writeStoredValue, SegmentedControl, DeletionEfficiencyTracker, PrecisionTyper };`,
     context
 );
 
@@ -51,6 +51,7 @@ const {
     getTextDatabaseErrorMessage,
     normalizeTextDatabase,
     SegmentedControl,
+    DeletionEfficiencyTracker,
     PrecisionTyper
 } = context.__testExports;
 const database = JSON.parse(fs.readFileSync(new URL('../PrecisionTyper/texts.json', import.meta.url), 'utf8'));
@@ -609,5 +610,149 @@ blockedGame.collectionSelect = { value: 'general' };
 blockedGame.applyZenMode = () => {};
 assert.doesNotThrow(() => blockedGame.loadSettings());
 assert.doesNotThrow(() => blockedGame.saveSettings());
+
+// Repeated single-character deletion is reported only when one Option + Delete
+// would have made approximately the same correction.
+const typeInto = (tracker, value, text) => {
+    for (const character of text) {
+        value += character;
+        tracker.recordInput(value, 'insertText');
+    }
+    return value;
+};
+const backspace = (tracker, value, presses) => {
+    for (let press = 0; press < presses; press++) {
+        value = value.slice(0, -1);
+        tracker.recordInput(value, 'deleteContentBackward');
+    }
+    return value;
+};
+
+const deletionTracker = new DeletionEfficiencyTracker();
+let deletionValue = typeInto(deletionTracker, '', 'The quik');
+deletionValue = backspace(deletionTracker, deletionValue, 4);
+assert.equal(JSON.stringify(deletionTracker.getInsights()), JSON.stringify({ opportunities: 1, presses: 4 }));
+
+// Fewer than three presses, or a partial trim of a longer word, stays unreported.
+deletionTracker.reset();
+deletionValue = typeInto(deletionTracker, '', 'The quick');
+deletionValue = backspace(deletionTracker, deletionValue, 2);
+assert.equal(deletionTracker.getInsights(), null);
+
+deletionTracker.reset();
+deletionValue = typeInto(deletionTracker, '', 'The quick');
+deletionValue = backspace(deletionTracker, deletionValue, 3);
+assert.equal(deletionTracker.getInsights(), null);
+
+// Deleting back past the previous word needs more than one Option + Delete.
+deletionTracker.reset();
+deletionValue = typeInto(deletionTracker, '', 'The quick');
+deletionValue = backspace(deletionTracker, deletionValue, 7);
+assert.equal(deletionTracker.getInsights(), null);
+
+// A word plus its trailing space is exactly what Option + Delete removes.
+deletionTracker.reset();
+deletionValue = typeInto(deletionTracker, '', 'The quick ');
+deletionValue = backspace(deletionTracker, deletionValue, 6);
+assert.equal(JSON.stringify(deletionTracker.getInsights()), JSON.stringify({ opportunities: 1, presses: 6 }));
+
+// Separate runs accumulate, and the reported press count is the longest run.
+deletionTracker.reset();
+deletionValue = typeInto(deletionTracker, '', 'alpha');
+deletionValue = backspace(deletionTracker, deletionValue, 5);
+deletionValue = typeInto(deletionTracker, deletionValue, 'beta gammaa');
+deletionValue = backspace(deletionTracker, deletionValue, 6);
+assert.equal(JSON.stringify(deletionTracker.getInsights()), JSON.stringify({ opportunities: 2, presses: 6 }));
+
+// An insertion between deletions splits the run instead of extending it.
+deletionTracker.reset();
+deletionValue = typeInto(deletionTracker, '', 'wordx');
+deletionValue = backspace(deletionTracker, deletionValue, 2);
+deletionValue = typeInto(deletionTracker, deletionValue, 'z');
+deletionValue = backspace(deletionTracker, deletionValue, 2);
+assert.equal(deletionTracker.getInsights(), null);
+
+// A multi-character removal is already efficient and ends the run.
+deletionTracker.reset();
+deletionValue = typeInto(deletionTracker, '', 'The quik');
+deletionTracker.recordInput('The ', 'deleteWordBackward');
+assert.equal(deletionTracker.getInsights(), null);
+
+// Browsers without inputType report nothing rather than guessing.
+deletionTracker.reset();
+deletionValue = typeInto(deletionTracker, '', 'The quik');
+for (let press = 0; press < 4; press++) {
+    deletionValue = deletionValue.slice(0, -1);
+    deletionTracker.recordInput(deletionValue, '');
+}
+assert.equal(deletionTracker.getInsights(), null);
+
+// Insights are observational: they reach the overlay without touching the stats.
+const insightGame = Object.create(PrecisionTyper.prototype);
+insightGame.completionInsightsEl = { hidden: false };
+insightGame.completionInsightDetailEl = { textContent: '' };
+insightGame.completionInsightCountEl = { textContent: '' };
+insightGame.renderEfficiencyInsights({ opportunities: 3, presses: 7 });
+assert.equal(insightGame.completionInsightsEl.hidden, false);
+assert.match(insightGame.completionInsightDetailEl.textContent, /^You pressed Delete 7 times to remove a word\.$/);
+assert.match(insightGame.completionInsightCountEl.textContent, /^Potential shortcut opportunities: 3$/);
+
+insightGame.renderEfficiencyInsights(null);
+assert.equal(insightGame.completionInsightsEl.hidden, true);
+assert.equal(insightGame.completionInsightDetailEl.textContent, '');
+assert.equal(insightGame.completionInsightCountEl.textContent, '');
+
+const statsSource = source.slice(source.indexOf('    updateLiveStats()'), source.indexOf('    updateTextStyles('));
+assert.doesNotMatch(statsSource, /deletionTracker|insight/i, 'WPM and accuracy must ignore deletion insights');
+assert.match(gameHtml, /id="typing-help"/);
+assert.match(source, /id="completion-insights"[\s\S]*Efficiency Insights/);
+assert.match(source, /On Mac, <kbd>\u2325<\/kbd> \+ <kbd>Delete<\/kbd> removes the previous word in one action\./);
+
+// The home row is an opening anchor: shown before a run, gone once typing starts.
+const homeRowGame = Object.create(PrecisionTyper.prototype);
+const homeRowClasses = new Set();
+homeRowGame.homeRowReminder = {
+    classList: {
+        toggle(value, enabled) {
+            if (enabled) homeRowClasses.add(value);
+            else homeRowClasses.delete(value);
+        }
+    },
+    setAttribute(name, value) { this[name] = value; }
+};
+homeRowGame.currentTargetText = 'steady hands';
+homeRowGame.isGameRunning = false;
+homeRowGame.isShowingCompletion = false;
+homeRowGame.inputArea = { value: '' };
+homeRowGame.updateHomeRowReminder();
+assert.equal(homeRowClasses.has('is-hidden'), false);
+assert.equal(homeRowGame.homeRowReminder['aria-hidden'], 'false');
+
+homeRowGame.inputArea.value = 's';
+homeRowGame.isGameRunning = true;
+homeRowGame.updateHomeRowReminder();
+assert.equal(homeRowClasses.has('is-hidden'), true);
+assert.equal(homeRowGame.homeRowReminder['aria-hidden'], 'true');
+
+homeRowGame.inputArea.value = '';
+homeRowGame.isGameRunning = false;
+homeRowGame.isShowingCompletion = true;
+homeRowGame.updateHomeRowReminder();
+assert.equal(homeRowClasses.has('is-hidden'), true);
+
+homeRowGame.isShowingCompletion = false;
+homeRowGame.currentTargetText = '';
+homeRowGame.updateHomeRowReminder();
+assert.equal(homeRowClasses.has('is-hidden'), true);
+
+assert.match(gameHtml, /id="home-row-reminder"[\s\S]*Find your starting position/);
+assert.match(gameHtml, /<kbd>A<\/kbd><kbd>S<\/kbd><kbd>D<\/kbd><kbd>F<\/kbd>[\s\S]*<kbd>J<\/kbd><kbd>K<\/kbd><kbd>L<\/kbd><kbd>;<\/kbd>/);
+assert.match(gameHtml, /Feel the F and J keys, then type naturally\./);
+assert.match(gameStyles, /\.home-row-reminder\.is-hidden/);
+assert.match(gameStyles, /body\.focus-mode \.home-row-reminder/);
+assert.match(gameStyles, /\.completion-insights\[hidden\]/);
+// The home row stays a suggestion: no per-key or finger enforcement anywhere.
+assert.doesNotMatch(source, /finger|homeRowEnforce|requireHomeRow/i);
+
 
 console.log('Web passage, circular-deck, and storage-resilience tests passed.');

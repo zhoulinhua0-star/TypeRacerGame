@@ -7,7 +7,7 @@
  * - Passage database loaded from texts.json
  */
 
-const APP_ASSET_VERSION = '26';
+const APP_ASSET_VERSION = '27';
 const PASSAGE_DECKS_STORAGE_KEY = 'precisionTyperPassageDecksV4';
 const BUILT_IN_COLLECTIONS = ['general', 'calm', 'quotes', 'code'];
 const DIFFICULTY_KEYS = ['easy', 'medium', 'hard'];
@@ -130,6 +130,116 @@ function sanitizePassageList(passages, group = 'passage') {
         .filter(Boolean);
 }
 
+/**
+ * Repeated-delete insight: enough consecutive single-character deletions to
+ * have been one macOS word deletion. Observational only; it never changes WPM,
+ * accuracy, or typing rules.
+ */
+const REPEATED_DELETE_MINIMUM = 3;
+const REPEATED_DELETE_COVERAGE = 0.8;
+const WORD_CHARACTER = /[\p{L}\p{N}]/u;
+
+function describeRemoval(previous, next) {
+    if (next.length >= previous.length) return null;
+
+    let start = 0;
+    while (start < next.length && previous[start] === next[start]) start++;
+
+    let end = previous.length;
+    let nextEnd = next.length;
+    while (end > start && nextEnd > start && previous[end - 1] === next[nextEnd - 1]) {
+        end--;
+        nextEnd--;
+    }
+
+    return { start, end, length: end - start };
+}
+
+/** The span a macOS Option + Delete would remove from `caret`. */
+function findWordDeleteSpan(text, caret) {
+    let index = Math.max(0, Math.min(caret, text.length));
+    while (index > 0 && !WORD_CHARACTER.test(text[index - 1])) index--;
+    const wordEnd = index;
+    while (index > 0 && WORD_CHARACTER.test(text[index - 1])) index--;
+    return { start: index, wordLength: wordEnd - index };
+}
+
+class DeletionEfficiencyTracker {
+    constructor({
+        minimumPresses = REPEATED_DELETE_MINIMUM,
+        coverage = REPEATED_DELETE_COVERAGE
+    } = {}) {
+        this.minimumPresses = minimumPresses;
+        this.coverage = coverage;
+        this.reset();
+    }
+
+    reset() {
+        this.previousValue = '';
+        this.activeRun = null;
+        this.opportunities = [];
+    }
+
+    recordInput(value, inputType = '') {
+        const previousValue = this.previousValue;
+        this.previousValue = value;
+
+        const removal = inputType.startsWith('delete')
+            ? describeRemoval(previousValue, value)
+            : null;
+
+        // Only single-character deletions count as presses; a selection or an
+        // Option + Delete removes several characters at once and ends the run.
+        if (!removal || removal.length !== 1) {
+            this.finalizeRun();
+            return;
+        }
+
+        if (this.activeRun && this.activeRun.start === removal.end) {
+            this.activeRun.start = removal.start;
+            this.activeRun.presses++;
+            return;
+        }
+
+        this.finalizeRun();
+        this.activeRun = {
+            textBeforeRun: previousValue,
+            caret: removal.end,
+            start: removal.start,
+            presses: 1
+        };
+    }
+
+    finalizeRun() {
+        const run = this.activeRun;
+        this.activeRun = null;
+        if (!run || run.presses < this.minimumPresses) return;
+
+        const { start: wordStart, wordLength } = findWordDeleteSpan(run.textBeforeRun, run.caret);
+        // Nothing for a word deletion to remove, or the run reached back past
+        // the previous word, so one Option + Delete would not have matched it.
+        if (wordLength === 0 || run.start < wordStart) return;
+
+        const wordSpan = run.caret - wordStart;
+        if ((run.caret - run.start) / wordSpan < this.coverage) return;
+
+        this.opportunities.push({
+            presses: run.presses,
+            removed: run.textBeforeRun.slice(run.start, run.caret)
+        });
+    }
+
+    getInsights() {
+        this.finalizeRun();
+        if (this.opportunities.length === 0) return null;
+
+        const longest = this.opportunities.reduce(
+            (best, opportunity) => (opportunity.presses > best.presses ? opportunity : best)
+        );
+        return { opportunities: this.opportunities.length, presses: longest.presses };
+    }
+}
+
 class SegmentedControl {
     constructor(elementId) {
         const element = document.getElementById(elementId);
@@ -182,6 +292,7 @@ class PrecisionTyper {
         this.isSettingsMode = false;
         this.restoreFocusModeAfterSettings = false;
         this.mismatchFeedbackTimer = null;
+        this.deletionTracker = new DeletionEfficiencyTracker();
         
         // DOM elements
         this.textDisplay = document.getElementById('text-display');
@@ -206,6 +317,7 @@ class PrecisionTyper {
         this.canvasPrompt = document.getElementById('canvas-prompt');
         this.canvasSource = document.getElementById('canvas-source');
         this.canvasProgress = document.getElementById('canvas-progress');
+        this.homeRowReminder = document.getElementById('home-row-reminder');
         this.targetTextA11y = document.getElementById('target-text-a11y');
         this.gameStatus = document.getElementById('game-status');
         
@@ -217,6 +329,7 @@ class PrecisionTyper {
         this.pickNewText();
         this.setupEventListeners();
         this.updateTextStyles('');
+        this.updateHomeRowReminder();
         this.inputArea.disabled = !this.currentTargetText;
         if (!this.inputArea.disabled) {
             this.focusInput();
@@ -321,7 +434,7 @@ class PrecisionTyper {
 
         // Input area listener
         this.inputArea.addEventListener('input', (e) => {
-            this.handleInput(this.getInputSoundType(e));
+            this.handleInput(this.getInputSoundType(e), e.inputType || '');
         });
 
         // Difficulty change
@@ -591,10 +704,11 @@ class PrecisionTyper {
         return event.data && event.data.length > 1 ? null : 'tap';
     }
 
-    handleInput(soundType) {
+    handleInput(soundType, inputType = '') {
         if (soundType && this.soundToggle.checked) {
             this.soundEngine.play(soundType);
         }
+        this.deletionTracker.recordInput(this.inputArea.value, inputType);
         this.checkProgress();
     }
 
@@ -728,6 +842,19 @@ class PrecisionTyper {
         }
     }
 
+    // The home row is a starting anchor only; nothing about it is enforced
+    // once the run begins.
+    updateHomeRowReminder() {
+        if (!this.homeRowReminder) return;
+
+        const isVisible = Boolean(this.currentTargetText) &&
+            !this.isGameRunning &&
+            !this.isShowingCompletion &&
+            this.inputArea.value.length === 0;
+        this.homeRowReminder.classList.toggle('is-hidden', !isVisible);
+        this.homeRowReminder.setAttribute('aria-hidden', String(!isVisible));
+    }
+
     updatePassageSource() {
         if (!this.canvasSource) return;
 
@@ -807,6 +934,7 @@ class PrecisionTyper {
         this.updateTextStyles(typed);
         this.updateLiveStats();
         this.updateCanvasPrompt();
+        this.updateHomeRowReminder();
     }
 
     updateLiveStats() {
@@ -961,6 +1089,12 @@ class PrecisionTyper {
                         <span class="completion-stat-value" id="completion-accuracy"></span>
                     </div>
                 </div>
+                <section class="completion-insights" id="completion-insights" hidden>
+                    <h3 class="completion-insights-title">Efficiency Insights</h3>
+                    <p class="completion-insight" id="completion-insight-detail"></p>
+                    <p class="completion-insight">On Mac, <kbd>⌥</kbd> + <kbd>Delete</kbd> removes the previous word in one action.</p>
+                    <p class="completion-insight" id="completion-insight-count"></p>
+                </section>
                 <button type="button" class="completion-btn" id="completion-continue">Next passage</button>
             </div>
         `;
@@ -971,6 +1105,9 @@ class PrecisionTyper {
         this.completionWpmEl = overlay.querySelector('#completion-wpm');
         this.completionAccuracyEl = overlay.querySelector('#completion-accuracy');
         this.completionSubtitleEl = overlay.querySelector('#completion-subtitle');
+        this.completionInsightsEl = overlay.querySelector('#completion-insights');
+        this.completionInsightDetailEl = overlay.querySelector('#completion-insight-detail');
+        this.completionInsightCountEl = overlay.querySelector('#completion-insight-count');
 
         const dismiss = () => this.dismissCompletionOverlay();
         overlay.querySelector('#completion-continue').addEventListener('click', dismiss);
@@ -983,18 +1120,37 @@ class PrecisionTyper {
         });
     }
 
-    showCompletionOverlay(wpm, accuracy, time) {
+    renderEfficiencyInsights(insights) {
+        if (!this.completionInsightsEl) return;
+
+        if (!insights) {
+            this.completionInsightsEl.hidden = true;
+            this.completionInsightDetailEl.textContent = '';
+            this.completionInsightCountEl.textContent = '';
+            return;
+        }
+
+        this.completionInsightDetailEl.textContent =
+            `You pressed Delete ${insights.presses} times to remove a word.`;
+        this.completionInsightCountEl.textContent =
+            `Potential shortcut opportunities: ${insights.opportunities}`;
+        this.completionInsightsEl.hidden = false;
+    }
+
+    showCompletionOverlay(wpm, accuracy, time, insights = null) {
         this.ensureCompletionOverlay();
         this.isDismissingCompletion = false;
 
         this.completionTimeEl.textContent = time;
         this.completionWpmEl.textContent = wpm.replace('WPM: ', '');
         this.completionAccuracyEl.textContent = accuracy.replace('Accuracy: ', '');
+        this.renderEfficiencyInsights(insights);
         this.completionSubtitleEl.textContent = this.zenToggle.checked
             ? 'Perfect match — the next passage will begin in a moment.'
             : 'Perfect match — great work.';
 
         this.inputArea.disabled = true;
+        this.updateHomeRowReminder();
         this.completionOverlay.hidden = false;
         requestAnimationFrame(() => {
             this.completionOverlay.classList.add('is-visible');
@@ -1046,7 +1202,7 @@ class PrecisionTyper {
         const wpm = this.wpmLabel.textContent;
         const accuracy = this.accuracyLabel.textContent;
         const time = this.timerLabel.textContent.replace('Time: ', '');
-        this.showCompletionOverlay(wpm, accuracy, time);
+        this.showCompletionOverlay(wpm, accuracy, time, this.deletionTracker.getInsights());
     }
 
     restartPassage() {
@@ -1092,10 +1248,12 @@ class PrecisionTyper {
         this.wpmLabel.textContent = 'WPM: 0';
         this.accuracyLabel.textContent = 'Accuracy: 100%';
         this.inputArea.value = '';
+        this.deletionTracker.reset();
         if (pickNew || !this.currentTargetText) {
             this.pickNewText();
         }
         this.updateTextStyles('');
+        this.updateHomeRowReminder();
         this.inputArea.disabled = !this.currentTargetText;
         if (!this.inputArea.disabled && !this.isSettingsMode) {
             this.focusInput();
