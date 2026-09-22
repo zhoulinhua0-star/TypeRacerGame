@@ -579,11 +579,12 @@ body {
 .typing-surface {
     position: relative;
     display: flex;
-    align-items: center;
-    min-height: clamp(320px, 44vh, 520px);
-    padding: clamp(1.5rem, 6vw, 4rem);
+    align-items: flex-start;
+    height: clamp(160px, 44dvh, 520px);
+    padding: clamp(1rem, 4dvh, 3rem) clamp(1rem, 4vw, 4rem);
     cursor: text;
-    overflow: visible;
+    overflow: auto;
+    scrollbar-gutter: stable;
     background:
         radial-gradient(circle at 50% 45%, rgba(45, 212, 191, 0.055), transparent 58%),
         var(--accent-surface);
@@ -593,6 +594,8 @@ body {
     width: 100%;
     max-width: 76ch;
     margin-inline: auto;
+    margin-block: auto;
+    min-width: 0;
     font-family: var(--font-mono);
     font-size: clamp(1.15rem, 3vw, 1.6rem);
     font-weight: 600;
@@ -737,8 +740,9 @@ body {
 }
 
 .text-token {
-    display: inline-block;
-    white-space: nowrap;
+    display: inline;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
 
 .text-token-long {
@@ -841,8 +845,9 @@ body {
     width: 0.9rem;
 }
 
-/* Zen mode removes evaluative chrome for the full session without shifting the canvas. */
+/* Hidden settings must not reserve space above the typing canvas. */
 body.zen-mode.zen-active .game-toolbar {
+    display: none;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -850,6 +855,7 @@ body.zen-mode.zen-active .game-toolbar {
 }
 
 body.zen-mode.zen-active.settings-active .game-toolbar {
+    display: grid;
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -907,7 +913,7 @@ body.focus-mode .play-zone {
 }
 
 body.focus-mode .typing-surface {
-    min-height: clamp(420px, calc(100dvh - 180px), 760px);
+    height: clamp(120px, calc(100dvh - 230px), 760px);
 }
 
 body.focus-mode .typing-canvas {
@@ -930,8 +936,8 @@ body.focus-mode .typing-canvas {
 
     .typing-surface {
         align-items: flex-start;
-        min-height: clamp(300px, 48vh, 460px);
-        padding: clamp(1.25rem, 7vw, 2rem);
+        height: clamp(120px, calc(100dvh - 340px), 460px);
+        padding: clamp(1rem, 3dvh, 2rem);
     }
 
     .text-display {
@@ -946,6 +952,7 @@ body.focus-mode .typing-canvas {
     }
 
     .canvas-meta {
+        flex-wrap: wrap;
         justify-content: space-between;
         width: 100%;
     }
@@ -956,7 +963,28 @@ body.focus-mode .typing-canvas {
     }
 
     body.focus-mode .typing-surface {
-        min-height: calc(100dvh - 190px);
+        height: max(100px, calc(100dvh - 240px));
+    }
+}
+
+/* Prioritize practice in short or narrow windows; settings stay reachable. */
+@media (max-height: 800px), (max-width: 768px) {
+    .game-main {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding-block: 0.5rem 1rem;
+    }
+
+    body:not(.settings-active) .game-toolbar {
+        order: 1;
+        margin-bottom: 0;
+    }
+
+    .play-zone {
+        width: 100%;
+        min-width: 0;
+        gap: 0.65rem;
     }
 }
 

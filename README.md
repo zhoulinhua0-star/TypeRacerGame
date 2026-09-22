@@ -17,7 +17,7 @@
 
 ## One rule, two experiences
 
-PrecisionTyper completes a passage only when every character matches. Practice mode keeps WPM, accuracy, and elapsed time visible; Zen mode keeps the same strict engine while hiding evaluative chrome throughout the session, softening feedback, and advancing automatically after a perfect match.
+PrecisionTyper completes a passage only when every character matches. Practice mode keeps WPM, mistakes, and elapsed time visible; Zen mode keeps the same strict engine while hiding evaluative chrome throughout the session, softening feedback, and advancing automatically after a perfect match.
 
 <p align="center">
   <img src="./assets/readme/modes.svg" width="100%" alt="Practice mode shows performance signals while Zen mode provides quieter feedback; both require an exact match">
@@ -129,7 +129,9 @@ The timer uses the browser's monotonic clock, and WPM follows the standard five-
 
 Before a run begins, the canvas shows a quiet `A S D F    J K L ;` anchor so your hands start centered. It disappears with the first keystroke and is never enforced: PrecisionTyper does not track which finger presses a key, does not ask you to return to the home row, and never marks an alternative finger as incorrect.
 
-The result overlay adds an **Efficiency Insights** note when a run contained a repeated-deletion sequence that one macOS `⌥ + Delete` would have matched. A sequence qualifies when it was at least three consecutive single-character deletions, the deletions stayed contiguous, and they removed most or all of the word before the caret. Sequences that only trimmed part of a longer word, or that reached back past the previous word, are left alone rather than turned into forced advice. The insight is observational: it never changes WPM or accuracy, and a run without qualifying sequences shows nothing at all.
+**Mistakes** counts incorrect characters entered during the current attempt, even after they are corrected. Deleting text or undoing/redoing an edit does not add mistakes or erase earlier ones. Paste and replacement text count per incorrect inserted character; accepted English-keyboard punctuation equivalents are correct. Input-method composition is counted only when committed. Restarting or changing passages resets the count. Completion still requires every character to match.
+
+The result overlay adds an **Efficiency Insights** note when a run contained a repeated-deletion sequence that one macOS `⌥ + Delete` would have matched. A sequence qualifies when it was at least three consecutive single-character deletions, the deletions stayed contiguous, and they removed most or all of the word before the caret. Sequences that only trimmed part of a longer word, or that reached back past the previous word, are left alone rather than turned into forced advice. The insight is observational: it never changes WPM or mistake counts, and a run without qualifying sequences shows nothing at all.
 
 ## Three editions
 

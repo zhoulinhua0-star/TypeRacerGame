@@ -43,7 +43,7 @@ const runNextAnimationFrame = () => {
 };
 
 vm.runInContext(
-    `${source}\nglobalThis.__testExports = { getTextDatabaseErrorMessage, normalizeTextDatabase, readStoredValue, writeStoredValue, SegmentedControl, DeletionEfficiencyTracker, PrecisionTyper };`,
+    `${source}\nglobalThis.__testExports = { getTextDatabaseErrorMessage, normalizeTextDatabase, readStoredValue, writeStoredValue, SegmentedControl, DeletionEfficiencyTracker, MistakeTracker, PrecisionTyper };`,
     context
 );
 
@@ -52,6 +52,7 @@ const {
     normalizeTextDatabase,
     SegmentedControl,
     DeletionEfficiencyTracker,
+    MistakeTracker,
     PrecisionTyper
 } = context.__testExports;
 const database = JSON.parse(fs.readFileSync(new URL('../PrecisionTyper/texts.json', import.meta.url), 'utf8'));
@@ -201,6 +202,28 @@ assert.match(punctuationGame.canvasPrompt.textContent, /Use English keys/);
 testDocument.activeElement = null;
 
 const renderGame = Object.create(PrecisionTyper.prototype);
+const scrollGame = Object.create(PrecisionTyper.prototype);
+let caretBounds = { top: 240, bottom: 270 };
+scrollGame.typingSurface = {
+    scrollTop: 0,
+    getBoundingClientRect: () => ({ top: 100, bottom: 250 })
+};
+scrollGame.textDisplay = {
+    querySelector: () => ({ getBoundingClientRect: () => caretBounds })
+};
+scrollGame.keepCaretVisible();
+assert.equal(scrollGame.typingSurface.scrollTop, 32, 'Scroll a clipped caret into the typing surface');
+caretBounds = { top: 90, bottom: 120 };
+scrollGame.keepCaretVisible();
+assert.equal(scrollGame.typingSurface.scrollTop, 10, 'Follow the caret upward after deletion or reflow');
+caretBounds = { top: 130, bottom: 160 };
+scrollGame.keepCaretVisible();
+assert.equal(scrollGame.typingSurface.scrollTop, 10, 'Do not scroll an already visible caret');
+scrollGame.isSettingsMode = true;
+caretBounds = { top: 300, bottom: 330 };
+scrollGame.keepCaretVisible();
+assert.equal(scrollGame.typingSurface.scrollTop, 10, 'Leave scrolling alone while adjusting settings');
+
 renderGame.currentTargetText = 'non-blocking word';
 renderGame.textDisplay = { classList: { add() {}, remove() {} }, textContent: '', innerHTML: '' };
 renderGame.targetTextA11y = { textContent: '' };
@@ -721,7 +744,7 @@ assert.equal(insightGame.completionInsightDetailEl.textContent, '');
 assert.equal(insightGame.completionInsightCountEl.textContent, '');
 
 const statsSource = source.slice(source.indexOf('    updateLiveStats()'), source.indexOf('    updateTextStyles('));
-assert.doesNotMatch(statsSource, /deletionTracker|insight/i, 'WPM and accuracy must ignore deletion insights');
+assert.doesNotMatch(statsSource, /deletionTracker|insight/i, 'WPM and mistake counts must ignore deletion insights');
 assert.match(gameHtml, /id="typing-help"/);
 assert.match(source, /id="completion-insights"[\s\S]*Efficiency Insights/);
 assert.match(source, /On Mac, <kbd>\u2325<\/kbd> \+ <kbd>Delete<\/kbd> removes the previous word in one action\./);
@@ -774,3 +797,45 @@ assert.doesNotMatch(source, /finger|homeRowEnforce|requireHomeRow/i);
 
 
 console.log('Web passage, circular-deck, and storage-resilience tests passed.');
+
+// Mistakes measure input history, not the final matching buffer.
+const mistakes = new MistakeTracker();
+mistakes.record('x', 'cat', 'insertText');
+assert.equal(mistakes.count, 1);
+mistakes.record('', 'cat', 'deleteContentBackward');
+assert.equal(mistakes.count, 1, 'Correction must not erase a mistake');
+mistakes.record('cat', 'cat', 'insertFromPaste');
+assert.equal(mistakes.count, 1, 'Correct replacement does not add mistakes');
+mistakes.record('cxt', 'cat', 'insertText', { value: 'cat', start: 1, end: 2 });
+assert.equal(mistakes.count, 2);
+mistakes.record('cxt', 'cat', 'insertText', { value: 'cxt', start: 1, end: 2 });
+assert.equal(mistakes.count, 3, 'Re-entering the same incorrect character is another mistake');
+mistakes.record('cat', 'cat', 'historyUndo');
+mistakes.record('cxt', 'cat', 'historyRedo');
+assert.equal(mistakes.count, 3, 'Undo and redo must not recount errors');
+mistakes.record('cat', 'cat', 'insertReplacementText', { value: 'cxt', start: 1, end: 2 });
+assert.equal(mistakes.count, 3);
+mistakes.reset();
+mistakes.record('abc', 'abc');
+mistakes.record('xabc', 'abc', 'insertText', { value: 'abc', start: 0, end: 0 });
+assert.equal(mistakes.count, 1, 'Shifted existing text is not newly entered text');
+mistakes.reset();
+mistakes.record('aaa', 'aba');
+assert.equal(mistakes.count, 1);
+mistakes.record('aaaa', 'abaa', 'insertText', { value: 'aaa', start: 1, end: 1 });
+assert.equal(mistakes.count, 2, 'Use edit position for repeated characters');
+mistakes.reset();
+mistakes.record('axz!', 'abc', 'insertFromPaste');
+assert.equal(mistakes.count, 3, 'Count pasted mistakes and extra characters individually');
+mistakes.reset();
+mistakes.record(`"It's-ready"`, '“It’s—ready”', 'insertFromPaste');
+assert.equal(mistakes.count, 0, 'Accepted punctuation equivalents are not mistakes');
+mistakes.reset();
+mistakes.record('a\nb', 'a\nb', 'insertFromPaste');
+assert.equal(mistakes.count, 0, 'Code line breaks can match');
+mistakes.record('a\nb😀', 'a\nb', 'insertText');
+assert.equal(mistakes.count, 1, 'Count a non-BMP character once');
+mistakes.reset();
+assert.equal(mistakes.count, 0);
+assert.equal(mistakes.previous, '');
+console.log('Cumulative mistake counting tests passed.');

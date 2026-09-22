@@ -133,7 +133,7 @@ function sanitizePassageList(passages, group = 'passage') {
 /**
  * Repeated-delete insight: enough consecutive single-character deletions to
  * have been one macOS word deletion. Observational only; it never changes WPM,
- * accuracy, or typing rules.
+ * mistake counts, or typing rules.
  */
 const REPEATED_DELETE_MINIMUM = 3;
 const REPEATED_DELETE_COVERAGE = 0.8;
@@ -272,6 +272,43 @@ class SegmentedControl {
     }
 }
 
+/** Counts newly entered incorrect characters, never deletions or restored history. */
+class MistakeTracker {
+    constructor() { this.reset(); }
+
+    reset() {
+        this.count = 0;
+        this.previous = '';
+    }
+
+    record(value, target, inputType = '', selection = null) {
+        const previous = this.previous;
+        this.previous = value;
+        if (inputType.startsWith('delete') || inputType.startsWith('history')) return;
+
+        let start = 0;
+        let end = value.length;
+        // beforeinput preserves the edit location even with repeated characters.
+        if (selection && selection.value === previous) {
+            start = selection.start;
+            end = value.length - (previous.length - selection.end);
+        } else {
+            while (start < previous.length && start < value.length && previous[start] === value[start]) start++;
+            let oldEnd = previous.length;
+            while (oldEnd > start && end > start && previous[oldEnd - 1] === value[end - 1]) {
+                oldEnd--;
+                end--;
+            }
+        }
+        for (let index = start; index < end;) {
+            const character = String.fromCodePoint(value.codePointAt(index));
+            const expected = String.fromCodePoint(target.codePointAt(index) ?? 0);
+            if (character !== expected && ENGLISH_KEYBOARD_EQUIVALENTS[expected] !== character) this.count++;
+            index += character.length;
+        }
+    }
+}
+
 class PrecisionTyper {
     constructor(textDatabase) {
         this.TEXT_DATABASE = textDatabase;
@@ -293,6 +330,9 @@ class PrecisionTyper {
         this.restoreFocusModeAfterSettings = false;
         this.mismatchFeedbackTimer = null;
         this.deletionTracker = new DeletionEfficiencyTracker();
+        this.mistakeTracker = new MistakeTracker();
+        this.pendingEdit = null;
+        this.compositionEdit = null;
         
         // DOM elements
         this.textDisplay = document.getElementById('text-display');
@@ -304,7 +344,7 @@ class PrecisionTyper {
         this.gameToolbar = document.querySelector('.game-toolbar');
         this.timerLabel = document.getElementById('timer-label');
         this.wpmLabel = document.getElementById('wpm-label');
-        this.accuracyLabel = document.getElementById('accuracy-label');
+        this.mistakesLabel = document.getElementById('mistakes-label');
         this.collectionSelect = new SegmentedControl('collection-options');
         this.difficultySelect = new SegmentedControl('difficulty-options');
         this.soundToggle = document.getElementById('sound-toggle');
@@ -331,6 +371,8 @@ class PrecisionTyper {
         setupSoundPicker(this.soundEngine, () => this.soundToggle.checked);
         this.pickNewText();
         this.setupEventListeners();
+        this.viewportObserver = new ResizeObserver(() => this.keepCaretVisible());
+        this.viewportObserver.observe(this.typingSurface);
         this.updateTextStyles('');
         this.updateHomeRowReminder();
         this.inputArea.disabled = !this.currentTargetText;
@@ -435,8 +477,30 @@ class PrecisionTyper {
             this.returnToTyping();
         });
 
-        // Input area listener
+        const captureEdit = () => ({
+            value: this.inputArea.value,
+            start: this.inputArea.selectionStart,
+            end: this.inputArea.selectionEnd
+        });
+        this.inputArea.addEventListener('beforeinput', () => {
+            if (!this.compositionEdit) this.pendingEdit = captureEdit();
+        });
+        this.inputArea.addEventListener('compositionstart', () => {
+            this.compositionEdit = captureEdit();
+        });
+        this.inputArea.addEventListener('compositionend', () => {
+            this.pendingEdit = this.compositionEdit;
+            this.compositionEdit = null;
+            if (this.pendingEdit?.value === this.inputArea.value) {
+                this.pendingEdit = null;
+                return;
+            }
+            this.handleInput(null, 'insertCompositionText');
+        });
+
+        // Only committed text counts; IME preview updates are not mistakes.
         this.inputArea.addEventListener('input', (e) => {
+            if (e.isComposing || this.compositionEdit) return;
             this.handleInput(this.getInputSoundType(e), e.inputType || '', e.data || '');
         });
 
@@ -713,6 +777,8 @@ class PrecisionTyper {
         if (soundType && this.soundToggle.checked) {
             this.soundEngine.play(soundType, key);
         }
+        this.mistakeTracker.record(this.inputArea.value, this.currentTargetText, inputType, this.pendingEdit);
+        this.pendingEdit = null;
         this.deletionTracker.recordInput(this.inputArea.value, inputType);
         this.checkProgress();
     }
@@ -943,24 +1009,18 @@ class PrecisionTyper {
     }
 
     updateLiveStats() {
+        this.mistakesLabel.textContent = `Mistakes: ${this.mistakeTracker.count}`;
         const typed = this.getTypedText();
-        if (typed.length === 0) return;
+        if (typed.length === 0) {
+            this.wpmLabel.textContent = 'WPM: 0';
+            return;
+        }
 
         this.updateElapsedTime();
         const wpm = this.elapsedSeconds < 1
             ? 0
             : Math.floor((typed.length / 5.0) / (this.elapsedSeconds / 60));
         this.wpmLabel.textContent = `WPM: ${wpm}`;
-        
-        let correct = 0;
-        const len = Math.min(typed.length, this.currentTargetText.length);
-        for (let i = 0; i < len; i++) {
-            if (typed[i] === this.currentTargetText[i]) {
-                correct++;
-            }
-        }
-        const accuracy = Math.floor((correct / Math.max(typed.length, 1)) * 100);
-        this.accuracyLabel.textContent = `Accuracy: ${accuracy}%`;
     }
 
     updateTextStyles(typed) {
@@ -1052,6 +1112,22 @@ class PrecisionTyper {
             html += '<span class="char-cursor char-end" aria-hidden="true">&nbsp;</span>';
         }
         this.textDisplay.innerHTML = html;
+        this.keepCaretVisible();
+    }
+
+    keepCaretVisible() {
+        if (!this.typingSurface || this.isSettingsMode) return;
+        const cursor = this.textDisplay.querySelector('.char-cursor');
+        if (!cursor) return;
+
+        const surface = this.typingSurface.getBoundingClientRect();
+        const caret = cursor.getBoundingClientRect();
+        const inset = 12;
+        if (caret.top < surface.top + inset) {
+            this.typingSurface.scrollTop += caret.top - surface.top - inset;
+        } else if (caret.bottom > surface.bottom - inset) {
+            this.typingSurface.scrollTop += caret.bottom - surface.bottom + inset;
+        }
     }
 
     escapeCharacter(char) {
@@ -1079,7 +1155,7 @@ class PrecisionTyper {
                     </svg>
                 </div>
                 <h2 id="completion-title" class="completion-title">Passage complete!</h2>
-                <p class="completion-subtitle" id="completion-subtitle">Perfect match — great work.</p>
+                <p class="completion-subtitle" id="completion-subtitle">Every character correct. Passage complete.</p>
                 <div class="completion-stats">
                     <div class="completion-stat">
                         <span class="completion-stat-label">Time</span>
@@ -1090,8 +1166,8 @@ class PrecisionTyper {
                         <span class="completion-stat-value" id="completion-wpm"></span>
                     </div>
                     <div class="completion-stat">
-                        <span class="completion-stat-label">Accuracy</span>
-                        <span class="completion-stat-value" id="completion-accuracy"></span>
+                        <span class="completion-stat-label" title="Incorrect characters entered during this attempt, including corrected mistakes.">Mistakes</span>
+                        <span class="completion-stat-value" id="completion-mistakes"></span>
                     </div>
                 </div>
                 <section class="completion-insights" id="completion-insights" hidden>
@@ -1108,7 +1184,7 @@ class PrecisionTyper {
         this.completionOverlay = overlay;
         this.completionTimeEl = overlay.querySelector('#completion-time');
         this.completionWpmEl = overlay.querySelector('#completion-wpm');
-        this.completionAccuracyEl = overlay.querySelector('#completion-accuracy');
+        this.completionMistakesEl = overlay.querySelector('#completion-mistakes');
         this.completionSubtitleEl = overlay.querySelector('#completion-subtitle');
         this.completionInsightsEl = overlay.querySelector('#completion-insights');
         this.completionInsightDetailEl = overlay.querySelector('#completion-insight-detail');
@@ -1142,17 +1218,17 @@ class PrecisionTyper {
         this.completionInsightsEl.hidden = false;
     }
 
-    showCompletionOverlay(wpm, accuracy, time, insights = null) {
+    showCompletionOverlay(wpm, mistakes, time, insights = null) {
         this.ensureCompletionOverlay();
         this.isDismissingCompletion = false;
 
         this.completionTimeEl.textContent = time;
         this.completionWpmEl.textContent = wpm.replace('WPM: ', '');
-        this.completionAccuracyEl.textContent = accuracy.replace('Accuracy: ', '');
+        this.completionMistakesEl.textContent = String(mistakes);
         this.renderEfficiencyInsights(insights);
         this.completionSubtitleEl.textContent = this.zenToggle.checked
-            ? 'Perfect match — the next passage will begin in a moment.'
-            : 'Perfect match — great work.';
+            ? 'Every character correct. The next passage will begin in a moment.'
+            : 'Every character correct. Passage complete.';
 
         this.inputArea.disabled = true;
         this.updateHomeRowReminder();
@@ -1205,9 +1281,9 @@ class PrecisionTyper {
         this.syncChromeVisibility();
 
         const wpm = this.wpmLabel.textContent;
-        const accuracy = this.accuracyLabel.textContent;
+        const mistakes = this.mistakeTracker.count;
         const time = this.timerLabel.textContent.replace('Time: ', '');
-        this.showCompletionOverlay(wpm, accuracy, time, this.deletionTracker.getInsights());
+        this.showCompletionOverlay(wpm, mistakes, time, this.deletionTracker.getInsights());
     }
 
     restartPassage() {
@@ -1251,7 +1327,10 @@ class PrecisionTyper {
         this.syncChromeVisibility();
         this.timerLabel.textContent = 'Time: 0s';
         this.wpmLabel.textContent = 'WPM: 0';
-        this.accuracyLabel.textContent = 'Accuracy: 100%';
+        this.mistakesLabel.textContent = 'Mistakes: 0';
+        this.mistakeTracker.reset();
+        this.pendingEdit = null;
+        this.compositionEdit = null;
         this.inputArea.value = '';
         this.deletionTracker.reset();
         if (pickNew || !this.currentTargetText) {
