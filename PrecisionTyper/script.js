@@ -472,6 +472,13 @@ class PrecisionTyper {
     }
 
     setupEventListeners() {
+        // Do not restore an in-flight transition from the back/forward cache.
+        window.addEventListener('pagehide', () => {
+            this.layoutAnimations?.forEach((animation) => animation.cancel());
+            this.toolbarGhost?.remove();
+            this.toolbarGhost = null;
+            this.layoutAnimations = [];
+        });
         this.skipLink.addEventListener('click', (e) => {
             e.preventDefault();
             this.returnToTyping();
@@ -815,6 +822,7 @@ class PrecisionTyper {
 
     captureLayoutTransition() {
         if (!this.viewportObserver || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
+        if (!this.isFocusMode && !window.matchMedia('(max-height: 800px), (max-width: 768px)').matches) return null;
         const canvas = this.playZone.getBoundingClientRect();
         const toolbar = this.gameToolbar.getBoundingClientRect();
         this.layoutAnimations?.forEach((animation) => animation.cancel());
@@ -880,7 +888,9 @@ class PrecisionTyper {
             document.body.classList.remove('focus-mode');
         }
         this.syncChromeVisibility();
-        this.gameToolbar.scrollIntoView?.({ block: 'nearest' });
+        if (this.isFocusMode || window.matchMedia?.('(max-height: 800px), (max-width: 768px)')?.matches) {
+            this.gameToolbar.scrollIntoView?.({ block: 'nearest' });
+        }
         this.animateLayoutTransition(transition);
         this.focusFirstSessionControl();
         this.announce('Session settings opened. Use Tab to move, arrow keys to choose, Space to toggle, and Tab past the edge, Escape, or slash to return to typing.');
@@ -920,7 +930,9 @@ class PrecisionTyper {
         } else {
             this.focusInput();
         }
-        this.typingCanvas.scrollIntoView({ block: 'nearest' });
+        if (this.isFocusMode || window.matchMedia?.('(max-height: 800px), (max-width: 768px)')?.matches) {
+            this.typingCanvas.scrollIntoView({ block: 'nearest' });
+        }
         this.animateLayoutTransition(transition);
         this.announce(this.inputArea.disabled
             ? 'Session settings closed. Add a passage to begin typing.'
@@ -1438,5 +1450,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('canvas-prompt').textContent = 'Passage library unavailable.';
         document.getElementById('target-text-a11y').textContent = message;
         document.getElementById('game-status').textContent = message;
+    } finally {
+        document.documentElement.classList.remove('initial-zen', 'game-loading');
+        // Commit restored controls without animating their default-to-saved values.
+        void document.body.offsetHeight;
+        document.documentElement.classList.remove('game-no-motion');
     }
 });

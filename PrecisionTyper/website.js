@@ -168,11 +168,14 @@
                 if (entry.isIntersecting) {
                     entry.target.style.opacity = '1';
                     entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
         document.querySelectorAll('.feature-card, .project-card').forEach(function (card) {
+            // Never hide content that may already have been painted on screen.
+            if (card.getBoundingClientRect().top < window.innerHeight) return;
             card.style.opacity = '0';
             card.style.transform = 'translateY(16px)';
             card.style.transition = 'opacity 0.55s ease, transform 0.55s ease';

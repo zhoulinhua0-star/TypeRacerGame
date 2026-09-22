@@ -307,6 +307,7 @@ body.guide-open {
 }
 
 .hero-bg {
+    mask-image: linear-gradient(to bottom, black calc(100% - 160px), transparent);
     position: absolute;
     inset: 0;
     z-index: -1;
@@ -615,8 +616,7 @@ body.guide-open {
 }
 
 .features {
-    border-top: 1px solid var(--border-subtle);
-    background: linear-gradient(180deg, transparent, rgba(13, 148, 136, 0.04));
+    background: linear-gradient(180deg, transparent, rgba(13, 148, 136, 0.04) 50%, transparent);
 }
 
 /* —— Bento features —— */
@@ -707,7 +707,7 @@ body.guide-open {
 
 /* —— Projects —— */
 .projects {
-    border-top: 1px solid var(--border-subtle);
+    background: radial-gradient(ellipse at center, rgba(13, 148, 136, 0.025), transparent 70%);
 }
 
 .projects-grid {
@@ -842,10 +842,9 @@ body.guide-open {
 
 .demo {
     text-align: center;
-    border-top: 1px solid var(--border-subtle);
     background:
-        radial-gradient(ellipse 80% 120% at 50% 100%, rgba(13, 148, 136, 0.2), transparent 55%),
-        var(--bg-deep);
+        radial-gradient(ellipse 80% 90% at 50% 50%, rgba(13, 148, 136, 0.14), transparent 70%),
+        linear-gradient(180deg, var(--bg-void), var(--bg-deep) 50%, var(--bg-void));
 }
 
 .demo-inner {
@@ -1180,9 +1179,8 @@ body.guide-open {
 
 /* —— Footer —— */
 .footer {
-    background: var(--bg-deep);
+    background: linear-gradient(180deg, var(--bg-void), var(--bg-deep) 180px);
     padding: clamp(2.75rem, 6vw, 4rem) 0 1.5rem;
-    border-top: 1px solid var(--border-subtle);
 }
 
 .footer-content {

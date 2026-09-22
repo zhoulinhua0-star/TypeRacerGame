@@ -845,9 +845,8 @@ body {
     width: 0.9rem;
 }
 
-/* Hidden settings must not reserve space above the typing canvas. */
+/* Keep the desktop canvas anchored when Zen hides its settings. */
 body.zen-mode.zen-active .game-toolbar {
-    display: none;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -1203,4 +1202,30 @@ body.focus-mode .typing-canvas {
     transform-origin: top center;
     gap: 1rem;
     transition: none;
+}
+
+/* Restore the saved layout before asynchronous passage loading finishes. */
+@media (max-height: 800px), (max-width: 768px) {
+    body.zen-mode.zen-active:not(.settings-active) .game-toolbar,
+    html.game-loading.initial-zen .game-toolbar {
+        display: none;
+    }
+}
+
+html.game-loading .game-toolbar,
+html.game-loading .home-row-reminder {
+    visibility: hidden;
+}
+
+html.game-no-motion *,
+html.game-no-motion *::before,
+html.game-no-motion *::after {
+    transition: none !important;
+}
+
+/* Preserve the desktop anchor while fitting the typing surface to available height. */
+@media (min-width: 769px) and (min-height: 801px) {
+    body:not(.focus-mode) .typing-surface {
+        height: clamp(120px, calc(100dvh - 660px), 520px);
+    }
 }
