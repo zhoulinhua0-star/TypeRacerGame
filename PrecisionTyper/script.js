@@ -263,8 +263,8 @@ class SegmentedControl {
         this.inputs.forEach((input) => input.addEventListener(type, listener));
     }
 
-    focus() {
-        (this.inputs.find((input) => input.checked) || this.inputs[0])?.focus();
+    focus(options) {
+        (this.inputs.find((input) => input.checked) || this.inputs[0])?.focus(options);
     }
 
     contains(element) {
@@ -570,6 +570,11 @@ class PrecisionTyper {
         });
 
         document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isSettingsMode && !e.defaultPrevented) {
+                e.preventDefault();
+                this.closeSessionSettings();
+                return;
+            }
             if (e.key.toLowerCase() === 'f' && e.shiftKey && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
                 this.setFocusMode(!this.isFocusMode);
@@ -603,7 +608,9 @@ class PrecisionTyper {
                 this.handleTypingEnter(e);
             } else if (e.key === 'Escape') {
                 e.preventDefault();
-                if (this.isFocusMode) {
+                if (this.isSettingsMode) {
+                    this.closeSessionSettings();
+                } else if (this.isFocusMode) {
                     this.setFocusMode(false);
                 } else {
                     this.restartPassage();
@@ -806,9 +813,66 @@ class PrecisionTyper {
         this.announce('Typing canvas focused.');
     }
 
+    captureLayoutTransition() {
+        if (!this.viewportObserver || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
+        const canvas = this.playZone.getBoundingClientRect();
+        const toolbar = this.gameToolbar.getBoundingClientRect();
+        this.layoutAnimations?.forEach((animation) => animation.cancel());
+        this.toolbarGhost?.remove();
+        this.toolbarGhost = null;
+        this.layoutAnimations = [];
+        return { canvas, toolbar, columns: getComputedStyle(this.gameToolbar).gridTemplateColumns };
+    }
+
+    animateLayoutTransition(before) {
+        if (!before) return;
+        const timing = { duration: 460, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' };
+        const move = (element, previous, entering = false) => {
+            const next = element.getBoundingClientRect();
+            if (!next.height) return;
+            this.layoutAnimations.push(element.animate([
+                { transform: `translate(${previous.width ? previous.left - next.left : 0}px, ${previous.height ? previous.top - next.top : 20}px)`, opacity: entering ? 0 : 1 },
+                { transform: 'translate(0, 0)', opacity: 1 }
+            ], timing));
+        };
+        move(this.playZone, before.canvas);
+        const toolbarVisible = this.gameToolbar.getBoundingClientRect().height > 0;
+        if (toolbarVisible) {
+            move(this.gameToolbar, before.toolbar, !before.toolbar.height);
+        } else if (before.toolbar.height) {
+            // A non-interactive visual copy lets the old panel dissolve after layout closes.
+            const ghost = this.gameToolbar.cloneNode(true);
+            ghost.removeAttribute('id');
+            ghost.querySelectorAll('[id]').forEach((element) => element.removeAttribute('id'));
+            ghost.querySelectorAll('[name]').forEach((element) => element.removeAttribute('name'));
+            ghost.inert = true;
+            ghost.setAttribute('aria-hidden', 'true');
+            ghost.classList.remove('game-toolbar');
+            ghost.classList.add('toolbar-transition-ghost');
+            Object.assign(ghost.style, {
+                left: `${before.toolbar.left}px`, top: `${before.toolbar.top}px`,
+                width: `${before.toolbar.width}px`, height: `${before.toolbar.height}px`,
+                gridTemplateColumns: before.columns
+            });
+            document.body.appendChild(ghost);
+            this.toolbarGhost = ghost;
+            const fade = ghost.animate([
+                { opacity: 0.65, transform: 'translateY(0) scale(1)', filter: 'blur(0)' },
+                { opacity: 0, transform: 'translateY(-18px) scale(0.97)', filter: 'blur(5px)' }
+            ], { duration: 220, easing: 'ease-out' });
+            fade.finished.then(() => ghost.remove()).catch(() => ghost.remove());
+            this.layoutAnimations.push(fade);
+        }
+        this.layoutAnimations.push(this.typingCanvas.animate([
+            { boxShadow: '0 0 0 1px rgba(45, 212, 191, 0.35), 0 0 36px rgba(45, 212, 191, 0.14)' },
+            { boxShadow: getComputedStyle(this.typingCanvas).boxShadow }
+        ], { duration: 620, easing: 'ease-out' }));
+    }
+
     openSessionSettings() {
         if (this.isSettingsMode || this.isShowingCompletion) return;
 
+        const transition = this.captureLayoutTransition();
         this.isSettingsMode = true;
         this.restoreFocusModeAfterSettings = this.isFocusMode;
         document.body.classList.add('settings-active');
@@ -816,6 +880,8 @@ class PrecisionTyper {
             document.body.classList.remove('focus-mode');
         }
         this.syncChromeVisibility();
+        this.gameToolbar.scrollIntoView?.({ block: 'nearest' });
+        this.animateLayoutTransition(transition);
         this.focusFirstSessionControl();
         this.announce('Session settings opened. Use Tab to move, arrow keys to choose, Space to toggle, and Tab past the edge, Escape, or slash to return to typing.');
     }
@@ -823,7 +889,7 @@ class PrecisionTyper {
     focusFirstSessionControl() {
         const focusControl = () => {
             if (!this.isSettingsMode) return;
-            this.collectionSelect.focus();
+            this.collectionSelect.focus({ preventScroll: true });
         };
         const focusAndVerify = () => {
             focusControl();
@@ -841,6 +907,7 @@ class PrecisionTyper {
     closeSessionSettings() {
         if (!this.isSettingsMode) return;
 
+        const transition = this.captureLayoutTransition();
         this.isSettingsMode = false;
         document.body.classList.remove('settings-active');
         if (this.restoreFocusModeAfterSettings && this.isFocusMode) {
@@ -853,7 +920,8 @@ class PrecisionTyper {
         } else {
             this.focusInput();
         }
-        this.typingCanvas.scrollIntoView({ block: 'center' });
+        this.typingCanvas.scrollIntoView({ block: 'nearest' });
+        this.animateLayoutTransition(transition);
         this.announce(this.inputArea.disabled
             ? 'Session settings closed. Add a passage to begin typing.'
             : 'Session settings closed. Typing canvas focused.');
@@ -881,8 +949,10 @@ class PrecisionTyper {
     }
 
     applyZenMode() {
+        const transition = this.captureLayoutTransition();
         document.body.classList.toggle('zen-mode', this.zenToggle.checked);
         this.syncChromeVisibility();
+        this.animateLayoutTransition(transition);
     }
 
     updateCanvasPrompt() {

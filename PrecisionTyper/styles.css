@@ -1191,3 +1191,16 @@ body.focus-mode .typing-canvas {
         grid-template-columns: 1fr;
     }
 }
+
+/* Detached, inert settings silhouette used only during the Zen transition. */
+.toolbar-transition-ghost {
+    position: fixed;
+    display: grid;
+    margin: 0;
+    z-index: 40;
+    pointer-events: none;
+    visibility: visible;
+    transform-origin: top center;
+    gap: 1rem;
+    transition: none;
+}
