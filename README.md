@@ -26,7 +26,7 @@ PrecisionTyper completes a passage only when every character matches. Practice m
 - **One readable canvas:** correct, current, remaining, and extra characters share the same surface.
 - **Visible whitespace:** the next required space appears as `·`, a target line break as `↵`, and a display-only code wrap as `↳`.
 - **Keyboard-first control:** `/` focuses the canvas; `Tab`, then `Enter`, opens session settings; an explicit focus path keeps those controls reachable across Chrome, Edge, and Safari; `Cmd/Ctrl + ← / →` moves backward or forward without hitting an endpoint.
-- **Optional atmosphere:** Focus removes surrounding chrome, while locally generated key sounds distinguish normal keys, Space, deletion, and Enter.
+- **Optional atmosphere:** Focus removes surrounding chrome, while optional Soft tap and Crisp click sounds add keyboard feedback.
 - **Habits, not conformity:** a pre-run home-row anchor and a post-run repeated-delete insight optimize observable efficiency; PrecisionTyper never tracks fingers or enforces textbook placement.
 
 ## Training library
@@ -86,6 +86,8 @@ Then open [http://localhost:8000/PrecisionTyper/](http://localhost:8000/Precisio
 
 The landing page can be opened directly, but the game must be served over HTTP so the browser can load `texts.json`. If the passage library cannot load, PrecisionTyper keeps typing disabled and shows the exact local-server or deployment recovery step instead of silently substituting a partial library.
 
+Serve the landing page over HTTP as well to preview **Crisp click**, since its bundled recordings must be loaded from the local server.
+
 ## Keyboard-first workflow
 
 | Action | Shortcut |
@@ -104,11 +106,15 @@ The landing page can be opened directly, but the game must be served over HTTP s
 | Toggle Focus view | `Cmd/Ctrl + Shift + F` |
 | Leave Focus view | `Esc` |
 
-Typing keeps native editing behavior: plain arrow keys, selection, paste, Home, and End continue to work. Every Quote exercise displays typographic quotation marks; passages without dialogue punctuation receive a single outer `“ ”` pair. Passages accept standard English-keyboard equivalents: type `"` for `“` or `”`, `'` for `‘` or `’`, and `-` for `—` or `–`. The same settings workflow works in Zen: `Tab` deterministically focuses the Session settings button, then `Enter` opens the controls. Once open, PrecisionTyper explicitly routes focus through Collection, Difficulty, Sound, and Zen instead of relying on each browser's native Tab preference. That keeps the sequence consistent in Chrome, Edge, and Safari without requiring Safari's “Press Tab to highlight each item on a web page” setting. Tab past either end, or press `Esc` or `/`, to return to the canvas. `Cmd/Ctrl + ← / →` remains available even when a collection or difficulty control has focus. In Code passages, `Enter` inserts a line break only when the target shows `↵`; otherwise it checks the passage. A teal `↳` can mark a visually wrapped code token and is never typed. When the next required character is a space, a temporary `·` makes that invisible character clear.
+Typing keeps native editing behavior: plain arrow keys, selection, paste, Home, and End continue to work. Every Quote exercise displays typographic quotation marks; passages without dialogue punctuation receive a single outer `“ ”` pair. Passages accept standard English-keyboard equivalents: type `"` for `“` or `”`, `'` for `‘` or `’`, and `-` for `—` or `–`. The same settings workflow works in Zen: `Tab` deterministically focuses the Session settings button, then `Enter` opens the controls. Once open, PrecisionTyper explicitly routes focus through Collection, Difficulty, Keyboard sound, Preview, Sound, and Zen instead of relying on each browser's native Tab preference. That keeps the sequence consistent in Chrome, Edge, and Safari without requiring Safari's “Press Tab to highlight each item on a web page” setting. Tab past either end, or press `Esc` or `/`, to return to the canvas. `Cmd/Ctrl + ← / →` remains available even when a collection or difficulty control has focus. In Code passages, `Enter` inserts a line break only when the target shows `↵`; otherwise it checks the passage. A teal `↳` can mark a visually wrapped code token and is never typed. When the next required character is a space, a temporary `·` makes that invisible character clear.
 
 Each collection/difficulty pair owns one persistent shuffled circular deck. Moving right from the final passage wraps to the first; moving left from the first wraps to the final passage. Completing a passage advances through that same order, so keyboard navigation, the Skip action, and post-completion continuation stay consistent.
 
-With **Sound** enabled, normal characters, Space, Backspace/Delete, and Enter use subtly different low-frequency tap profiles. Sound remains optional and is generated locally in the browser.
+Choose **Soft tap** (the original, default sound) or **Crisp click** on the homepage or in Session settings. **Preview** plays the selected sound, and your choice is remembered in this browser. The **Sound** switch still mutes typing feedback. Soft tap uses the original locally synthesized profiles; Crisp click uses 28 bundled letter, Space, and Backspace recordings at their source volume. Both work without contacting another site during practice. Sample sources and third-party rights are documented in [`PrecisionTyper/sounds/10fastfingers/README.md`](PrecisionTyper/sounds/10fastfingers/README.md).
+
+Your homepage selection carries into the typing canvas, and changing sounds during a session preserves the current passage and everything you have typed. Selecting a sound auditions it when sound is enabled; the **Preview** button also lets you audition the selected sound while typing feedback is muted. When browser storage is available, the sound choice synchronizes between open tabs on the same site.
+
+Crisp click downloads its recordings only when selected, while Soft tap requires no audio-file downloads. Crisp click uses letter-specific recordings for A–Z, the Space recording for Enter, and the A-key recording for digits and punctuation without dedicated samples. If recordings cannot load, the picker shows a retry message and typing remains available.
 
 ### What happens in a session
 
@@ -153,11 +159,14 @@ There is no package install step. Before deploying changes, run the repository c
 node scripts/validate-texts.mjs
 node scripts/test-difficulty-score.mjs
 node scripts/test-web-logic.mjs
+node scripts/test-sound.mjs
 node scripts/test-keyboard-guide.mjs
 node scripts/test-site-metadata.mjs
 ```
 
 These checks cover schema v3, scoring model v3, perceptual profiles, score bands and raw separation, English-keyboard punctuation equivalents, minimum pool sizes, global duplication, public-domain Quote sources, Code structure, explicit database-load errors, independent circular decks, contextual whitespace markers, word-safe wrapping, semantic Enter handling, browser-independent forward and backward settings focus, browser-storage failures, session-wide Zen visibility, word-scoped repeated-delete insights, the pre-run home-row anchor, Zen session-setting focus restoration, the landing-page keyboard guide focus loop, canonical production metadata, and local static-link integrity.
+
+The sound checks also verify the default profile, storage fallback, shared sample loading, per-key recording selection, playback volume and pitch, retry after a download failure, and bundled sample integrity. Both web pages share [`PrecisionTyper/sound.js`](./PrecisionTyper/sound.js) for playback and sound preferences and [`PrecisionTyper/sound.css`](./PrecisionTyper/sound.css) for the selector's appearance.
 
 <details>
 <summary><strong>Project structure</strong></summary>

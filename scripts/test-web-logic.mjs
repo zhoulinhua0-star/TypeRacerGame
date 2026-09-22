@@ -323,6 +323,20 @@ settingsTabGame.difficultySelect = {
         testDocument.activeElement = difficultyRadio;
     }
 };
+settingsTabGame.soundSelect = {
+    contains(element) { return element === this; },
+    focus() {
+        focusOrder.push('sound-profile');
+        testDocument.activeElement = this;
+    }
+};
+settingsTabGame.soundPreview = {
+    contains(element) { return element === this; },
+    focus() {
+        focusOrder.push('preview');
+        testDocument.activeElement = this;
+    }
+};
 settingsTabGame.soundToggle = {
     contains(element) { return element === this; },
     focus() {
@@ -351,22 +365,26 @@ testDocument.activeElement = collectionRadio;
 moveSettingsFocus();
 assert.equal(testDocument.activeElement, difficultyRadio);
 moveSettingsFocus();
+assert.equal(testDocument.activeElement, settingsTabGame.soundSelect);
+moveSettingsFocus();
+assert.equal(testDocument.activeElement, settingsTabGame.soundPreview);
+moveSettingsFocus();
 assert.equal(testDocument.activeElement, settingsTabGame.soundToggle);
 moveSettingsFocus();
 assert.equal(testDocument.activeElement, settingsTabGame.zenToggle);
 moveSettingsFocus();
 assert.equal(settingsTabCloses, 1);
-assert.deepEqual(focusOrder, ['difficulty', 'sound', 'zen']);
+assert.deepEqual(focusOrder, ['difficulty', 'sound-profile', 'preview', 'sound', 'zen']);
 
 testDocument.activeElement = collectionRadio;
 moveSettingsFocus(true);
 assert.equal(settingsTabCloses, 2);
-assert.equal(settingsTabPreventions, 5);
+assert.equal(settingsTabPreventions, 7);
 
 testDocument.activeElement = null;
 moveSettingsFocus();
 assert.equal(testDocument.activeElement, collectionRadio);
-assert.equal(settingsTabPreventions, 6);
+assert.equal(settingsTabPreventions, 8);
 
 const mismatchGame = Object.create(PrecisionTyper.prototype);
 mismatchGame.isShowingCompletion = false;

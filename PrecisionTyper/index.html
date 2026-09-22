@@ -18,6 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="website.css?v=2">
+    <link rel="stylesheet" href="sound.css?v=1">
 </head>
 <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -116,7 +117,7 @@
                             <li><kbd>Enter</kbd><span>Open the existing settings controls</span></li>
                             <li><kbd>Shift + Tab</kbd><span>Move backward</span></li>
                             <li><kbd>Space</kbd><span>Toggle Sound or Zen</span></li>
-                            <li><kbd>↑ ↓</kbd><span>Choose Collection or Difficulty</span></li>
+                            <li><kbd>↑ ↓</kbd><span>Choose Collection, Difficulty, or Keyboard sound</span></li>
                             <li><kbd>Esc</kbd> / <kbd>/</kbd><span>Return to the typing canvas</span></li>
                         </ul>
                     </section>
@@ -148,6 +149,22 @@
                         <a href="game.html" class="btn btn-primary btn-cta">Play now</a>
                         <a href="https://github.com/zhoulinhua0-star/TypeRacerGame" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">View on GitHub</a>
                     </div>
+                    <fieldset class="sound-picker" id="sound-options" aria-describedby="sound-hint sound-status">
+                        <legend>Keyboard sound</legend>
+                        <div class="sound-options-row">
+                            <label class="sound-choice">
+                                <input type="radio" name="sound-profile" value="soft" checked>
+                                <span>Soft tap</span>
+                            </label>
+                            <label class="sound-choice">
+                                <input type="radio" name="sound-profile" value="10fastfingers">
+                                <span>Crisp click</span>
+                            </label>
+                            <button type="button" class="sound-preview" id="sound-preview" aria-label="Preview selected keyboard sound">Preview</button>
+                        </div>
+                        <p class="sound-hint" id="sound-hint">Choose your sound. Saved for your next session.</p>
+                        <p class="sound-status" id="sound-status" role="status"></p>
+                    </fieldset>
                     <ul class="hero-metrics" aria-label="Product highlights">
                         <li><span class="metric-label">WPM</span><span class="metric-value">Live</span></li>
                         <li><span class="metric-label">Accuracy</span><span class="metric-value">Strict</span></li>
@@ -211,7 +228,7 @@
                             <svg class="icon-24" viewBox="0 0 24 24" fill="none"><path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                         <h3>Sound effects</h3>
-                        <p>Optional mechanical clicks via procedural audio for tactile feedback.</p>
+                        <p>Choose Soft tap or Crisp click keyboard sounds. Preview your favorite before you type.</p>
                     </article>
                 </div>
             </div>
@@ -316,6 +333,7 @@
         </div>
     </footer>
 
-    <script src="website.js?v=3"></script>
+    <script src="sound.js?v=1"></script>
+    <script src="website.js?v=4"></script>
 </body>
 </html>

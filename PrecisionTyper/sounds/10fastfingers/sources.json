@@ -1,0 +1,173 @@
+{
+  "retrieved": "2026-09-22",
+  "files": [
+    {
+      "file": "a.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/a.mp3",
+      "bytes": 2283,
+      "sha256": "02b3d7f9ca13340586335c2acb9088f082d97450ccb2041dafea8fa7e62597ab"
+    },
+    {
+      "file": "b.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/b.mp3",
+      "bytes": 2571,
+      "sha256": "5e73e189c416e57e44586cf03217731e2f81a7e76855192fd8b66d251e6581c9"
+    },
+    {
+      "file": "c.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/c.mp3",
+      "bytes": 2427,
+      "sha256": "bf285a3de5f16b9fba79cbff4c776cbc0eb85d590350334f5f5d5b83ae3506c2"
+    },
+    {
+      "file": "d.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/d.mp3",
+      "bytes": 2283,
+      "sha256": "8e48ab5af9e70ba2a6f3e28c887c69a2ce7a4abd9e308b9f25d838c8880f3d69"
+    },
+    {
+      "file": "e.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/e.mp3",
+      "bytes": 2571,
+      "sha256": "16d2d6659b50c56250fa4b37890b91ea3f4b0cc76417126897932a15126e4742"
+    },
+    {
+      "file": "f.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/f.mp3",
+      "bytes": 2475,
+      "sha256": "adde0563eef515430ce7657bf2f186523bd95d049d0d817d0faa0853032e35bf"
+    },
+    {
+      "file": "g.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/g.mp3",
+      "bytes": 2451,
+      "sha256": "e27989f185a8af06e582c085f86c4e5cfbed05ce68e5e78065a7a14f190636f8"
+    },
+    {
+      "file": "h.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/h.mp3",
+      "bytes": 2331,
+      "sha256": "f87ca7a8d92f646be39ae4a37bbccd63de3b4a3307e7adfba98e546eb7cfc4ff"
+    },
+    {
+      "file": "i.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/i.mp3",
+      "bytes": 2763,
+      "sha256": "886774cba0aab54b2c675db4b5119a029e459a1534b506c031cd0c592239a6b6"
+    },
+    {
+      "file": "j.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/j.mp3",
+      "bytes": 2427,
+      "sha256": "f7b013151ee700ede614360ca2c231e26a8cbdc2c098667e7dea7a8272c5d045"
+    },
+    {
+      "file": "k.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/k.mp3",
+      "bytes": 2427,
+      "sha256": "15620a6041bd980c323aa3ad3bc08ed7c7a83ba48c796c7394405a429df433fc"
+    },
+    {
+      "file": "l.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/l.mp3",
+      "bytes": 2811,
+      "sha256": "a079e3872cb452aa853784a1871d9f677be613f06a7fe5b04e07643c4f02dc9f"
+    },
+    {
+      "file": "m.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/m.mp3",
+      "bytes": 2427,
+      "sha256": "3584e0114eba3ac4f8823c04d75504ca065042717a0682cd7152f9c21b6f645c"
+    },
+    {
+      "file": "n.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/n.mp3",
+      "bytes": 2283,
+      "sha256": "73c5d5151a38853121e64f1803449a6b02b95ad7e4f6f2600baebb14902c6e08"
+    },
+    {
+      "file": "o.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/o.mp3",
+      "bytes": 2331,
+      "sha256": "8082c210c80aaf73eb78b15be416683644b22383cf571131c74ad4b894bbdc52"
+    },
+    {
+      "file": "p.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/p.mp3",
+      "bytes": 2619,
+      "sha256": "5ae23c1d14d4903c0e84908461982672b11997b8c10b1801995a6cc3347720aa"
+    },
+    {
+      "file": "q.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/q.mp3",
+      "bytes": 2427,
+      "sha256": "48c7c233298703d4c91f03173ed562d731eaece99c39e6ea46ddda268170e144"
+    },
+    {
+      "file": "r.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/r.mp3",
+      "bytes": 2475,
+      "sha256": "9fa6e8a25935b19a5b977f4d700d1ccf19e17f98c8e75e05f70e34f8e8e37ff8"
+    },
+    {
+      "file": "s.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/s.mp3",
+      "bytes": 2139,
+      "sha256": "e6e2c7078ee380c95aa573b0be3677b150e0aa3d28af1f816625175d03210443"
+    },
+    {
+      "file": "t.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/t.mp3",
+      "bytes": 2523,
+      "sha256": "55cb5df743e14f44f70300cb0d12f9c0b92dba7ffac241a6323acf56773a07e1"
+    },
+    {
+      "file": "u.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/u.mp3",
+      "bytes": 2523,
+      "sha256": "b92f2b3f8940b406b0b86b5578ba5ab0e86298a38d8d25a33d17fd539a12e934"
+    },
+    {
+      "file": "v.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/v.mp3",
+      "bytes": 2283,
+      "sha256": "463866080235337cc8e9ba15654eded02f171a58b8d9743de96084ee69152239"
+    },
+    {
+      "file": "w.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/w.mp3",
+      "bytes": 2283,
+      "sha256": "ed9ea39000cf0ca63d0d3d22cce242891ee0c43010f9260b32f48702fac0cfc0"
+    },
+    {
+      "file": "x.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/x.mp3",
+      "bytes": 1467,
+      "sha256": "06cfd4f0e9a82a652500cfd5f540df8193498c47c0d74b5c153de1be6721d5e9"
+    },
+    {
+      "file": "y.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/y.mp3",
+      "bytes": 2715,
+      "sha256": "08e2c3166ae327c7e9cade4d7d8cce174b300d69d1bffb39d44cf250d87c042b"
+    },
+    {
+      "file": "z.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/z.mp3",
+      "bytes": 2619,
+      "sha256": "c098124669ac06e8f0c42f2d847ebd2fd031c0abe608c53a36a0f21185218ba4"
+    },
+    {
+      "file": "space.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/space.mp3",
+      "bytes": 2475,
+      "sha256": "e35233d2c1e7098b0b66402c318c257e8a08f91a7e077366ad69c792e0a3a33f"
+    },
+    {
+      "file": "backspace.mp3",
+      "source": "https://10fastfingers.com/sounds/keys/backspace.mp3",
+      "bytes": 2475,
+      "sha256": "983c1fb6ab82c0b797366969840c0a9bd203584b64635b391ae08d364b2f4439"
+    }
+  ]
+}

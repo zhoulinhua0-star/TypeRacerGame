@@ -1,0 +1,117 @@
+.sound-picker {
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.hero-copy > .sound-picker {
+    margin: 1.75rem 0 1.5rem;
+}
+
+.controls-row > .sound-picker {
+    flex: 1 1 340px;
+}
+
+.sound-picker legend {
+    padding: 0;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.sound-options-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sound-choice {
+    position: relative;
+    cursor: pointer;
+}
+
+.sound-choice input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    clip-path: inset(50%);
+}
+
+.sound-choice span,
+.sound-preview {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    background: var(--bg-deep);
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.25;
+    cursor: pointer;
+    transition: color 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.sound-choice span::before {
+    content: '\2713';
+    margin-right: 0.4rem;
+    color: var(--cta);
+    opacity: 0;
+}
+
+.sound-choice input:checked + span {
+    border-color: var(--cta);
+    background: rgba(249, 115, 22, 0.14);
+    color: var(--text-main);
+}
+
+.sound-choice input:checked + span::before {
+    opacity: 1;
+}
+
+.sound-choice:hover span,
+.sound-preview:hover {
+    color: var(--text-main);
+    border-color: var(--text-muted);
+}
+
+.sound-choice input:focus-visible + span,
+.sound-preview:focus-visible {
+    outline: 2px solid var(--cta);
+    outline-offset: 3px;
+}
+
+.sound-hint,
+.sound-status {
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    line-height: 1.45;
+}
+
+.sound-status:empty {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .controls-row > .sound-picker {
+        flex-basis: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sound-choice span,
+    .sound-preview {
+        transition: none;
+    }
+}

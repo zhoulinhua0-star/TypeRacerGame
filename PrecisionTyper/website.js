@@ -3,6 +3,10 @@
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     document.addEventListener('DOMContentLoaded', function () {
+        if (document.getElementById('sound-options')) {
+            setupSoundPicker(new ClickSoundEngine());
+        }
+
         var guideTrigger = document.getElementById('keyboard-guide-trigger');
         var guideDialog = document.getElementById('keyboard-guide');
         var guideCard = guideDialog ? guideDialog.querySelector('.guide-card') : null;

@@ -856,6 +856,11 @@ body.zen-mode.zen-active.settings-active .game-toolbar {
     transform: none;
 }
 
+/* WebKit can retain inherited hidden visibility inside the settings controls. */
+body.zen-mode.zen-active.settings-active .game-toolbar * {
+    visibility: visible;
+}
+
 body.zen-mode.zen-active .canvas-progress {
     opacity: 0;
 }
@@ -913,6 +918,10 @@ body.focus-mode .typing-canvas {
     .controls-row {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .controls-row > .field-group {
+        flex-basis: auto;
     }
 
     .collection-options {

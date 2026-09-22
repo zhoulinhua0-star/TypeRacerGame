@@ -31,6 +31,8 @@ jobs:
         run: node scripts/test-difficulty-score.mjs
       - name: Test web passage logic
         run: node scripts/test-web-logic.mjs
+      - name: Test keyboard sounds
+        run: node scripts/test-sound.mjs
       - name: Test landing-page keyboard guide
         run: node scripts/test-keyboard-guide.mjs
       - name: Test site links and metadata
