@@ -187,8 +187,24 @@ body {
 
 @media (min-width: 980px) {
     .game-toolbar {
-        grid-template-columns: minmax(0, 1.45fr) minmax(340px, 1fr);
-        align-items: stretch;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .game-toolbar .controls-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        grid-template-areas: "collection sound" "difficulty sound" "zen sound";
+        align-items: start;
+        gap: 1rem 1.5rem;
+    }
+
+    .controls-row > .collection-field { grid-area: collection; }
+    .controls-row > .difficulty-field { grid-area: difficulty; }
+    .controls-row > .sound-picker { grid-area: sound; }
+    .controls-row > .toggles { grid-area: zen; }
+
+    .game-toolbar .stats-wrap {
+        min-height: 0;
     }
 }
 

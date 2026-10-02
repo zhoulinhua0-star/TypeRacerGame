@@ -85,7 +85,7 @@ const gameIds = [...gameHtml.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1
 assert.equal(new Set(gameIds).size, gameIds.length, 'Game page IDs must be unique');
 assert.match(gameHtml, /id="input-area"[\s\S]*id="session-settings-button"/);
 assert.match(gameHtml, /id="session-settings-button"[\s\S]*aria-controls="session-controls"/);
-assert.match(gameHtml, /aria-keyshortcuts="[^"]*Control\+ArrowLeft[^"]*Meta\+ArrowRight"/);
+assert.match(gameHtml, /aria-keyshortcuts="[^"]*Control\+ArrowLeft[^"]*Meta\+ArrowRight[^"]*"/);
 assert.equal((gameHtml.match(/name="collection"/g) || []).length, 4);
 assert.equal((gameHtml.match(/name="difficulty"/g) || []).length, 3);
 assert.match(gameHtml, /<fieldset[^>]+id="collection-options"/);
@@ -367,6 +367,13 @@ settingsTabGame.soundToggle = {
         testDocument.activeElement = this;
     }
 };
+settingsTabGame.soundVolume = {
+    contains(element) { return element === this; },
+    focus() {
+        focusOrder.push('volume');
+        testDocument.activeElement = this;
+    }
+};
 settingsTabGame.zenToggle = {
     contains(element) { return element === this; },
     focus() {
@@ -394,20 +401,27 @@ assert.equal(testDocument.activeElement, settingsTabGame.soundPreview);
 moveSettingsFocus();
 assert.equal(testDocument.activeElement, settingsTabGame.soundToggle);
 moveSettingsFocus();
+assert.equal(testDocument.activeElement, settingsTabGame.soundVolume);
+moveSettingsFocus();
 assert.equal(testDocument.activeElement, settingsTabGame.zenToggle);
 moveSettingsFocus();
 assert.equal(settingsTabCloses, 1);
-assert.deepEqual(focusOrder, ['difficulty', 'sound-profile', 'preview', 'sound', 'zen']);
+assert.deepEqual(focusOrder, ['difficulty', 'sound-profile', 'preview', 'sound', 'volume', 'zen']);
 
 testDocument.activeElement = collectionRadio;
 moveSettingsFocus(true);
 assert.equal(settingsTabCloses, 2);
-assert.equal(settingsTabPreventions, 7);
+assert.equal(settingsTabPreventions, 8);
+
+settingsTabGame.soundPreview.disabled = true;
+testDocument.activeElement = settingsTabGame.soundSelect;
+moveSettingsFocus();
+assert.equal(testDocument.activeElement, settingsTabGame.soundToggle, 'Skip disabled Preview when muted');
 
 testDocument.activeElement = null;
 moveSettingsFocus();
 assert.equal(testDocument.activeElement, collectionRadio);
-assert.equal(settingsTabPreventions, 8);
+assert.equal(settingsTabPreventions, 10);
 
 const mismatchGame = Object.create(PrecisionTyper.prototype);
 mismatchGame.isShowingCompletion = false;
@@ -442,7 +456,7 @@ const navigationEvent = {
     ctrlKey: false,
     metaKey: true,
     isComposing: false,
-    target: { type: 'radio' },
+    target: { tagName: 'BODY' },
     preventDefault() { navigationPreventions++; }
 };
 assert.equal(navigationGame.handlePassageNavigation(navigationEvent), true);
@@ -458,8 +472,34 @@ assert.equal(navigationGame.handlePassageNavigation(navigationEvent), false);
 
 navigationGame.isSettingsMode = true;
 navigationEvent.ctrlKey = true;
-assert.equal(navigationGame.handlePassageNavigation(navigationEvent), true);
-assert.equal(previousNavigations, 2);
+assert.equal(navigationGame.handlePassageNavigation(navigationEvent), false);
+assert.equal(previousNavigations, 1, 'Do not switch passages while changing settings');
+navigationGame.isSettingsMode = false;
+for (const flag of ['isComposing', 'repeat', 'altKey', 'shiftKey', 'defaultPrevented']) {
+    navigationEvent[flag] = true;
+    assert.equal(navigationGame.handlePassageNavigation(navigationEvent), false, `${flag} must suppress navigation`);
+    navigationEvent[flag] = false;
+}
+navigationEvent.target = { closest() { return this; } };
+assert.equal(navigationGame.handlePassageNavigation(navigationEvent), false, 'Other input controls keep native keyboard behavior');
+navigationGame.inputArea = navigationEvent.target;
+assert.equal(navigationGame.handlePassageNavigation(navigationEvent), true, 'Typing input supports passage shortcuts');
+
+let restarts = 0;
+let focusExits = 0;
+navigationGame.restartPassage = () => { restarts++; };
+navigationGame.setFocusMode = (enabled) => { assert.equal(enabled, false); focusExits++; navigationGame.isFocusMode = false; };
+navigationEvent.key = 'Escape';
+navigationEvent.ctrlKey = false;
+assert.equal(navigationGame.handleRestartShortcut(navigationEvent), true);
+assert.equal(restarts, 1);
+navigationGame.isFocusMode = true;
+assert.equal(navigationGame.handleRestartShortcut(navigationEvent), true);
+assert.equal(restarts, 1, 'Escape exits Focus before restarting');
+assert.equal(focusExits, 1);
+navigationGame.isShowingCompletion = true;
+assert.equal(navigationGame.handleRestartShortcut(navigationEvent), false);
+assert.equal(navigationGame.handlePassageNavigation({ ...navigationEvent, key: 'ArrowRight', ctrlKey: true }), false);
 
 // Zen keeps evaluative chrome hidden across idle, typing, completion, and passage changes.
 bodyClasses.clear();
@@ -792,8 +832,8 @@ assert.match(gameHtml, /Feel the F and J keys, then type naturally\./);
 assert.match(gameStyles, /\.home-row-reminder\.is-hidden/);
 assert.match(gameStyles, /body\.focus-mode \.home-row-reminder/);
 assert.match(gameStyles, /\.completion-insights\[hidden\]/);
-// The home row stays a suggestion: no per-key or finger enforcement anywhere.
-assert.doesNotMatch(source, /finger|homeRowEnforce|requireHomeRow/i);
+// The home row stays a suggestion; Finger guide is a voluntary reference.
+assert.doesNotMatch(source, /homeRowEnforce|requireHomeRow/i);
 
 
 console.log('Web passage, circular-deck, and storage-resilience tests passed.');

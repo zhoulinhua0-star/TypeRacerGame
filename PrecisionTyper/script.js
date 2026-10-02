@@ -350,9 +350,12 @@ class PrecisionTyper {
         this.soundToggle = document.getElementById('sound-toggle');
         this.soundSelect = new SegmentedControl('sound-options');
         this.soundPreview = document.getElementById('sound-preview');
+        this.soundVolume = document.getElementById('sound-volume');
         this.zenToggle = document.getElementById('zen-toggle');
         this.restartButton = document.getElementById('restart-button');
         this.skipButton = document.getElementById('skip-button');
+        const macKeyboard = /Mac|iPhone|iPad/.test(navigator.platform);
+        this.skipButton.querySelector('kbd').textContent = macKeyboard ? '⌘ →' : 'Ctrl →';
         this.focusButton = document.getElementById('focus-button');
         this.focusButtonLabel = document.getElementById('focus-button-label');
         this.sessionSettingsButton = document.getElementById('session-settings-button');
@@ -368,9 +371,10 @@ class PrecisionTyper {
         
         // Load settings and initialize
         this.loadSettings();
-        setupSoundPicker(this.soundEngine, () => this.soundToggle.checked);
+        setupSoundPicker(this.soundEngine);
         this.pickNewText();
         this.setupEventListeners();
+        this.fingerGuide = new FingerGuide(this);
         this.viewportObserver = new ResizeObserver(() => this.keepCaretVisible());
         this.viewportObserver.observe(this.typingSurface);
         this.updateTextStyles('');
@@ -577,6 +581,8 @@ class PrecisionTyper {
         });
 
         document.addEventListener('keydown', (e) => {
+            if (this.fingerGuide?.isOpen) return;
+            if (e.defaultPrevented || e.isComposing || e.repeat) return;
             if (e.key === 'Escape' && this.isSettingsMode && !e.defaultPrevented) {
                 e.preventDefault();
                 this.closeSessionSettings();
@@ -589,6 +595,7 @@ class PrecisionTyper {
             }
 
             if (this.handlePassageNavigation(e)) return;
+            if (this.handleRestartShortcut(e)) return;
 
             const isTypingInput = e.target === this.inputArea;
             const isEditableElement = e.target?.isContentEditable;
@@ -613,15 +620,6 @@ class PrecisionTyper {
                 this.handleTypingTab(e);
             } else if (e.key === 'Enter') {
                 this.handleTypingEnter(e);
-            } else if (e.key === 'Escape') {
-                e.preventDefault();
-                if (this.isSettingsMode) {
-                    this.closeSessionSettings();
-                } else if (this.isFocusMode) {
-                    this.setFocusMode(false);
-                } else {
-                    this.restartPassage();
-                }
             }
         });
 
@@ -645,10 +643,26 @@ class PrecisionTyper {
         return matched;
     }
 
+    canUsePassageShortcut(event) {
+        const control = event.target?.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"]), #session-controls, [role="dialog"]');
+        return !(
+            event.defaultPrevented || event.isComposing || event.repeat || event.altKey || event.shiftKey ||
+            this.isShowingCompletion || this.isSettingsMode || this.inputArea?.disabled ||
+            (control && control !== this.inputArea) || event.target?.isContentEditable
+        );
+    }
+
+    handleRestartShortcut(event) {
+        if (event.key !== 'Escape' || event.ctrlKey || event.metaKey || !this.canUsePassageShortcut(event)) return false;
+        event.preventDefault();
+        if (this.isFocusMode) this.setFocusMode(false);
+        else this.restartPassage();
+        return true;
+    }
+
     handlePassageNavigation(event) {
         if (
-            event.isComposing ||
-            this.isShowingCompletion ||
+            !this.canUsePassageShortcut(event) ||
             (!event.ctrlKey && !event.metaKey)
         ) {
             return false;
@@ -694,8 +708,9 @@ class PrecisionTyper {
             this.soundSelect,
             this.soundPreview,
             this.soundToggle,
+            this.soundVolume,
             this.zenToggle
-        ];
+        ].filter((stop) => stop && !stop.disabled);
         const activeIndex = focusStops.findIndex((stop) => stop.contains(document.activeElement));
         const nextIndex = activeIndex === -1
             ? (event.shiftKey ? focusStops.length - 1 : 0)
@@ -1371,13 +1386,23 @@ class PrecisionTyper {
     restartPassage() {
         if (this.isShowingCompletion) return;
         this.resetGame({ pickNew: false });
+        this.flashAction(this.restartButton);
         this.announce('Passage restarted.');
     }
 
     skipPassage() {
         if (this.isShowingCompletion) return;
         this.resetGame();
+        this.flashAction(this.skipButton);
         this.announce('Next passage.');
+    }
+
+    flashAction(button) {
+        if (!button?.animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        button.animate([
+            { borderColor: 'var(--cta)', background: 'rgba(249, 115, 22, 0.2)' },
+            { borderColor: 'var(--border-strong)', background: 'var(--accent-surface)' }
+        ], { duration: 320, easing: 'ease-out' });
     }
 
     previousPassage() {

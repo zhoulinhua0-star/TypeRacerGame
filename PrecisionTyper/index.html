@@ -20,7 +20,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="website.css?v=3">
-    <link rel="stylesheet" href="sound.css?v=1">
+    <link rel="stylesheet" href="sound.css?v=2">
 </head>
 <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -95,9 +95,10 @@
                         <h3 class="guide-section-title" id="guide-shortcuts-title">Session shortcuts</h3>
                         <dl class="guide-shortcuts">
                             <div><dt><kbd>/</kbd></dt><dd>Focus the typing canvas</dd></div>
-                            <div><dt><kbd>Esc</kbd></dt><dd>Restart the passage</dd></div>
+                            <div><dt><kbd>Esc</kbd></dt><dd>Restart; closes settings or exits Focus first</dd></div>
                             <div><dt><kbd>Ctrl/Cmd + ← / →</kbd></dt><dd>Move to the previous or next passage</dd></div>
                             <div><dt><kbd>Ctrl/Cmd + Shift + F</kbd></dt><dd>Toggle Focus view</dd></div>
+                            <div><dt><kbd>Ctrl/Cmd + Shift + X</kbd></dt><dd>Look up a letter in Finger guide; Esc returns to typing</dd></div>
                         </dl>
                     </section>
 
@@ -120,6 +121,7 @@
                             <li><kbd>Shift + Tab</kbd><span>Move backward</span></li>
                             <li><kbd>Space</kbd><span>Toggle Sound or Zen</span></li>
                             <li><kbd>↑ ↓</kbd><span>Choose Collection, Difficulty, or Keyboard sound</span></li>
+                            <li><kbd>← →</kbd><span>Adjust keyboard volume when its slider is focused</span></li>
                             <li><kbd>Esc</kbd> / <kbd>/</kbd><span>Return to the typing canvas</span></li>
                         </ul>
                     </section>
@@ -162,9 +164,33 @@
                                 <input type="radio" name="sound-profile" value="10fastfingers">
                                 <span>Crisp click</span>
                             </label>
-                            <button type="button" class="sound-preview" id="sound-preview" aria-label="Preview selected keyboard sound">Preview</button>
+                            <button type="button" class="sound-preview" id="sound-preview" aria-label="Preview selected keyboard sound">
+                                <span class="sound-preview-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                                Preview
+                            </button>
                         </div>
-                        <p class="sound-hint" id="sound-hint">Choose your sound. Saved for your next session.</p>
+                        <div class="sound-volume-panel">
+                            <div class="sound-volume-heading">
+                                <label for="sound-volume" class="sound-volume-label">Volume <span id="sound-state">Sound on</span></label>
+                                <label class="sound-switch">
+                                    <input type="checkbox" id="sound-toggle" checked aria-label="Enable keyboard sound" aria-describedby="sound-desc">
+                                    <span class="sound-switch-track" aria-hidden="true"></span>
+                                    <span class="visually-hidden" id="sound-desc">Mute without changing your saved volume</span>
+                                </label>
+                            </div>
+                            <div class="sound-volume-row">
+                                <svg class="sound-speaker" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M11 5 6 9H3v6h3l5 4V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                    <path class="sound-speaker-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                                    <path class="sound-speaker-mute" d="m16 9 5 6m0-6-5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                                </svg>
+                                <input type="range" id="sound-volume" min="0" max="100" step="1" value="60" aria-describedby="sound-volume-hint">
+                                <output for="sound-volume" id="sound-volume-value">60%</output>
+                            </div>
+                            <div class="sound-volume-scale" aria-hidden="true"><span>Quiet</span><span>Boost</span></div>
+                        </div>
+                        <p class="sound-hint" id="sound-hint">Your sound, your volume. Saved across sessions.</p>
+                        <span class="visually-hidden" id="sound-volume-hint">60 percent is the original volume. Higher levels boost the sound. Zero is silent. Use arrow keys to adjust.</span>
                         <p class="sound-status" id="sound-status" role="status"></p>
                     </fieldset>
                     <ul class="hero-metrics" aria-label="Product highlights">
@@ -335,7 +361,7 @@
         </div>
     </footer>
 
-    <script src="sound.js?v=1"></script>
+    <script src="sound.js?v=2"></script>
     <script src="website.js?v=5"></script>
 </body>
 </html>
